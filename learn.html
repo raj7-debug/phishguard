@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard – Threat Intelligence & Learn</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* Background grid */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, #80808012 1px, transparent 1px),
+    linear-gradient(to bottom, #80808012 1px, transparent 1px);
+  background-size: 24px 24px;
+  z-index: -2;
+}
+
+/* Glow */
+.glow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  background: rgba(0, 150, 255, 0.1);
+  border-radius: 50%;
+  filter: blur(120px);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: #111;
+  border-right: 2px solid #222;
+  padding: 30px 20px;
+  height: 100vh;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.sidebar-logo svg {
+  width: 40px;
+  height: 40px;
+}
+
+.sidebar-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #00aaff;
+}
+
+.sidebar-item {
+  font-size: 18px;
+  padding: 10px 0;
+  color: #cccccc;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.sidebar-item svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+  color: #00aaff;
+}
+
+/* MAIN CONTENT */
+.main {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.header-title {
+  font-size: 38px;
+  color: #00aaff;
+  margin-bottom: 15px;
+}
+
+.header-subtitle {
+  color: #cccccc;
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 800px;
+  margin-bottom: 35px;
+}
+
+/* CARDS GRID */
+.learn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  padding-bottom: 40px;
+}
+
+.learn-card {
+  background: #141414;
+  border: 2px solid #222;
+  border-radius: 12px;
+  padding: 25px;
+  transition: 0.25s;
+}
+
+.learn-card:hover {
+  border-color: #00aaff;
+  background: #1a1a1a;
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.card-title.urgency { color: #ff3366; }
+.card-title.authority { color: #00aaff; }
+.card-title.fear { color: #ff3366; }
+.card-title.familiarity { color: #9933ff; }
+
+.card-desc {
+  color: #cccccc;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.vector-box {
+  background: #0d0d0d;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.vector-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #777;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.vector-content {
+  font-family: monospace;
+  font-size: 14px;
+  color: #00ffcc;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <svg viewBox="0 0 24 24" fill="#00aaff"><circle cx="12" cy="12" r="10"/></svg>
+    <div class="sidebar-title">PHISHGUARD</div>
+  </div>
+
+  <a href="training.html" class="sidebar-item" id="nav-training">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
+    Training
+  </a>
+
+  <a href="dashboard.html" class="sidebar-item" id="nav-dashboard">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><rect x="4" y="4" width="16" height="16"/></svg>
+    Dashboard
+  </a>
+
+  <a href="leaderboard.html" class="sidebar-item" id="nav-leaderboard">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2l9 21H3z"/></svg>
+    Leaderboard
+  </a>
+
+  <a href="learn.html" class="sidebar-item active" id="nav-learn">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M4 4h16v16H4z"/></svg>
+    Learn
+  </a>
+
+  <a href="report.html" class="sidebar-item" id="nav-report">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
+    Report
+  </a>
+
+  <a href="settings.html" class="sidebar-item" id="nav-settings">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
+    Settings
+  </a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+  <div class="header-title" id="learnHeaderTitle">Threat Intelligence</div>
+  <div class="header-subtitle" id="learnHeaderSub">Loading intelligence briefing...</div>
+
+  <div class="learn-grid" id="learnGridContainer">
+    <!-- Dynamic Content injected via script -->
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get("mode") || "student";
+
+  const titleEl = document.getElementById("learnHeaderTitle");
+  const subEl = document.getElementById("learnHeaderSub");
+  const gridEl = document.getElementById("learnGridContainer");
+
+  // COMPLETELY DISTINCT DATA & CONTENT FOR STUDENTS
+  const studentContent = [
+    {
+      title: "Academic Urgency",
+      class: "urgency",
+      desc: "Attackers exploit deadlines, exam stress, and library restrictions. They engineer panic by threatening immediate account lockout or course deregistration.",
+      vector: "'Action Required: Unpaid library fine or your portal access will be revoked in 24 hours.'"
+    },
+    {
+      title: "Administrative Authority",
+      class: "authority",
+      desc: "Impersonating university departments, IT help desks, or faculty deans. Students are conditioned to comply immediately with administrative directives.",
+      vector: "'UWE IT Services: Mandatory security patching required. Verify credentials now.'"
+    },
+    {
+      title: "Financial Aid Fear",
+      class: "fear",
+      desc: "Leveraging high anxiety around tuition fees, housing deposits, or scholarship grants to bypass rational caution through engineered crisis.",
+      vector: "'Your student loan disbursement has failed. Confirm bank details immediately to avoid cancellation.'"
+    },
+    {
+      title: "Campus Portal Spoofing",
+      class: "familiarity",
+      desc: "Replicating exact layouts of learning management systems (like Blackboard or UWE Portal) using typosquatted domains to harvest passwords.",
+      vector: "'portal.uwe-ac.uk.verify-login.net' instead of the official portal."
+    }
+  ];
+
+  // COMPLETELY DISTINCT DATA & CONTENT FOR ELDERLY USERS
+  const elderlyContent = [
+    {
+      title: "Pension & Benefit Urgency",
+      class: "urgency",
+      desc: "Scammers create artificial deadlines regarding state pensions, council tax brackets, or heating allowances to force rushed decision-making.",
+      vector: "'Final Notice: Claim your government cost-of-living rebate before midnight today.'"
+    },
+    {
+      title: "Government Authority",
+      class: "authority",
+      desc: "Impersonating trusted national entities like the NHS, HMRC, or postal services (Royal Mail) to invoke instant trust and compliance.",
+      vector: "'HMRC Legal Notice: A warrant has been issued for unpaid national insurance contributions.'"
+    },
+    {
+      title: "Retirement Security Fear",
+      class: "fear",
+      desc: "Preying on anxieties surrounding lifetime savings security, frozen retirement accounts, or fabricated medical emergencies involving relatives.",
+      vector: "'Urgent: Suspicious foreign login detected on your primary savings account. Secure funds now.'"
+    },
+    {
+      title: "Trusted Brand Mimicry",
+      class: "familiarity",
+      desc: "Duplicating everyday service touchpoints—such as utility providers, local health clinics, or parcel delivery texts—to exploit ingrained habits.",
+      vector: "'Royal Mail: Package delivery failed due to unpaid shipping fee of £1.50.'"
+    }
+  ];
+
+  const activeContent = mode === "student" ? studentContent : elderlyContent;
+
+  if (titleEl) {
+    titleEl.textContent = mode === "student" ? "Threat Intelligence – Student Focus" : "Threat Intelligence – Senior & Elder Focus";
+  }
+  if (subEl) {
+    subEl.textContent = mode === "student"
+      ? "Phishing targets university workflows, campus portals, and tuition systems. Study these behavioral vectors tailored specifically for student defense."
+      : "Scammers heavily target older adults using pension alerts, fake healthcare notifications, and financial impersonation. Study these common deception tactics.";
+  }
+
+  if (gridEl) {
+    gridEl.innerHTML = activeContent.map(card => `
+      <div class="learn-card">
+        <div class="card-title ${card.class}">${card.title}</div>
+        <div class="card-desc">${card.desc}</div>
+        <div class="vector-box">
+          <div class="vector-label">Typical Attack Vector:</div>
+          <div class="vector-content">${card.vector}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Automatically preserve the audience mode parameter across all sidebar links
+  document.querySelectorAll(".sidebar a").forEach(link => {
+    let baseHref = link.getAttribute("href").split("?")[0];
+    link.setAttribute("href", `${baseHref}?mode=${mode}`);
+  });
+});
+</script>
+
+</body>
+</html>

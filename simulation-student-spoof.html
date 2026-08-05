@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard – Student Spoofed Login Detection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Background grid */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, #80808012 1px, transparent 1px),
+    linear-gradient(to bottom, #80808012 1px, transparent 1px);
+  background-size: 24px 24px;
+  z-index: -2;
+}
+
+/* Glow */
+.glow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  background: rgba(0, 150, 255, 0.1);
+  border-radius: 50%;
+  filter: blur(120px);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.title {
+  font-size: 38px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #00aaff;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #cccccc;
+  margin-bottom: 40px;
+}
+
+/* Login preview */
+.login-preview {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.login-box {
+  background: #0d0d0d;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  width: 100%;
+}
+
+.login-title {
+  font-size: 20px;
+  color: #00aaff;
+  margin-bottom: 15px;
+}
+
+.login-field {
+  background: #111;
+  border: 1px solid #333;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  color: #cccccc;
+}
+
+.login-btn {
+  background: #00aaff;
+  color: black;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.sim-btn {
+  background: #00aaff;
+  color: black;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.hint-btn {
+  background: #ffaa00;
+  color: black;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Modal */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.modal {
+  background: #1a1a1a;
+  border: 2px solid #00aaff;
+  padding: 30px;
+  width: 420px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.modal h2 {
+  color: #00aaff;
+  margin-bottom: 15px;
+}
+
+.modal p {
+  color: #cccccc;
+  margin-bottom: 20px;
+}
+
+.modal-btn {
+  background: #00aaff;
+  color: black;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow"></div>
+
+<div class="container">
+  <div class="title">Spoofed Login Detection – Student Track</div>
+  <div class="subtitle">Inspect each login screen and decide if it is legitimate or spoofed.</div>
+
+  <div id="loginPreview" class="login-preview"></div>
+
+  <div class="btn-row">
+    <button class="sim-btn" onclick="answer('safe')">Legitimate</button>
+    <button class="sim-btn" onclick="answer('phishing')">Spoofed</button>
+    <button class="hint-btn" onclick="showHint()">Hint</button>
+  </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+/* STUDENT SPOOFED LOGIN SCENARIOS */
+const scenarios = [
+  {
+    title: "University Portal Login",
+    fields: ["Student ID", "Password"],
+    button: "Sign In",
+    correct: "phishing",
+    hint: "The domain shown is not .edu or .ac.uk — always check the URL bar."
+  },
+  {
+    title: "Campus WiFi Login",
+    fields: ["Email", "Password"],
+    button: "Connect",
+    correct: "safe",
+    hint: "Official campus WiFi portals use secure HTTPS and correct branding."
+  },
+  {
+    title: "Library Access Login",
+    fields: ["Library Card Number", "Password"],
+    button: "Access",
+    correct: "phishing",
+    hint: "Fake library portals often copy UI but use incorrect fonts and spacing."
+  }
+];
+
+let index = 0;
+let score = 0;
+
+/* LOAD LOGIN SCENARIO */
+function loadScenario() {
+  const s = scenarios[index];
+
+  let fieldsHTML = "";
+  s.fields.forEach(f => {
+    fieldsHTML += `<div class='login-field'>${f}</div>`;
+  });
+
+  document.getElementById("loginPreview").innerHTML = `
+    <div class="login-box">
+      <div class="login-title">${s.title}</div>
+      ${fieldsHTML}
+      <div class="login-btn">${s.button}</div>
+    </div>
+  `;
+}
+
+loadScenario();
+
+/* ANSWER LOGIC */
+function answer(choice) {
+  const s = scenarios[index];
+  const correct = (choice === s.correct);
+
+  if (correct) score++;
+
+  showFeedback(correct, s.correct);
+}
+
+/* FEEDBACK MODAL */
+function showFeedback(correct, correctAnswer) {
+  const modal = `
+    <div class="modal-bg">
+      <div class="modal">
+        <h2>${correct ? "Correct!" : "Incorrect"}</h2>
+        <p>The correct answer was: <strong>${correctAnswer.toUpperCase()}</strong></p>
+        <button class="modal-btn" onclick="nextScenario()">Next</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("modalContainer").innerHTML = modal;
+}
+
+/* HINT */
+function showHint() {
+  const s = scenarios[index];
+  const modal = `
+    <div class="modal-bg">
+      <div class="modal">
+        <h2>Hint</h2>
+        <p>${s.hint}</p>
+        <button class="modal-btn" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("modalContainer").innerHTML = modal;
+}
+
+function closeModal() {
+  document.getElementById("modalContainer").innerHTML = "";
+}
+
+/* NEXT SCENARIO */
+function nextScenario() {
+  document.getElementById("modalContainer").innerHTML = "";
+  index++;
+
+  if (index >= scenarios.length) {
+    endSimulation();
+    return;
+  }
+
+  loadScenario();
+}
+
+/* SAVE RESULT TO LOCALSTORAGE */
+function saveResult(score, total) {
+  const key = "phishguard_student_data";
+
+  const accuracy = Math.round((score / total) * 100);
+
+  const record = {
+    simulation: "spoof",
+    score,
+    total,
+    accuracy,
+    time: new Date().toISOString()
+  };
+
+  let data = JSON.parse(localStorage.getItem(key)) || [];
+  data.push(record);
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+/* END SIMULATION */
+function endSimulation() {
+  saveResult(score, scenarios.length);
+
+  const modal = `
+    <div class="modal-bg">
+      <div class="modal">
+        <h2>Simulation Complete</h2>
+        <p>Your score: ${score} / ${scenarios.length}</p>
+        <button class="modal-btn" onclick="window.location.href='training.html?mode=student'">Return to Command Center</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("modalContainer").innerHTML = modal;
+}
+</script>
+
+</body>
+</html>

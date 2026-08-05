@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard Landing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f0f0f;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* Background grid */
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, #80808012 1px, transparent 1px),
+      linear-gradient(to bottom, #80808012 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: -2;
+}
+
+/* Glow */
+.glow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 800px;
+    height: 800px;
+    background: rgba(0, 150, 255, 0.1);
+    border-radius: 50%;
+    filter: blur(120px);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
+
+.container {
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 900px;
+    margin: auto;
+}
+
+/* Top logo */
+.logo-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+}
+
+/* Title */
+.title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Subtitle */
+.subtitle {
+    font-size: 18px;
+    color: #cccccc;
+    max-width: 600px;
+    margin: 20px auto 40px;
+}
+
+/* Cards */
+.grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: #1a1a1a;
+    border: 2px solid #333;
+    padding: 30px;
+    width: 260px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.card:hover {
+    border-color: #00aaff;
+}
+
+.card.selected {
+    border-color: #00aaff;
+    box-shadow: 0 0 20px #00aaff55;
+}
+
+/* Icon placeholder */
+.icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+    background: #222;
+    border-radius: 8px;
+}
+
+/* Button hidden initially */
+.start-hidden {
+    opacity: 0;
+    transition: opacity 0.4s;
+    margin-top: 40px;
+}
+
+.start-btn {
+    background: #00aaff;
+    color: black;
+    padding: 18px 40px;
+    font-size: 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow"></div>
+
+<div class="container">
+
+    <!-- TOP LOGO SVG PLACEHOLDER -->
+    <img class="logo-icon" src="https://cdn-icons-png.flaticon.com/128/17840/17840814.png" alt="PhishGuard Logo">
+
+    <!-- TITLE WITH BLUE + RED -->
+    <div class="title">
+        <span style="color:#00aaff;">Identify the Threat.</span>
+        <span style="color:#ff4d4d;"> Protect the System.</span>
+    </div>
+
+    <div class="subtitle">
+        PhishGuard is a high-stakes, interactive simulation designed to train your instincts
+        against sophisticated digital deception. Choose your track to begin.
+    </div>
+
+    <div class="grid">
+
+        <!-- Student Card -->
+        <div class="card" id="studentCard">
+            <!-- Placeholder SVG icon -->
+            <img class="icon" src="https://cdn-icons-png.flaticon.com/128/13366/13366382.png" alt="Student Icon">
+            <h3 style="color:#00aaff;">University Student</h3>
+            <p style="color:#cccccc;">Train against fake portal alerts, scholarship scams, and credential theft.</p>
+        </div>
+
+        <!-- Elderly Card -->
+        <div class="card" id="elderlyCard">
+            <!-- Placeholder SVG icon -->
+            <img class="icon" src="https://cdn-icons-png.flaticon.com/128/6283/6283477.png" alt="Elderly Icon">
+            <h3 style="color:#00aaff;">Elderly Citizen</h3>
+            <p style="color:#cccccc;">Train against pension fraud, fake banking alerts, and HMRC tax scams.</p>
+        </div>
+
+    </div>
+
+    <div id="startSection" class="start-hidden">
+        <button id="startBtn" class="start-btn">Initiate Sequence →</button>
+    </div>
+</div>
+
+<script>
+    let selected = null;
+    
+    const studentCard = document.getElementById("studentCard");
+    const elderlyCard = document.getElementById("elderlyCard");
+    const startSection = document.getElementById("startSection");
+    const startBtn = document.getElementById("startBtn");
+    
+    studentCard.onclick = () => select("student");
+    elderlyCard.onclick = () => select("elderly");
+    
+    function select(type) {
+      selected = type;
+    
+      studentCard.classList.remove("selected");
+      elderlyCard.classList.remove("selected");
+    
+      if (type === "student") {
+        studentCard.classList.add("selected");
+      } else {
+        elderlyCard.classList.add("selected");
+      }
+    
+      startSection.style.opacity = 1;
+    }
+    
+    startBtn.onclick = () => {
+      if (!selected) return;
+    
+      // ⭐ SEND MODE TO DASHBOARD
+      if (selected === "student") {
+        window.location.href = "training.html?mode=student";
+      } else {
+        window.location.href = "training.html?mode=elderly";
+      }
+    };
+    </script>
+    
+
+</body>
+</html>

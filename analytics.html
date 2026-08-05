@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard – Analytics Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+}
+
+/* Background grid */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, #80808012 1px, transparent 1px),
+    linear-gradient(to bottom, #80808012 1px, transparent 1px);
+  background-size: 24px 24px;
+  z-index: -2;
+}
+
+/* Glow */
+.glow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  background: rgba(0, 150, 255, 0.1);
+  border-radius: 50%;
+  filter: blur(120px);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+.title {
+  font-size: 38px;
+  font-weight: bold;
+  color: #00aaff;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #cccccc;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* Stats cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.stat-title {
+  font-size: 18px;
+  color: #00aaff;
+  margin-bottom: 10px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* Breakdown */
+.breakdown {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 40px;
+}
+
+.breakdown-title {
+  font-size: 22px;
+  color: #00aaff;
+  margin-bottom: 20px;
+}
+
+.breakdown-item {
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: #cccccc;
+}
+
+/* Timeline */
+.timeline {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.timeline-title {
+  font-size: 22px;
+  color: #00aaff;
+  margin-bottom: 20px;
+}
+
+.timeline-entry {
+  margin-bottom: 15px;
+  padding: 12px;
+  background: #0d0d0d;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.timeline-entry strong {
+  color: #00aaff;
+}
+
+.back-btn {
+  margin-top: 40px;
+  background: #00aaff;
+  color: black;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  display: block;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow"></div>
+
+<div class="container">
+  <div id="title" class="title"></div>
+  <div id="subtitle" class="subtitle"></div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-title">Total Simulations</div>
+      <div id="totalSims" class="stat-value">0</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-title">Overall Accuracy</div>
+      <div id="overallAccuracy" class="stat-value">0%</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-title">Challenge Attempts</div>
+      <div id="challengeAttempts" class="stat-value">0</div>
+    </div>
+  </div>
+
+  <div class="breakdown">
+    <div class="breakdown-title">Simulation Breakdown</div>
+    <div id="breakdownList"></div>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-title">Timeline of Attempts</div>
+    <div id="timelineList"></div>
+  </div>
+
+  <button id="backBtn" class="back-btn">Return to Command Center</button>
+</div>
+
+<script>
+const mode = new URLSearchParams(window.location.search).get("mode");
+const key = mode === "student" ? "phishguard_student_data" : "phishguard_elderly_data";
+
+document.getElementById("title").textContent =
+  mode === "student" ? "Analytics Dashboard – Student" : "Analytics Dashboard – Elderly";
+
+document.getElementById("subtitle").textContent =
+  mode === "student"
+    ? "Your performance across all student-targeted simulations."
+    : "Your performance across all elderly-targeted simulations.";
+
+const data = JSON.parse(localStorage.getItem(key)) || [];
+
+/* TOTAL SIMULATIONS */
+document.getElementById("totalSims").textContent = data.length;
+
+/* OVERALL ACCURACY */
+let totalScore = 0;
+let totalQuestions = 0;
+
+data.forEach(r => {
+  totalScore += r.score;
+  totalQuestions += r.total;
+});
+
+const accuracy = totalQuestions === 0 ? 0 : Math.round((totalScore / totalQuestions) * 100);
+document.getElementById("overallAccuracy").textContent = accuracy + "%";
+
+/* CHALLENGE ATTEMPTS */
+const challengeCount = data.filter(r => r.simulation === "challenge").length;
+document.getElementById("challengeAttempts").textContent = challengeCount;
+
+/* BREAKDOWN */
+const breakdown = {
+  inbox: 0,
+  url: 0,
+  spoof: 0,
+  challenge: 0
+};
+
+data.forEach(r => breakdown[r.simulation]++);
+
+const breakdownList = document.getElementById("breakdownList");
+breakdownList.innerHTML = `
+  <div class="breakdown-item">Inbox Intercept: ${breakdown.inbox}</div>
+  <div class="breakdown-item">URL Inspection: ${breakdown.url}</div>
+  <div class="breakdown-item">Spoof Detection: ${breakdown.spoof}</div>
+  <div class="breakdown-item">Challenge Mode: ${breakdown.challenge}</div>
+`;
+
+/* TIMELINE */
+const timelineList = document.getElementById("timelineList");
+
+data.slice().reverse().forEach(r => {
+  const entry = document.createElement("div");
+  entry.className = "timeline-entry";
+  entry.innerHTML = `
+    <strong>${r.simulation.toUpperCase()}</strong><br>
+    Score: ${r.score}/${r.total}<br>
+    Accuracy: ${r.accuracy}%<br>
+    Time: ${new Date(r.time).toLocaleString()}
+  `;
+  timelineList.appendChild(entry);
+});
+
+/* BACK BUTTON */
+document.getElementById("backBtn").onclick = () => {
+  window.location.href = `training.html?mode=${mode}`;
+};
+</script>
+
+</body>
+</html>

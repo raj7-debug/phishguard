@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard – Student Inbox Simulation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Background grid */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, #80808012 1px, transparent 1px),
+    linear-gradient(to bottom, #80808012 1px, transparent 1px);
+  background-size: 24px 24px;
+  z-index: -2;
+}
+
+/* Glow */
+.glow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  background: rgba(0, 150, 255, 0.1);
+  border-radius: 50%;
+  filter: blur(120px);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.title {
+  font-size: 38px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #00aaff;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #cccccc;
+  margin-bottom: 40px;
+}
+
+/* Email box */
+.email-box {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.email-header {
+  font-size: 20px;
+  color: #00aaff;
+  margin-bottom: 10px;
+}
+
+.email-body {
+  color: #cccccc;
+  line-height: 1.5;
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.sim-btn {
+  background: #00aaff;
+  color: black;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.hint-btn {
+  background: #ffaa00;
+  color: black;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Modal */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.modal {
+  background: #1a1a1a;
+  border: 2px solid #00aaff;
+  padding: 30px;
+  width: 420px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.modal h2 {
+  color: #00aaff;
+  margin-bottom: 15px;
+}
+
+.modal p {
+  color: #cccccc;
+  margin-bottom: 20px;
+}
+
+.modal-btn {
+  background: #00aaff;
+  color: black;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow"></div>
+
+<div class="container">
+  <div class="title">Inbox Intercept – Student Track</div>
+  <div class="subtitle">Analyze each email and decide if it is legitimate or phishing.</div>
+
+  <div id="emailBox" class="email-box">
+    <div id="emailHeader" class="email-header"></div>
+    <div id="emailBody" class="email-body"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="sim-btn" onclick="answer('safe')">Safe</button>
+    <button class="sim-btn" onclick="answer('phishing')">Phishing</button>
+    <button class="hint-btn" onclick="showHint()">Hint</button>
+  </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+/* STUDENT EMAIL SCENARIOS */
+const scenarios = [
+  {
+    header: "University Portal Verification Required",
+    body: "Your university portal password must be verified immediately. Failure to do so will result in account suspension.",
+    correct: "phishing",
+    hint: "Universities never threaten immediate suspension in emails."
+  },
+  {
+    header: "Course Registration Confirmation",
+    body: "Your course registration for next semester has been successfully processed.",
+    correct: "safe",
+    hint: "Official course confirmations come from your university domain."
+  },
+  {
+    header: "Scholarship Opportunity",
+    body: "You have been selected for a scholarship. Click the link to claim your reward.",
+    correct: "phishing",
+    hint: "Scholarships never require clicking external links to claim rewards."
+  }
+];
+
+let index = 0;
+let score = 0;
+
+/* LOAD EMAIL */
+function loadEmail() {
+  const s = scenarios[index];
+  document.getElementById("emailHeader").textContent = s.header;
+  document.getElementById("emailBody").textContent = s.body;
+}
+
+loadEmail();
+
+/* ANSWER LOGIC */
+function answer(choice) {
+  const s = scenarios[index];
+  const correct = (choice === s.correct);
+
+  if (correct) score++;
+
+  showFeedback(correct, s.correct);
+}
+
+/* FEEDBACK MODAL */
+function showFeedback(correct, correctAnswer) {
+  const modal = `
+    <div class="modal-bg">
+      <div class="modal">
+        <h2>${correct ? "Correct!" : "Incorrect"}</h2>
+        <p>The correct answer was: <strong>${correctAnswer.toUpperCase()}</strong></p>
+        <button class="modal-btn" onclick="nextEmail()">Next</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("modalContainer").innerHTML = modal;
+}
+
+/* HINT */
+function showHint() {
+  const s = scenarios[index];
+  const modal = `
+    <div class="modal-bg">
+      <div class="modal">
+        <h2>Hint</h2>
+        <p>${s.hint}</p>
+        <button class="modal-btn" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("modalContainer").innerHTML = modal;
+}
+
+function closeModal() {
+  document.getElementById("modalContainer").innerHTML = "";
+}
+
+/* NEXT EMAIL */
+function nextEmail() {
+  document.getElementById("modalContainer").innerHTML = "";
+  index++;
+
+  if (index >= scenarios.length) {
+    endSimulation();
+    return;
+  }
+
+  loadEmail();
+}
+
+/* SAVE RESULT TO LOCALSTORAGE */
+function saveResult(score, total) {
+  const key = "phishguard_student_data";
+
+  const accuracy = Math.round((score / total) * 100);
+
+  const record = {
+    simulation: "inbox",
+    score,
+    total,
+    accuracy,
+    time: new Date().toISOString()
+  };
+
+  let data = JSON.parse(localStorage.getItem(key)) || [];
+  data.push(record);
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+/* END SIMULATION */
+function endSimulation() {
+  saveResult(score, scenarios.length);
+
+  const modal = `
+    <div class="modal-bg">
+      <div class="modal">
+        <h2>Simulation Complete</h2>
+        <p>Your score: ${score} / ${scenarios.length}</p>
+        <button class="modal-btn" onclick="window.location.href='training.html?mode=student'">Return to Command Center</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("modalContainer").innerHTML = modal;
+}
+</script>
+
+</body>
+</html>

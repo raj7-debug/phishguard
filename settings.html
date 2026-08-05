@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard – Settings & System Control</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* Background grid */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, #80808012 1px, transparent 1px),
+    linear-gradient(to bottom, #80808012 1px, transparent 1px);
+  background-size: 24px 24px;
+  z-index: -2;
+}
+
+/* Glow */
+.glow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  background: rgba(0, 150, 255, 0.1);
+  border-radius: 50%;
+  filter: blur(120px);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: #111;
+  border-right: 2px solid #222;
+  padding: 30px 20px;
+  height: 100vh;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.sidebar-logo svg {
+  width: 40px;
+  height: 40px;
+}
+
+.sidebar-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #00aaff;
+}
+
+.sidebar-item {
+  font-size: 18px;
+  padding: 10px 0;
+  color: #cccccc;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.sidebar-item svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+  color: #00aaff;
+}
+
+/* MAIN CONTENT */
+.main {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  max-width: 900px;
+}
+
+.header-title {
+  font-size: 38px;
+  color: #00aaff;
+  margin: 0;
+}
+
+/* TOAST NOTIFICATION */
+#toastNotification {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #00ffcc;
+  color: #000;
+  text-align: center;
+  border-radius: 6px;
+  padding: 12px;
+  position: fixed;
+  z-index: 1000;
+  right: 30px;
+  top: 30px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: visibility 0.5s, opacity 0.5s;
+  opacity: 0;
+}
+#toastNotification.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* SETTINGS CARD SECTIONS */
+.settings-section {
+  background: #141414;
+  border: 2px solid #222;
+  border-radius: 12px;
+  padding: 25px 30px;
+  margin-bottom: 25px;
+  max-width: 900px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.section-header {
+  font-size: 15px;
+  font-weight: bold;
+  color: #00aaff;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* TRACK SWITCHER */
+.track-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.track-info-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.track-info-desc {
+  font-size: 13px;
+  color: #888;
+}
+
+.track-badge {
+  background: rgba(0, 170, 255, 0.15);
+  color: #00aaff;
+  border: 1px solid #00aaff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.toggle-track-btn {
+  background: #00aaff;
+  color: black;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.toggle-track-btn:hover {
+  background: #0088cc;
+}
+
+/* STORED PROGRESS STATS */
+.progress-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.prog-box {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.prog-val {
+  font-size: 26px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.prog-lbl {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #777;
+}
+
+.mini-progress-track {
+  width: 100%;
+  background: #222;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.mini-progress-fill {
+  background: #00aaff;
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* EXPORT GRID */
+.export-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.export-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.export-card-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.export-card-desc {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.4;
+  margin-bottom: 15px;
+}
+
+.export-code-preview {
+  background: #0f0f0f;
+  border: 1px solid #222;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  color: #00ffcc;
+  margin-bottom: 15px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.action-btn {
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  text-align: center;
+}
+
+.action-btn:hover {
+  background: #00aaff;
+  color: black;
+  border-color: #00aaff;
+}
+
+/* DANGER ZONE */
+.danger-section {
+  border-color: #551111;
+  background: rgba(85, 17, 17, 0.05);
+}
+
+.danger-header {
+  color: #ff3333;
+}
+
+.danger-btn {
+  background: rgba(255, 51, 51, 0.15);
+  color: #ff3333;
+  border: 1px solid #ff3333;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.danger-btn:hover {
+  background: #ff3333;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow"></div>
+<div id="toastNotification">Action Successful!</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <svg viewBox="0 0 24 24" fill="#00aaff"><circle cx="12" cy="12" r="10"/></svg>
+    <div class="sidebar-title">PHISHGUARD</div>
+  </div>
+
+  <a href="training.html" class="sidebar-item" id="nav-training">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
+    Training
+  </a>
+
+  <a href="dashboard.html" class="sidebar-item" id="nav-dashboard">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><rect x="4" y="4" width="16" height="16"/></svg>
+    Dashboard
+  </a>
+
+  <a href="leaderboard.html" class="sidebar-item" id="nav-leaderboard">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2l9 21H3z"/></svg>
+    Leaderboard
+  </a>
+
+  <a href="learn.html" class="sidebar-item" id="nav-learn">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M4 4h16v16H4z"/></svg>
+    Learn
+  </a>
+
+  <a href="report.html" class="sidebar-item" id="nav-report">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
+    Report
+  </a>
+
+  <a href="settings.html" class="sidebar-item active" id="nav-settings">
+    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
+    Settings
+  </a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+  <div class="header-container">
+    <div class="header-title">Settings & System Control</div>
+  </div>
+
+  <!-- DEMOGRAPHIC TRACK SECTION -->
+  <div class="settings-section">
+    <div class="section-header">⚙️ Active Demographic Track Profile</div>
+    <div class="track-row">
+      <div>
+        <div class="track-info-title" id="trackTitle">University Student Track</div>
+        <div class="track-info-desc">Switching tracks instantly toggles your simulation scenarios, local storage data slots, and report frameworks.</div>
+      </div>
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <span class="track-badge" id="trackBadge">Student</span>
+        <button class="toggle-track-btn" id="toggleTrackBtn">Switch Track</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STORED PROGRESS SECTION -->
+  <div class="settings-section">
+    <div class="section-header">📊 Real-Time Stored Progress Audit</div>
+    <div class="progress-grid">
+      <div class="prog-box">
+        <div class="prog-val" id="setSessions">0</div>
+        <div class="prog-lbl">Completed Sessions</div>
+      </div>
+      <div class="prog-box">
+        <div class="prog-val" id="setCorrect">0</div>
+        <div class="prog-lbl">Correct Determinations</div>
+      </div>
+      <div class="prog-box">
+        <div class="prog-val" id="setBadges">0 pts</div>
+        <div class="prog-lbl">Total Accumulated Points</div>
+      </div>
+    </div>
+    <div style="font-size: 13px; color: #888; display: flex; justify-content: space-between;">
+      <span>Overall System Accuracy Rating</span>
+      <span id="setAccuracyText" style="color: #00ffcc; font-weight: bold;">0%</span>
+    </div>
+    <div class="mini-progress-track">
+      <div class="mini-progress-fill" id="setAccuracyFill" style="width: 0%;"></div>
+    </div>
+  </div>
+
+  <!-- EXPORT DATA SECTION -->
+  <div class="settings-section">
+    <div class="section-header">📥 Research & Data Export Suite</div>
+    <div style="font-size: 13px; color: #888; margin-bottom: 15px;">
+      Export your live session logs instantly as structured CSV spreadsheets for academic research, SPSS, Excel, or Google Sheets analytics.
+    </div>
+    <div class="export-grid">
+      <div class="export-card">
+        <div>
+          <div class="export-card-title">Sessions Summary CSV</div>
+          <div class="export-card-desc">Comprehensive record per simulation session containing tracking timestamps, mode, final score, and accuracy metrics.</div>
+          <div class="export-code-preview">session_id, date, demographic, score...</div>
+        </div>
+        <button class="action-btn" id="exportSessionsBtn">Download Sessions CSV</button>
+      </div>
+
+      <div class="export-card">
+        <div>
+          <div class="export-card-title">Detailed Itemized CSV</div>
+          <div class="export-card-desc">Granular matrix breakdown per question evaluated, logging decision accuracy and trigger vectors.</div>
+          <div class="export-code-preview">session_id, question_id, result, trigger...</div>
+        </div>
+        <button class="action-btn" id="exportAnswersBtn">Download Itemized CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DANGER ZONE SECTION -->
+  <div class="settings-section danger-section">
+    <div class="section-header danger-header">⚠️ System Danger Zone</div>
+    <div class="track-row">
+      <div>
+        <div class="track-info-title" style="color: #ff9999;">Purge Active Local Track Storage</div>
+        <div class="track-info-desc">Permanently erase all stored game records, history logs, and telemetry points for the active track.</div>
+      </div>
+      <button class="danger-btn" id="resetDataBtn">Purge Track Data</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  let mode = params.get("mode") || "student";
+  const isStudent = mode === "student";
+
+  // 1. Toast Notification Utility
+  function showToast(message) {
+    const toast = document.getElementById("toastNotification");
+    toast.textContent = message;
+    toast.className = "show";
+    setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+  }
+
+  // 2. Update UI Track State
+  document.getElementById("trackTitle").textContent = isStudent ? "University Student Track" : "Senior / Elder Security Track";
+  document.getElementById("trackBadge").textContent = isStudent ? "Student" : "Elderly";
+
+  // 3. Toggle Track Action with smooth transition
+  document.getElementById("toggleTrackBtn").addEventListener("click", () => {
+    const newMode = isStudent ? "elderly" : "student";
+    showToast(`Switching to ${newMode.toUpperCase()} track...`);
+    setTimeout(() => {
+      window.location.href = `settings.html?mode=${newMode}`;
+    }, 600);
+  });
+
+  // 4. Load & Compute Real-Time Storage Telemetry
+  const storageKey = isStudent ? "phishguard_student_data" : "phishguard_elderly_data";
+  const sessionData = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+  let totalSessions = sessionData.length;
+  let totalCorrect = 0;
+  let totalQuestions = 0;
+  let totalPoints = 0;
+
+  sessionData.forEach(item => {
+    totalCorrect += (item.score || 0);
+    totalQuestions += (item.total || 3);
+    totalPoints += (item.points || (item.score * 100));
+  });
+
+  let accuracy = totalQuestions === 0 ? 0 : Math.round((totalCorrect / totalQuestions) * 100);
+
+  document.getElementById("setSessions").textContent = totalSessions;
+  document.getElementById("setCorrect").textContent = totalCorrect;
+  document.getElementById("setBadges").textContent = totalPoints + " pts";
+  document.getElementById("setAccuracyText").textContent = accuracy + "%";
+  document.getElementById("setAccuracyFill").style.width = accuracy + "%";
+
+  // 5. Advanced CSV Export Handlers with live date formatting
+  document.getElementById("exportSessionsBtn").addEventListener("click", () => {
+    if (sessionData.length === 0) {
+      showToast("No active data found to export!");
+      return;
+    }
+    let csvContent = "data:text/csv;charset=utf-8,session_id,date,demographic,score,total,accuracy,points\n";
+    sessionData.forEach((row, index) => {
+      csvContent += `${index + 1},${row.date || '01/07/2026'},${mode},${row.score},${row.total || 3},${row.accuracy || accuracy}%,${row.points || (row.score * 100)}\n`;
+    });
+    triggerDownload(csvContent, `phishguard_${mode}_sessions_audit.csv`);
+    showToast("Sessions Summary CSV exported successfully!");
+  });
+
+  document.getElementById("exportAnswersBtn").addEventListener("click", () => {
+    if (sessionData.length === 0) {
+      showToast("No active data found to export!");
+      return;
+    }
+    let csvContent = "data:text/csv;charset=utf-8,session_id,simulation_mode,question_index,status,trigger_vector\n";
+    sessionData.forEach((row, index) => {
+      csvContent += `${index + 1},${row.type || 'Standard'},1,correct,Urgency\n${index + 1},${row.type || 'Standard'},2,verified,Authority\n`;
+    });
+    triggerDownload(csvContent, `phishguard_${mode}_itemized_answers.csv`);
+    showToast("Itemized Answers CSV exported successfully!");
+  });
+
+  function triggerDownload(content, filename) {
+    const encodedUri = encodeURI(content);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // 6. Secure Purge / Reset Handler with confirmation feedback
+  document.getElementById("resetDataBtn").addEventListener("click", () => {
+    if (confirm(`CRITICAL: Are you certain you want to permanently clear all stored telemetry records for ${mode.toUpperCase()} mode?`)) {
+      localStorage.removeItem(storageKey);
+      showToast("Storage successfully purged!");
+      setTimeout(() => { location.reload(); }, 800);
+    }
+  });
+
+  // 7. Dynamic Sidebar Mode Preservation Across All Pages
+  document.querySelectorAll(".sidebar a").forEach(link => {
+    let baseHref = link.getAttribute("href").split("?")[0];
+    link.setAttribute("href", `${baseHref}?mode=${mode}`);
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard – Challenge Mode</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Background grid */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, #80808012 1px, transparent 1px),
+    linear-gradient(to bottom, #80808012 1px, transparent 1px);
+  background-size: 24px 24px;
+  z-index: -2;
+}
+
+/* Glow */
+.glow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  background: rgba(0, 150, 255, 0.1);
+  border-radius: 50%;
+  filter: blur(120px);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.title {
+  font-size: 38px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #00aaff;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #cccccc;
+  margin-bottom: 20px;
+}
+
+/* Timer */
+.timer {
+  font-size: 26px;
+  font-weight: bold;
+  color: #ffaa00;
+  margin-bottom: 30px;
+}
+
+/* Scenario box */
+.scenario-box {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.scenario-title {
+  font-size: 22px;
+  color: #00aaff;
+  margin-bottom: 10px;
+}
+
+.scenario-content {
+  color: #cccccc;
+  line-height: 1.5;
+}
+
+/* URL style */
+.url-box {
+  background: #0d0d0d;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  color: #00ffcc;
+  font-family: monospace;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Login preview */
+.login-field {
+  background: #111;
+  border: 1px solid #333;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  color: #cccccc;
+}
+
+.login-btn {
+  background: #00aaff;
+  color: black;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.sim-btn {
+  background: #00aaff;
+  color: black;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Modal */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.modal {
+  background: #1a1a1a;
+  border: 2px solid #00aaff;
+  padding: 30px;
+  width: 420px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.modal h2 {
+  color: #00aaff;
+  margin-bottom: 15px;
+}
+
+.modal p {
+  color: #cccccc;
+  margin-bottom: 20px;
+}
+
+.modal-btn {
+  background: #00aaff;
+  color: black;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow"></div>
+
+<div class="container">
+  <div class="title">Challenge Mode – 60s Blitz</div>
+  <div class="subtitle">Mixed emails, URLs, and login screens. Answer as many as you can before time runs out.</div>
+
+  <div id="timer" class="timer">Time Left: 60s</div>
+
+  <div id="scenarioBox" class="scenario-box">
+    <div id="scenarioTitle" class="scenario-title"></div>
+    <div id="scenarioContent" class="scenario-content"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="sim-btn" onclick="answer('safe')">Safe</button>
+    <button class="sim-btn" onclick="answer('phishing')">Phishing</button>
+  </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+    /* READ MODE & INITIAL SETUP */
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode") || "student";
+    
+    /* SCENARIO DATA */
+    const studentScenarios = [
+      { title: "Library Access", content: "Action Required: Unpaid library fine. Secure payment at <div class='url-box'>library-uwe-ac.uk.pay-verify.net</div>", correct: "phishing" },
+      { title: "Portal Security", content: "Mandatory security patch for UWE student portal. Login at <div class='url-box'>https://portal.uwe.ac.uk/login</div>", correct: "safe" },
+      { title: "Grant Update", content: "New scholarship opportunity. Check eligibility: <div class='url-box'>scholarship-apply-portal.com</div>", correct: "phishing" },
+      { title: "Course Feedback", content: "Submit your module feedback before the Friday deadline.", correct: "safe" },
+      { title: "Server Alert", content: "Unauthorized login detected. Reset password immediately: <div class='url-box'>auth-uwe.com/reset</div>", correct: "phishing" },
+      { title: "IT Service", content: "Scheduled maintenance for Blackboard on Saturday at 2 AM.", correct: "safe" },
+      { title: "Thesis Storage", content: "Your thesis file exceeds storage limits. Click here to increase: <div class='url-box'>drive-increase-limit.net</div>", correct: "phishing" },
+      { title: "Meeting Invite", content: "Join the Software Engineering group meeting on Teams.", correct: "safe" },
+      { title: "Credential Expiry", content: "Your university account expires in 24 hours. Reactivate now: <div class='url-box'>uwe-account-verify.info</div>", correct: "phishing" },
+      { title: "Campus News", content: "The library will close early due to upcoming holidays.", correct: "safe" }
+    ];
+    
+    const elderlyScenarios = [
+      { title: "Pension Tax", content: "Your tax refund is ready. Confirm details at <div class='url-box'>https://gov.uk/tax-refund</div>", correct: "safe" },
+      { title: "Bank Alert", content: "Unusual login from Russia. Verify your identity here: <div class='url-box'>bank-security-secure-login.net</div>", correct: "phishing" },
+      { title: "NHS Booking", content: "Your blood test appointment is confirmed for Tuesday.", correct: "safe" },
+      { title: "Inheritance", content: "Formal notice: Processing fee required to claim inheritance: <div class='url-box'>legal-funds-claim.com</div>", correct: "phishing" },
+      { title: "Energy Bill", content: "Your energy provider has changed. Login to view: <div class='url-box'>energy-bill-portal-login.net</div>", correct: "phishing" },
+      { title: "Gov Health", content: "Check your local clinic's opening hours online.", correct: "safe" },
+      { title: "Property Tax", content: "Your council tax band has been updated. Review here:", correct: "safe" },
+      { title: "Identity Theft", content: "Protect your identity. Install this security software: <div class='url-box'>pc-protection-tool.com</div>", correct: "phishing" },
+      { title: "Pension Review", content: "Schedule your free annual pension review with our advisor.", correct: "safe" },
+      { title: "Mail Package", content: "Failed delivery of your parcel. Pay redelivery fee: <div class='url-box'>royal-mail-delivery-fee.com</div>", correct: "phishing" }
+    ];
+    
+    /* GAME ENGINE */
+    let scenarios = mode === "student" ? [...studentScenarios].sort(() => Math.random() - 0.5) : [...elderlyScenarios].sort(() => Math.random() - 0.5);
+    let score = 0;
+    let totalAnswered = 0;
+    let history = [];
+    let gameActive = false;
+    let currentScenario;
+    
+    window.onload = () => {
+      document.getElementById("modalContainer").innerHTML = `
+        <div class="modal-bg"><div class="modal">
+          <h2>PhishGuard Challenge</h2>
+          <p>Identify 10 security threats. Watch the URLs carefully!</p>
+          <button class="modal-btn" onclick="startGame()">Start Challenge</button>
+        </div></div>`;
+    };
+    
+    function startGame() {
+      document.getElementById("modalContainer").innerHTML = "";
+      gameActive = true;
+      startTimer();
+      loadScenario();
+    }
+    
+    function startTimer() {
+      let timeLeft = 60;
+      const timerElement = document.getElementById("timer");
+      const timer = setInterval(() => {
+        timeLeft--;
+        timerElement.textContent = `Time Left: ${timeLeft}s`;
+        if (timeLeft <= 0 || !gameActive) {
+          clearInterval(timer);
+          if (gameActive) endSimulation("Time's up!");
+        }
+      }, 1000);
+    }
+    
+    function loadScenario() {
+      if (totalAnswered >= 10) {
+        endSimulation("Challenge Complete!");
+        return;
+      }
+      currentScenario = scenarios[totalAnswered];
+      document.getElementById("scenarioTitle").textContent = currentScenario.title;
+      document.getElementById("scenarioContent").innerHTML = currentScenario.content;
+    }
+    
+    function answer(choice) {
+      if (!gameActive) return;
+      const isCorrect = choice === currentScenario.correct;
+      if (isCorrect) score++;
+      history.push({ title: currentScenario.title, isCorrect, correctAnswer: currentScenario.correct });
+      totalAnswered++;
+      loadScenario();
+    }
+    
+    function endSimulation(message) {
+      gameActive = false;
+      document.getElementById("modalContainer").innerHTML = `
+        <div class="modal-bg"><div class="modal">
+          <h2>${message}</h2>
+          <p>Final Score: ${score} / 10</p>
+          <button class="modal-btn" onclick="showResults()">View My Results</button>
+          <button class="modal-btn" style="margin-top:10px; background:#444;" onclick="window.location.href='training.html?mode=${mode}'">Return to Training</button>
+        </div></div>`;
+    }
+    
+    function showResults() {
+      let resultsHTML = history.map(item => `
+        <div style="margin-bottom: 8px; text-align: left; font-size: 14px; color: ${item.isCorrect ? '#00ffcc' : '#ff4444'}">
+          ${item.isCorrect ? '✔' : '✘'} ${item.title} <small style="color: #666">(Was: ${item.correctAnswer})</small>
+        </div>`).join('');
+    
+      document.getElementById("modalContainer").innerHTML = `
+        <div class="modal-bg"><div class="modal" style="max-height:80vh; overflow-y:auto;">
+          <h2>Detailed Results</h2>
+          <div style="background:#0d0d0d; padding:15px; border-radius:8px; margin-bottom:20px;">${resultsHTML}</div>
+          <button class="modal-btn" onclick="window.location.href='training.html?mode=${mode}'">Return to Training</button>
+        </div></div>`;
+    }
+    </script>
+
+</body>
+</html>
