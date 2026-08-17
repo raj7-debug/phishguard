@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PhishGuard – Threat Intelligence & Learn</title>
+<title>PhishGuard – Threat Intelligence & Articles</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -113,12 +113,21 @@ body {
   margin-bottom: 35px;
 }
 
+/* SECTION HEADINGS */
+.section-heading {
+  font-size: 26px;
+  color: #ffffff;
+  margin: 40px 0 20px 0;
+  border-left: 4px solid #00aaff;
+  padding-left: 12px;
+}
+
 /* CARDS GRID */
 .learn-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 25px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
 }
 
 .learn-card {
@@ -173,6 +182,83 @@ body {
   font-size: 14px;
   color: #00ffcc;
 }
+
+/* ARTICLES SECTION */
+.articles-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 50px;
+}
+
+.article-card {
+  background: #141414;
+  border: 2px solid #222;
+  border-radius: 12px;
+  padding: 25px;
+  transition: 0.25s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.article-card:hover {
+  border-color: #00aaff;
+  background: #1a1a1a;
+}
+
+.article-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.article-tag {
+  background: rgba(0, 170, 255, 0.15);
+  color: #00aaff;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.article-date {
+  color: #888;
+  font-size: 13px;
+}
+
+.article-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.article-snippet {
+  color: #ccc;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.article-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+  border-top: 1px solid #222;
+  padding-top: 15px;
+}
+
+.article-author {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.article-read-time {
+  font-size: 12px;
+  color: #00aaff;
+}
 </style>
 </head>
 
@@ -224,8 +310,15 @@ body {
   <div class="header-title" id="learnHeaderTitle">Threat Intelligence</div>
   <div class="header-subtitle" id="learnHeaderSub">Loading intelligence briefing...</div>
 
+  <!-- VECTORS GRID -->
   <div class="learn-grid" id="learnGridContainer">
     <!-- Dynamic Content injected via script -->
+  </div>
+
+  <!-- ARTICLES SECTION -->
+  <div class="section-heading">Real-Time Case Studies & Articles</div>
+  <div class="articles-stack" id="articlesContainer">
+    <!-- Dynamic Articles injected via script -->
   </div>
 </div>
 
@@ -237,8 +330,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const titleEl = document.getElementById("learnHeaderTitle");
   const subEl = document.getElementById("learnHeaderSub");
   const gridEl = document.getElementById("learnGridContainer");
+  const articlesEl = document.getElementById("articlesContainer");
 
-  // COMPLETELY DISTINCT DATA & CONTENT FOR STUDENTS
+  // STUDENT VECTORS
   const studentContent = [
     {
       title: "Academic Urgency",
@@ -250,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
       title: "Administrative Authority",
       class: "authority",
       desc: "Impersonating university departments, IT help desks, or faculty deans. Students are conditioned to comply immediately with administrative directives.",
-      vector: "'UWE IT Services: Mandatory security patching required. Verify credentials now.'"
+      vector: "'IT Services: Mandatory security patching required. Verify credentials now.'"
     },
     {
       title: "Financial Aid Fear",
@@ -261,12 +355,32 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       title: "Campus Portal Spoofing",
       class: "familiarity",
-      desc: "Replicating exact layouts of learning management systems (like Blackboard or UWE Portal) using typosquatted domains to harvest passwords.",
-      vector: "'portal.uwe-ac.uk.verify-login.net' instead of the official portal."
+      desc: "Replicating exact layouts of learning management systems (like Blackboard or university portals) using typosquatted domains to harvest passwords.",
+      vector: "'portal-verify-login.net' instead of the official institution portal."
     }
   ];
 
-  // COMPLETELY DISTINCT DATA & CONTENT FOR ELDERLY USERS
+  // STUDENT ARTICLES
+  const studentArticles = [
+    {
+      tag: "Case Study",
+      date: "August 2026",
+      title: "The Fall Semester Credential Harvesting Campaign",
+      snippet: "How a sophisticated phishing wave targeted thousands of incoming university freshmen during welcome week with fake housing grant allocation notices, successfully mapping exact university portal interfaces.",
+      author: "PhishGuard Threat Intelligence Unit",
+      read: "4 min read"
+    },
+    {
+      tag: "Analysis",
+      date: "July 2026",
+      title: "Why Multi-Factor Authentication Isn't Always Enough for Students",
+      snippet: "Examining adversary-in-the-middle (AiTM) proxy kits that intercept session cookies in real-time even after standard student SSO login prompts.",
+      author: "Campus Security Journal",
+      read: "6 min read"
+    }
+  ];
+
+  // ELDERLY VECTORS
   const elderlyContent = [
     {
       title: "Pension & Benefit Urgency",
@@ -277,8 +391,8 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       title: "Government Authority",
       class: "authority",
-      desc: "Impersonating trusted national entities like the NHS, HMRC, or postal services (Royal Mail) to invoke instant trust and compliance.",
-      vector: "'HMRC Legal Notice: A warrant has been issued for unpaid national insurance contributions.'"
+      desc: "Impersonating trusted national entities like health services, tax authorities, or postal services to invoke instant trust and compliance.",
+      vector: "'Legal Notice: A warrant has been issued for unpaid national insurance contributions.'"
     },
     {
       title: "Retirement Security Fear",
@@ -294,15 +408,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   ];
 
+  // ELDERLY ARTICLES
+  const elderlyArticles = [
+    {
+      tag: "Consumer Alert",
+      date: "August 2026",
+      title: "Anatomy of a Fake Pension Re-indexing Scam",
+      snippet: "A deep dive into how fraudulent SMS alerts regarding cost-of-living payouts trick retirees into calling scam call centers disguised as government agencies.",
+      author: "Elder Fraud Prevention Watch",
+      read: "5 min read"
+    },
+    {
+      tag: "Research Brief",
+      date: "June 2026",
+      title: "Recognizing Impersonation Calls from False Utility Providers",
+      snippet: "Practical guidance on verifying unexpected automated phone alerts regarding energy meter disconnection threats and fraudulent direct debit setups.",
+      author: "Senior Digital Safety Board",
+      read: "3 min read"
+    }
+  ];
+
   const activeContent = mode === "student" ? studentContent : elderlyContent;
+  const activeArticles = mode === "student" ? studentArticles : elderlyArticles;
 
   if (titleEl) {
     titleEl.textContent = mode === "student" ? "Threat Intelligence – Student Focus" : "Threat Intelligence – Senior & Elder Focus";
   }
   if (subEl) {
     subEl.textContent = mode === "student"
-      ? "Phishing targets university workflows, campus portals, and tuition systems. Study these behavioral vectors tailored specifically for student defense."
-      : "Scammers heavily target older adults using pension alerts, fake healthcare notifications, and financial impersonation. Study these common deception tactics.";
+      ? "Phishing targets university workflows, campus portals, and tuition systems. Study these behavioral vectors and real-time case studies tailored specifically for student defense."
+      : "Scammers heavily target older adults using pension alerts, fake healthcare notifications, and financial impersonation. Study these common deception tactics and real-world briefings.";
   }
 
   if (gridEl) {
@@ -313,6 +448,23 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="vector-box">
           <div class="vector-label">Typical Attack Vector:</div>
           <div class="vector-content">${card.vector}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  if (articlesEl) {
+    articlesEl.innerHTML = activeArticles.map(art => `
+      <div class="article-card">
+        <div class="article-header">
+          <span class="article-tag">${art.tag}</span>
+          <span class="article-date">${art.date}</span>
+        </div>
+        <div class="article-title">${art.title}</div>
+        <div class="article-snippet">${art.snippet}</div>
+        <div class="article-footer">
+          <span class="article-author">${art.author}</span>
+          <span class="article-read-time">${art.read}</span>
         </div>
       </div>
     `).join('');

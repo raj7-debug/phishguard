@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard - Authentication Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f0f0f;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, #80808012 1px, transparent 1px),
+      linear-gradient(to bottom, #80808012 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: -2;
+}
+
+.glow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    background: rgba(0, 150, 255, 0.08);
+    border-radius: 50%;
+    filter: blur(100px);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
+
+.auth-card {
+    background: #1a1a1a;
+    border: 2px solid #333;
+    padding: 40px;
+    width: 380px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-header img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.auth-header h2 {
+    margin: 0 0 5px 0;
+    color: #00aaff;
+    font-size: 24px;
+}
+
+.auth-header p {
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    margin-bottom: 25px;
+    background: #222;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #333;
+}
+
+.tab {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.tab.active {
+    background: #00aaff;
+    color: black;
+}
+
+/* Form Styles */
+.form-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    color: #ccc;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #00aaff;
+    box-shadow: 0 0 8px rgba(0, 170, 255, 0.3);
+    outline: none;
+}
+
+/* Alert Message Box */
+.alert-box {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: none;
+    text-align: left;
+}
+.alert-box.error {
+    background: rgba(255, 77, 77, 0.15);
+    border: 1px solid #ff4d4d;
+    color: #ff8888;
+}
+.alert-box.success {
+    background: rgba(0, 255, 136, 0.15);
+    border: 1px solid #00ff88;
+    color: #88ffbb;
+}
+
+.options-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.options-row label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.options-row a {
+    color: #00aaff;
+    text-decoration: none;
+}
+
+.options-row a:hover {
+    text-decoration: underline;
+}
+
+.submit-btn {
+    width: 100%;
+    background: #00aaff;
+    color: black;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+}
+
+.submit-btn:hover {
+    background: #0088cc;
+}
+
+.submit-btn:active {
+    transform: scale(0.98);
+}
+
+.back-link {
+    display: block;
+    margin-top: 15px;
+    font-size: 13px;
+    color: #777;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow"></div>
+
+<div class="auth-card">
+    <div class="auth-header">
+        <img src="https://cdn-icons-png.flaticon.com/128/17840/17840814.png" alt="Logo">
+        <h2 id="portalTitle">PhishGuard Portal</h2>
+        <p id="portalSubtitle">Secure access for training simulation</p>
+    </div>
+
+    <!-- Alert banner for validation feedback -->
+    <div id="alertBox" class="alert-box"></div>
+
+    <div class="tabs">
+        <button class="tab active" id="signInTab" onclick="switchTab('signin')">Sign In</button>
+        <button class="tab" id="signUpTab" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <form id="authForm" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+            <label id="emailLabel">Email Address</label>
+            <input type="email" id="email" required placeholder="test@phishguard.com">
+        </div>
+
+        <div class="form-group">
+            <label>Password (Min 8 characters)</label>
+            <input type="password" id="password" required placeholder="••••••••">
+        </div>
+
+        <div class="options-row" id="signinOptions">
+            <label><input type="checkbox" id="rememberMe"> Remember me</label>
+            <a href="#" onclick="handleForgotPassword(event)">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Sign In to Training</button>
+    </form>
+
+    <a href="index.html" class="back-link">← Back to Track Selection</a>
+</div>
+
+<script>
+    // Get mode from URL (student or elderly)
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode') || 'student';
+
+    const portalTitle = document.getElementById("portalTitle");
+    const portalSubtitle = document.getElementById("portalSubtitle");
+    const alertBox = document.getElementById("alertBox");
+
+    // Dynamic track branding
+    if (mode === 'student') {
+        portalTitle.innerText = "Student Portal";
+        portalSubtitle.innerText = "University Security Training";
+    } else {
+        portalTitle.innerText = "Citizen Portal";
+        portalSubtitle.innerText = "Fraud Awareness Training";
+    }
+
+    let isSignUp = false;
+
+    function showAlert(message, type) {
+        alertBox.innerText = message;
+        alertBox.className = `alert-box ${type}`;
+        alertBox.style.display = "block";
+    }
+
+    function hideAlert() {
+        alertBox.style.display = "none";
+    }
+
+    function switchTab(tab) {
+        isSignUp = (tab === 'signup');
+        hideAlert();
+        
+        const signInTab = document.getElementById("signInTab");
+        const signUpTab = document.getElementById("signUpTab");
+        const submitBtn = document.getElementById("submitBtn");
+        const signinOptions = document.getElementById("signinOptions");
+
+        if (isSignUp) {
+            signUpTab.classList.add("active");
+            signInTab.classList.remove("active");
+            submitBtn.innerText = "Create Account";
+            signinOptions.style.display = "none";
+            document.getElementById("authForm").reset();
+        } else {
+            signInTab.classList.add("active");
+            signUpTab.classList.remove("active");
+            submitBtn.innerText = "Sign In to Training";
+            signinOptions.style.display = "flex";
+        }
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        hideAlert();
+
+        const emailField = document.getElementById("email");
+        const passwordField = document.getElementById("password");
+        const email = emailField.value.trim().toLowerCase();
+        const password = passwordField.value;
+
+        // Retrieve local storage accounts database
+        let usersDb = JSON.parse(localStorage.getItem("phishguard_users_db")) || {};
+
+        if (isSignUp) {
+            // Password length check
+            if (password.length < 8) {
+                showAlert("Password must be at least 8 characters long.", "error");
+                return;
+            }
+
+            if (usersDb[email]) {
+                showAlert("This test account already exists! Please Sign In.", "error");
+                return;
+            }
+
+            // Save test credentials locally in the browser
+            usersDb[email] = { password: password };
+            localStorage.setItem("phishguard_users_db", JSON.stringify(usersDb));
+
+            // Switch back to Sign In automatically and pre-fill email
+            switchTab('signin');
+            emailField.value = email;
+            passwordField.value = "";
+            showAlert("Account created successfully! Please sign in with your password.", "success");
+
+        } else {
+            // Sign in validation check against local storage database
+            if (!usersDb[email]) {
+                showAlert("No account found. Please click 'Sign Up' first to create a test account.", "error");
+                return;
+            }
+
+            if (usersDb[email].password !== password) {
+                showAlert("Incorrect password. Please try again.", "error");
+                return;
+            }
+
+            localStorage.setItem("phishguard_user", email);
+            localStorage.setItem("phishguard_mode", mode);
+
+            showAlert("Login successful! Redirecting...", "success");
+            setTimeout(() => {
+                window.location.href = `training.html?mode=${mode}`;
+            }, 800);
+        }
+    }
+
+    function handleForgotPassword(event) {
+        event.preventDefault();
+        alert("PhishGuard Security Tip: In real phishing attacks, fake 'Forgot Password' links are common vectors used to steal credentials. For testing, simply sign in with your account!");
+    }
+</script>
+
+</body>
+</html>

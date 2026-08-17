@@ -2,383 +2,510 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PhishGuard – Advanced Participant & Threat Analytics Report</title>
+<title>PhishGuard – Live Security Audit & Resilience Intelligence</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
-  display: flex;
-  overflow-x: hidden;
+:root {
+  --bg-dark: #090d16;
+  --bg-card: rgba(18, 26, 43, 0.7);
+  --border-color: rgba(0, 170, 255, 0.15);
+  --accent-blue: #00aaff;
+  --accent-cyan: #00f0ff;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
 }
 
-/* Background grid */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-main);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Cybernetic Grid & Ambient Glow Background */
 .bg-grid {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(to right, #80808012 1px, transparent 1px),
-    linear-gradient(to bottom, #80808012 1px, transparent 1px);
-  background-size: 24px 24px;
+    linear-gradient(to right, rgba(0, 170, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 170, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
   z-index: -2;
 }
 
-/* Glow */
-.glow {
+.glow-orb {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 800px;
-  height: 800px;
-  background: rgba(0, 150, 255, 0.1);
+  top: 15%;
+  left: 25%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 170, 255, 0.08) 0%, transparent 70%);
   border-radius: 50%;
-  filter: blur(120px);
-  transform: translate(-50%, -50%);
+  filter: blur(80px);
   z-index: -1;
+  pointer-events: none;
 }
 
 /* SIDEBAR */
 .sidebar {
-  width: 240px;
-  background: #111;
-  border-right: 2px solid #222;
+  width: 260px;
+  background: rgba(11, 16, 28, 0.95);
+  border-right: 1px solid var(--border-color);
   padding: 30px 20px;
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   flex-shrink: 0;
+  backdrop-filter: blur(10px);
 }
 
 .sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
+  gap: 12px;
+  margin-bottom: 40px;
 }
 
 .sidebar-logo svg {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 0 8px rgba(0, 170, 255, 0.5));
 }
 
 .sidebar-title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #00aaff;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #00aaff, #00f0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .sidebar-item {
-  font-size: 18px;
-  padding: 10px 0;
-  color: #cccccc;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 12px 16px;
+  color: var(--text-muted);
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.25s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 4px;
 }
 
 .sidebar-item svg {
   width: 18px;
   height: 18px;
+  fill: currentColor;
 }
 
-.sidebar-item:hover, .sidebar-item.active {
-  color: #00aaff;
+.sidebar-item:hover {
+  color: var(--accent-blue);
+  background: rgba(0, 170, 255, 0.05);
 }
 
-/* MAIN CONTENT */
+.sidebar-item.active {
+  color: var(--accent-cyan);
+  background: rgba(0, 240, 255, 0.1);
+  border-left: 3px solid var(--accent-cyan);
+}
+
+/* MAIN DASHBOARD CONTAINER */
 .main {
   flex: 1;
-  padding: 40px;
+  padding: 30px 40px;
   overflow-y: auto;
   height: 100vh;
   box-sizing: border-box;
 }
 
+/* TOP COMMAND BAR */
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
-  max-width: 950px;
 }
 
-.top-bar-text {
-  color: #cccccc;
-  font-size: 14px;
+.top-bar-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.print-btn {
-  background: #00aaff;
-  color: black;
+.live-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.live-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--success);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--success);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.action-btns {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-cyber {
+  background: linear-gradient(135deg, #00aaff, #0088cc);
+  color: #000;
   border: none;
   padding: 10px 20px;
   border-radius: 6px;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 13px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.print-btn:hover {
-  background: #0088cc;
+.btn-cyber:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 170, 255, 0.5);
 }
 
-/* REPORT SHEET WRAPPER */
-.report-sheet {
-  background: #ffffff;
-  color: #111111;
-  width: 100%;
-  max-width: 950px;
+/* GLASSMORPHIC AUDIT REPORT CARD */
+.audit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 45px;
-  box-sizing: border-box;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-  margin-bottom: 50px;
+  padding: 35px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  margin-bottom: 40px;
+  position: relative;
 }
 
-/* Report Header */
+/* REPORT HEADER */
 .report-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  border-bottom: 3px solid #00aaff;
-  padding-bottom: 25px;
-  margin-bottom: 30px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .report-brand {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--text-main);
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.report-brand svg {
-  width: 38px;
-  height: 38px;
-  fill: #00aaff;
-}
-
-.report-brand-name {
-  font-size: 24px;
-  font-weight: bold;
-  color: #111;
-  letter-spacing: 0.5px;
+  gap: 10px;
 }
 
 .report-meta {
-  text-align: right;
-}
-
-.report-user-type {
-  font-weight: bold;
-  color: #00aaff;
-  font-size: 16px;
-  text-transform: uppercase;
-}
-
-.report-subtitle {
-  font-size: 13px;
-  color: #555;
-  margin-top: 4px;
-}
-
-.report-date {
   font-size: 12px;
-  color: #888;
-  margin-top: 2px;
+  color: var(--text-muted);
+  text-align: right;
+  line-height: 1.6;
+}
+
+.report-meta span {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* TELEMETRY METADATA STRIP */
+.telemetry-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: rgba(10, 15, 25, 0.6);
+  border: 1px solid rgba(0, 170, 255, 0.1);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 30px;
+  font-size: 12px;
+}
+
+.telemetry-item div:first-child {
+  color: var(--text-muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.telemetry-item div:last-child {
+  color: var(--accent-cyan);
+  font-weight: 700;
 }
 
 /* SECTION TITLES */
-.report-section-title {
+.section-title {
   font-size: 13px;
   text-transform: uppercase;
-  color: #333;
   letter-spacing: 1px;
-  margin-bottom: 12px;
-  font-weight: bold;
-  border-left: 4px solid #00aaff;
-  padding-left: 10px;
+  color: var(--accent-blue);
+  margin: 30px 0 15px 0;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
 }
 
-/* EXECUTIVE SUMMARY BANNER */
-.exec-summary {
-  background: #f0f7ff;
-  border: 1px solid #bce8ff;
-  border-left: 5px solid #00aaff;
-  padding: 16px 20px;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #003366;
-  line-height: 1.5;
-  margin-bottom: 30px;
+.section-title span {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: normal;
 }
+
+/* EXECUTIVE SUMMARY BOX */
+.exec-summary {
+  background: rgba(13, 20, 35, 0.8);
+  border: 1px solid rgba(0, 170, 255, 0.2);
+  border-left: 4px solid var(--accent-blue);
+  padding: 18px 22px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+/* EMPTY NOTICE */
+.empty-notice {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fcd34d;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.empty-notice a {
+  color: var(--accent-cyan);
+  font-weight: 700;
+  text-decoration: none;
+}
+.empty-notice a:hover { text-decoration: underline; }
 
 /* METRICS GRID */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .metric-box {
-  background: #f8f9fa;
-  border: 1px solid #e5e5e5;
+  background: rgba(13, 20, 35, 0.6);
+  border: 1px solid var(--border-color);
   padding: 18px 12px;
   border-radius: 8px;
   text-align: center;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  transition: transform 0.2s ease;
+}
+
+.metric-box:hover {
+  border-color: rgba(0, 170, 255, 0.4);
+  transform: translateY(-2px);
 }
 
 .metric-val {
   font-size: 26px;
-  font-weight: bold;
-  color: #111;
+  font-weight: 800;
+  color: var(--text-main);
   margin-bottom: 4px;
 }
 
 .metric-lbl {
-  font-size: 11px;
-  color: #666;
+  font-size: 10px;
+  color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  font-weight: 600;
 }
 
 /* PROGRESS BAR */
 .progress-container {
-  background: #f8f9fa;
-  border: 1px solid #e5e5e5;
-  padding: 15px 20px;
+  background: rgba(13, 20, 35, 0.6);
+  border: 1px solid var(--border-color);
+  padding: 16px 20px;
   border-radius: 8px;
-  margin-bottom: 35px;
+  margin-bottom: 25px;
 }
 
 .progress-info {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
-  font-weight: bold;
-  color: #333;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
   margin-bottom: 8px;
 }
 
 .progress-track {
   width: 100%;
-  background: #e5e5e5;
-  height: 10px;
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  height: 8px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
-  background: #00aaff;
+  background: linear-gradient(90deg, #00aaff, #00f0ff);
   height: 100%;
-  border-radius: 5px;
-  transition: width 0.6s ease;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
 }
 
-/* TABLES */
-.report-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 35px;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #eee;
-}
-
-.report-table th {
-  text-align: left;
-  font-size: 11px;
-  text-transform: uppercase;
-  color: #555;
-  background: #f8f9fa;
-  padding: 12px 15px;
-  border-bottom: 2px solid #e5e5e5;
-}
-
-.report-table td {
-  padding: 14px 15px;
-  font-size: 14px;
-  color: #333;
-  border-bottom: 1px solid #eee;
-}
-
-.report-table tr:last-child td {
-  border-bottom: none;
-}
-
-.acc-high { color: #008844; font-weight: bold; }
-.acc-mid { color: #aa6600; font-weight: bold; }
-.acc-low { color: #cc0033; font-weight: bold; }
-
-/* TWO COLUMN ANALYTICS SPLIT */
+/* TWO COLUMN SPLIT */
 .analytics-split {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 25px;
   margin-bottom: 25px;
 }
 
-/* TRIGGERS BARS */
-.trigger-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 14px;
+/* TABLES */
+.cyber-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(13, 20, 35, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
   font-size: 13px;
 }
 
+.cyber-table th {
+  text-align: left;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  background: rgba(10, 15, 25, 0.8);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cyber-table td {
+  padding: 14px 16px;
+  color: #e2e8f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.cyber-table tr:last-child td {
+  border-bottom: none;
+}
+
+.acc-high { color: var(--success); font-weight: 700; }
+.acc-mid { color: var(--warning); font-weight: 700; }
+.acc-low { color: var(--danger); font-weight: 700; }
+
+/* VULNERABILITY INDEX BARS */
+.vuln-panel {
+  background: rgba(13, 20, 35, 0.6);
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.trigger-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.trigger-row:last-child {
+  margin-bottom: 0;
+}
+
 .trigger-name {
-  width: 110px;
-  color: #444;
+  width: 140px;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
 .trigger-bar-container {
   flex: 1;
-  background: #f1f1f1;
-  height: 10px;
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  height: 6px;
+  border-radius: 3px;
   overflow: hidden;
   margin: 0 12px;
 }
 
 .trigger-bar-fill {
   height: 100%;
-  background: #ff5533;
-  border-radius: 5px;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  border-radius: 3px;
 }
 
 .trigger-val {
-  width: 40px;
+  width: 35px;
   text-align: right;
-  font-weight: bold;
-  color: #444;
-  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 11px;
 }
 
 /* RECOMMENDATIONS LIST */
 .rec-list {
-  background: #fffdf5;
-  border: 1px solid #ffeeba;
+  background: rgba(245, 158, 11, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.2);
   border-radius: 8px;
-  padding: 18px 20px;
-  margin-bottom: 35px;
+  padding: 18px 22px;
+  margin-bottom: 25px;
 }
 
 .rec-item {
   font-size: 13px;
-  color: #444;
+  color: #fde68a;
   margin-bottom: 10px;
-  line-height: 1.4;
+  line-height: 1.5;
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 10px;
 }
 
 .rec-item:last-child {
@@ -386,16 +513,41 @@ body {
 }
 
 .rec-bullet {
-  color: #cc8800;
+  color: var(--warning);
   font-weight: bold;
 }
 
-/* Print styling adjustments */
+/* SIGN-OFF FOOTER */
+.sign-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.sign-line {
+  width: 180px;
+  border-top: 1px solid var(--text-muted);
+  margin-top: 25px;
+  padding-top: 4px;
+  text-align: center;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* Print styling adjustments for clean PDF export */
 @media print {
-  body { background: white; color: black; display: block; }
-  .sidebar, .top-bar, .bg-grid, .glow { display: none !important; }
-  .main { padding: 0; height: auto; overflow: visible; }
-  .report-sheet { box-shadow: none; padding: 0; max-width: 100%; }
+  body { background: white !important; color: black !important; display: block !important; }
+  .sidebar, .top-bar, .bg-grid, .glow-orb { display: none !important; }
+  .main { padding: 0 !important; height: auto !important; overflow: visible !important; }
+  .audit-card { background: white !important; border: none !important; box-shadow: none !important; padding: 0 !important; color: black !important; }
+  .telemetry-strip, .exec-summary, .metric-box, .progress-container, .cyber-table, .vuln-panel, .rec-list { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; color: black !important; }
+  .metric-val, .metric-lbl, .top-bar-title, .report-meta span, .sign-line, .cyber-table td, .cyber-table th { color: #0f172a !important; }
+  .accent-cyan, .trigger-bar-fill { background: #0284c7 !important; }
 }
 </style>
 </head>
@@ -403,42 +555,44 @@ body {
 <body>
 
 <div class="bg-grid"></div>
-<div class="glow"></div>
+<div class="glow-orb"></div>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sidebar-logo">
-    <svg viewBox="0 0 24 24" fill="#00aaff"><circle cx="12" cy="12" r="10"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#00aaff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
     <div class="sidebar-title">PHISHGUARD</div>
   </div>
 
   <a href="training.html" class="sidebar-item" id="nav-training">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
     Training
   </a>
 
   <a href="dashboard.html" class="sidebar-item" id="nav-dashboard">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><rect x="4" y="4" width="16" height="16"/></svg>
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
     Dashboard
   </a>
 
   <a href="leaderboard.html" class="sidebar-item" id="nav-leaderboard">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2l9 21H3z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
     Leaderboard
   </a>
 
   <a href="learn.html" class="sidebar-item" id="nav-learn">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M4 4h16v16H4z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
     Learn
   </a>
 
   <a href="report.html" class="sidebar-item active" id="nav-report">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
     Report
   </a>
 
   <a href="settings.html" class="sidebar-item" id="nav-settings">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     Settings
   </a>
 </div>
@@ -446,102 +600,156 @@ body {
 <!-- MAIN CONTENT -->
 <div class="main">
   <div class="top-bar">
-    <div class="top-bar-text">Professional Executive Analytics & Printable Audit Report</div>
-    <button class="print-btn" onclick="window.print()">🖨️ Print / Export to PDF</button>
+    <div class="top-bar-title">
+      <span class="live-badge">Live Telemetry Sync</span>
+      Security Operations Center &bull; Audit Intelligence
+    </div>
+    <div class="action-btns">
+      <button class="btn-cyber" onclick="window.print()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Export PDF Report
+      </button>
+    </div>
   </div>
 
-  <!-- REPORT SHEET -->
-  <div class="report-sheet">
+  <!-- AUDIT DASHBOARD CARD -->
+  <div class="audit-card">
     
-    <!-- Header -->
+    <!-- Report Header -->
     <div class="report-header">
-      <div class="report-brand">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
-        <div>
-          <div class="report-brand-name">PhishGuard Intelligence</div>
-          <div style="font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 1px;">Security Operations & Threat Defense</div>
+      <div>
+        <div class="report-brand">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00aaff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          PHISHGUARD DEFENSE SYSTEMS
         </div>
+        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;">Human Risk Intelligence & Threat Simulation Audit</div>
       </div>
       <div class="report-meta">
-        <div class="report-user-type" id="reportUserRole">Participant Profile</div>
-        <div class="report-subtitle">Phishing Resilience Audit & Assessment</div>
-        <div class="report-date" id="reportDate">Generated: --</div>
+        <div>Ref ID: <span id="docRefNum">PG-SOC-2026-X</span></div>
+        <div>Security Tier: <span>CONFIDENTIAL / INTERNAL</span></div>
+        <div id="reportDate">Timestamp: --</div>
       </div>
     </div>
 
-    <!-- Executive Summary Banner -->
-    <div class="exec-summary" id="execSummaryText">
-      <strong>Executive Summary:</strong> Participant has completed simulated security drills across multiple vectors. Overall resilience requires targeted focus on credential verification and domain inspection.
-    </div>
-
-    <!-- Overall Performance Section -->
-    <div class="report-section-title">Performance Overview Metrics</div>
-    <div class="metrics-grid">
-      <div class="metric-box">
-        <div class="metric-val" id="repSessions">0</div>
-        <div class="metric-lbl">Total Sessions</div>
+    <!-- Telemetry Control Strip -->
+    <div class="telemetry-strip">
+      <div class="telemetry-item">
+        <div>Active Track</div>
+        <div id="metaTrackName">Student Track</div>
       </div>
-      <div class="metric-box">
-        <div class="metric-val" id="repQuestions">0</div>
-        <div class="metric-lbl">Operations Tested</div>
+      <div class="telemetry-item">
+        <div>Collection Method</div>
+        <div>Real-Time Session Sync</div>
       </div>
-      <div class="metric-box">
-        <div class="metric-val" id="repAccuracy">0%</div>
-        <div class="metric-lbl">Overall Accuracy</div>
+      <div class="telemetry-item">
+        <div>Compliance Standard</div>
+        <div>ISO/IEC 27001 / NIST SP 800-50</div>
       </div>
-      <div class="metric-box">
-        <div class="metric-val" id="repAvgSpeed">1.4s</div>
-        <div class="metric-lbl">Avg Response Time</div>
+      <div class="telemetry-item">
+        <div>Sync Status</div>
+        <div style="color: var(--success);">ACTIVE SECURE</div>
       </div>
     </div>
 
-    <div class="progress-container">
-      <div class="progress-info">
-        <span>Resilience Index Rating</span>
-        <span id="progressText">0%</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-      </div>
+    <!-- Empty State Notice -->
+    <div id="emptyNoticeContainer" style="display: none;" class="empty-notice">
+      <strong>No Training Telemetry Recorded Yet!</strong><br>
+      Complete your active simulation drills in the <a href="training.html" id="trainingLinkBtn">Training Modules</a> to populate this security audit report with live session data.
     </div>
 
-    <!-- Two Column Deep Dive Layout -->
-    <div class="analytics-split">
+    <!-- Main Report Content Wrapper -->
+    <div id="reportContentWrapper">
       
-      <!-- Left Column: Scenario Table -->
-      <div>
-        <div class="report-section-title">Scenario Breakdown</div>
-        <table class="report-table">
-          <thead>
-            <tr>
-              <th>Vector Module</th>
-              <th>Tests</th>
-              <th>Passed</th>
-              <th>Rating</th>
-            </tr>
-          </thead>
-          <tbody id="scenarioTableBody">
-            <!-- Dynamically populated -->
-          </tbody>
-        </table>
+      <!-- 1.0 Executive Summary -->
+      <div class="section-title">
+        1.0 Executive Summary
+        <span>Section 1 of 4</span>
+      </div>
+      <div class="exec-summary" id="execSummaryText">
+        Processing telemetry data from local session storage...
       </div>
 
-      <!-- Right Column: Psychological Trigger Vulnerabilities -->
-      <div>
-        <div class="report-section-title">Psychological Vulnerability Index</div>
-        <div id="triggerContainer" style="margin-top: 15px; background: #f8f9fa; border: 1px solid #eee; padding: 15px; border-radius: 8px;">
-          <!-- Dynamically populated progress bars -->
+      <!-- 2.0 Quantitative Performance Metrics -->
+      <div class="section-title">
+        2.0 Quantitative Performance Metrics
+        <span>Section 2 of 4</span>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="metric-val" id="repSessions">0</div>
+          <div class="metric-lbl">Total Drills Logged</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-val" id="repQuestions">0</div>
+          <div class="metric-lbl">Total Vectors Tested</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-val" id="repAccuracy">0%</div>
+          <div class="metric-lbl">Composite Accuracy</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-val" id="repAvgSpeed">1.2s</div>
+          <div class="metric-lbl">Mean Reaction Velocity</div>
         </div>
       </div>
 
+      <div class="progress-container">
+        <div class="progress-info">
+          <span>Participant Security Resilience Index</span>
+          <span id="progressText" style="color: var(--accent-cyan);">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Two Column Deep Dive Analytics -->
+      <div class="analytics-split">
+        
+        <!-- Left Column: Module Breakdown Table -->
+        <div>
+          <div class="section-title" style="margin-top: 0;">
+            3.1 Module Breakdown
+          </div>
+          <table class="cyber-table">
+            <thead>
+              <tr>
+                <th>Vector Module</th>
+                <th>Tests</th>
+                <th>Passed</th>
+                <th>Rating</th>
+              </tr>
+            </thead>
+            <tbody id="scenarioTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Right Column: Psychological Trigger Vulnerability Index -->
+        <div>
+          <div class="section-title" style="margin-top: 0;">
+            3.2 Trigger Vulnerability Index
+          </div>
+          <div class="vuln-panel" id="triggerContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 4.0 Audit Recommendations -->
+      <div class="section-title">
+        4.0 Threat Remediation & Recommendations
+        <span>Section 4 of 4</span>
+      </div>
+      <div class="rec-list" id="recommendationsList">
+        <!-- Dynamically populated -->
+      </div>
+
     </div>
 
-    <!-- Tailored Recommendations Section -->
-    <div class="report-section-title" style="margin-top: 10px;">Security Recommendations & Next Steps</div>
-    <div class="rec-list" id="recommendationsList">
-      <!-- Dynamically populated based on performance -->
-    </div>
-
+    
   </div>
 </div>
 
@@ -549,30 +757,49 @@ body {
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const mode = params.get("mode") || "student";
-
-  // 1. Set Role / Audience Banner
   const isStudent = mode === "student";
-  document.getElementById("reportUserRole").textContent = isStudent ? "University Student Track" : "Senior / Elder Security Track";
-  document.getElementById("reportDate").textContent = `Generated: ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}`;
 
-  // 2. Fetch mode-specific live records from LocalStorage
+  // 1. Setup Header Metadata
+  document.getElementById("metaTrackName").textContent = isStudent ? "University Student Track" : "Senior / Elder Track";
+  document.getElementById("reportDate").textContent = `Timestamp: ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} ${new Date().toLocaleTimeString()}`;
+  document.getElementById("docRefNum").textContent = `PG-SOC-${mode.toUpperCase()}-2026`;
+  document.getElementById("trainingLinkBtn").setAttribute("href", `training.html?mode=${mode}`);
+
+  // 2. Fetch live session records from LocalStorage
   const storageKey = isStudent ? "phishguard_student_data" : "phishguard_elderly_data";
   const sessionData = JSON.parse(localStorage.getItem(storageKey)) || [];
 
-  // Fallback structural records if empty for an optimal initial view
-  const dataToUse = sessionData.length > 0 ? sessionData : [
-    { type: "Inbox Intercept", score: 2, total: 3, accuracy: 67 },
-    { type: "URL Inspection", score: 3, total: 4, accuracy: 75 },
-    { type: "Spoof Detection", score: 1, total: 3, accuracy: 33 }
-  ];
+  const emptyContainer = document.getElementById("emptyNoticeContainer");
+  const reportWrapper = document.getElementById("reportContentWrapper");
 
-  let totalSessions = dataToUse.length;
+  if (sessionData.length === 0) {
+    emptyContainer.style.display = "block";
+    reportWrapper.style.display = "none";
+    return;
+  } else {
+    emptyContainer.style.display = "none";
+    reportWrapper.style.display = "block";
+  }
+
+  // 3. Compute telemetry metrics
+  let totalSessions = sessionData.length;
   let totalQuestions = 0;
   let totalCorrect = 0;
+  let typeStats = {};
 
-  dataToUse.forEach(item => {
-    totalQuestions += (item.total || 3);
-    totalCorrect += (item.score || 0);
+  sessionData.forEach(item => {
+    let qCount = item.total || 3;
+    let sCount = item.score || 0;
+    totalQuestions += qCount;
+    totalCorrect += sCount;
+
+    let moduleType = item.type || item.gameMode || "Inbox Intercept";
+    if (!typeStats[moduleType]) {
+      typeStats[moduleType] = { sessions: 0, questions: 0, correct: 0 };
+    }
+    typeStats[moduleType].sessions += 1;
+    typeStats[moduleType].questions += qCount;
+    typeStats[moduleType].correct += sCount;
   });
 
   let overallAcc = totalQuestions === 0 ? 0 : Math.round((totalCorrect / totalQuestions) * 100);
@@ -584,39 +811,23 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("progressText").textContent = overallAcc + "%";
   document.getElementById("progressFill").style.width = overallAcc + "%";
 
-  // Executive summary dynamic feedback
+  // 4. Executive Summary feedback
   const summaryEl = document.getElementById("execSummaryText");
   if (overallAcc >= 80) {
-    summaryEl.innerHTML = `<strong>Executive Summary:</strong> Excellent threat recognition performance. The participant demonstrates high caution against cognitive manipulation vectors specific to ${isStudent ? 'academic workflows' : 'elder security guidelines'}.`;
+    summaryEl.innerHTML = `<strong>SOC Audit Conclusion:</strong> Telemetry analysis across your ${totalSessions} recorded simulation sessions indicates a composite resilience accuracy of <strong>${overallAcc}%</strong>. You maintain strong defense mechanisms against targeted social engineering tactics relevant to ${isStudent ? 'university portals and academic credentials' : 'financial protection and elder fraud prevention'}.`;
   } else if (overallAcc >= 50) {
-    summaryEl.innerHTML = `<strong>Executive Summary:</strong> Moderate resilience rating. The participant successfully identified clear threats but remains susceptible to advanced domain spoofing and urgent authority triggers.`;
+    summaryEl.innerHTML = `<strong>SOC Audit Conclusion:</strong> Telemetry review of your ${totalSessions} completed drills reveals an accuracy score of <strong>${overallAcc}%</strong>. While baseline threat alerts were recognized, susceptibility remains regarding authority impersonation and domain spoofing lures.`;
   } else {
-    summaryEl.innerHTML = `<strong>Executive Summary:</strong> High risk alert. Participant metrics indicate significant vulnerability to social engineering tactics. Immediate review of threat intelligence modules is strongly advised.`;
+    summaryEl.innerHTML = `<strong>SOC Audit Conclusion:</strong> High security vulnerability detected from your ${totalSessions} completed sessions (Composite Accuracy: <strong>${overallAcc}%</strong>). Immediate review of the Learn intelligence modules and targeted retraining is strongly advised to mitigate risk exposure.`;
   }
 
-  // 3. Aggregate By Scenario Type
-  let typeStats = {
-    "Inbox Intercept": { sessions: 0, questions: 0, correct: 0 },
-    "URL Inspection": { sessions: 0, questions: 0, correct: 0 },
-    "Spoof Detection": { sessions: 0, questions: 0, correct: 0 }
-  };
-
-  dataToUse.forEach(item => {
-    let t = item.type || item.gameMode || "Inbox Intercept";
-    if (!typeStats[t]) {
-      typeStats[t] = { sessions: 0, questions: 0, correct: 0 };
-    }
-    typeStats[t].sessions += 1;
-    typeStats[t].questions += (item.total || 3);
-    typeStats[t].correct += (item.score || 0);
-  });
-
+  // 5. Populate Module Breakdown Table
   const scenarioBody = document.getElementById("scenarioTableBody");
   scenarioBody.innerHTML = Object.keys(typeStats).map(key => {
     let st = typeStats[key];
     let acc = st.questions === 0 ? 0 : Math.round((st.correct / st.questions) * 100);
     let accClass = acc >= 70 ? "acc-high" : acc >= 40 ? "acc-mid" : "acc-low";
-    let statusText = acc >= 70 ? "Passed" : acc >= 40 ? "Review" : "Critical";
+    let statusText = acc >= 70 ? "Secured" : acc >= 40 ? "Review" : "At Risk";
 
     return `
       <tr>
@@ -628,13 +839,13 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }).join('');
 
-  // 4. Psychological Vulnerability Breakdown (derived realistically from score)
+  // 6. Trigger Vulnerability Index
   let vulnerabilityScore = 100 - overallAcc;
   let triggers = [
-    { name: "Urgency Pressure", val: Math.min(95, vulnerabilityScore + 20) },
-    { name: "Authority Impersonation", val: Math.min(90, vulnerabilityScore + 10) },
-    { name: "Fabricated Fear", val: Math.min(85, vulnerabilityScore + 5) },
-    { name: "Brand Familiarity", val: Math.max(20, vulnerabilityScore - 15) }
+    { name: "Urgency Pressure", val: Math.min(95, vulnerabilityScore + 15) },
+    { name: "Authority Impersonation", val: Math.min(90, vulnerabilityScore + 8) },
+    { name: "Fabricated Fear", val: Math.min(85, vulnerabilityScore + 2) },
+    { name: "Brand Familiarity", val: Math.max(15, vulnerabilityScore - 10) }
   ];
 
   const triggerContainer = document.getElementById("triggerContainer");
@@ -648,16 +859,16 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `).join('');
 
-  // 5. Tailored Recommendations
+  // 7. Tailored Recommendations
   const recList = document.getElementById("recommendationsList");
   let recommendations = isStudent ? [
-    { title: "Domain Inspection Check:", text: "Always inspect URLs carefully before entering your university credentials to guard against typosquatted login lookalikes." },
-    { title: "Verify Administrative Directives:", text: "Confirm urgent IT or library requests through official internal campus channels instead of clicking embedded email links." },
-    { title: "Review Threat Intelligence:", text: "Revisit the <strong>Learn</strong> module regularly to stay updated on emerging student-targeted phishing campaigns." }
+    { title: "Domain Inspection Protocol:", text: "Always examine URL structures closely for typosquatting before submitting institutional login credentials." },
+    { title: "Out-of-Band Verification:", text: "Verify unexpected IT or library security notices through official campus portals rather than email action links." },
+    { title: "Continuous Threat Awareness:", text: "Review the <strong>Learn</strong> module regularly to keep pace with emerging student phishing vector campaigns." }
   ] : [
-    { title: "Independent Verification:", text: "Never click links in text messages claiming issues with your state pension, bank accounts, or tax rebates. Always call official support numbers directly." },
-    { title: "Recognize Authority Scams:", text: "Government entities like HMRC or the NHS will never demand immediate payment of fines or personal details via unverified email links." },
-    { title: "Secure Communications:", text: "Consult trusted family members or official service representatives before taking action on unexpected urgent financial notifications." }
+    { title: "Financial Verification Standards:", text: "Never act on urgent SMS or email notifications concerning pension freezes or tax rebates without calling official verified telephone numbers." },
+    { title: "Government Policy Recognition:", text: "Note that official entities will never request immediate wire transfers or passwords via unsolicited links." },
+    { title: "Trusted Circle Consultation:", text: "Consult designated family members or support contacts before responding to urgent financial alerts." }
   ];
 
   recList.innerHTML = recommendations.map(rec => `
@@ -667,7 +878,7 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `).join('');
 
-  // 6. Preserve mode parameter across sidebar links
+  // 8. Preserve mode parameter across sidebar links
   document.querySelectorAll(".sidebar a").forEach(link => {
     let baseHref = link.getAttribute("href").split("?")[0];
     link.setAttribute("href", `${baseHref}?mode=${mode}`);

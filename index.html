@@ -200,12 +200,8 @@ body {
     startBtn.onclick = () => {
       if (!selected) return;
     
-      // ⭐ SEND MODE TO DASHBOARD
-      if (selected === "student") {
-        window.location.href = "training.html?mode=student";
-      } else {
-        window.location.href = "training.html?mode=elderly";
-      }
+      // Redirect to login page with the chosen mode
+      window.location.href = `login.html?mode=${selected}`;
     };
     </script>
     

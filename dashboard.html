@@ -6,11 +6,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+:root {
+  --bg-main: #09090d;
+  --bg-card: #12121a;
+  --bg-card-hover: #161622;
+  --border-color: #212130;
+  --accent-blue: #00aaff;
+  --accent-cyan: #00ffcc;
+  --accent-pink: #ff3366;
+  --text-main: #f1f1f6;
+  --text-muted: #888899;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b0b0e;
-  color: #f1f1f6;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
   display: flex;
   overflow-x: hidden;
 }
@@ -20,80 +32,96 @@ body {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(to right, #ffffff06 1px, transparent 1px),
-    linear-gradient(to bottom, #ffffff06 1px, transparent 1px);
-  background-size: 28px 28px;
+    linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 32px 32px;
   z-index: -2;
 }
 
 .glow-orb {
   position: fixed;
-  top: 20%;
-  left: 60%;
-  width: 600px;
-  height: 600px;
-  background: rgba(0, 170, 255, 0.07);
+  top: 15%;
+  left: 65%;
+  width: 500px;
+  height: 500px;
+  background: rgba(0, 170, 255, 0.06);
   border-radius: 50%;
-  filter: blur(140px);
+  filter: blur(150px);
   transform: translate(-50%, -50%);
   z-index: -1;
+  pointer-events: none;
 }
 
 /* SIDEBAR */
 .sidebar {
-  width: 240px;
-  background: #111115;
-  border-right: 1px solid #22222c;
+  width: 250px;
+  background: #0d0d12;
+  border-right: 1px solid var(--border-color);
   padding: 30px 20px;
   height: 100vh;
   box-sizing: border-box;
   flex-shrink: 0;
+  position: sticky;
+  top: 0;
 }
 
 .sidebar-logo {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 35px;
+  margin-bottom: 40px;
 }
 
 .sidebar-logo svg {
-  width: 36px;
-  height: 36px;
-  fill: #00aaff;
+  width: 32px;
+  height: 32px;
+  fill: var(--accent-blue);
 }
 
 .sidebar-title {
-  font-size: 20px;
-  font-weight: bold;
-  color: #00aaff;
-  letter-spacing: 0.5px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent-blue);
+  letter-spacing: 1px;
 }
 
 .sidebar-item {
-  font-size: 16px;
-  padding: 12px 0;
-  color: #9999a6;
+  font-size: 15px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: var(--text-muted);
   cursor: pointer;
-  transition: 0.25s;
+  transition: all 0.25s ease;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
+  margin-bottom: 6px;
 }
 
 .sidebar-item svg {
   width: 18px;
   height: 18px;
-  fill: #9999a6;
+  fill: var(--text-muted);
   transition: 0.25s;
 }
 
-.sidebar-item:hover, .sidebar-item.active {
-  color: #00aaff;
+.sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-main);
 }
-.sidebar-item:hover svg, .sidebar-item.active svg {
-  fill: #00aaff;
+.sidebar-item:hover svg {
+  fill: var(--text-main);
+}
+
+.sidebar-item.active {
+  background: rgba(0, 170, 255, 0.1);
+  color: var(--accent-blue);
+  font-weight: 600;
+  border: 1px solid rgba(0, 170, 255, 0.2);
+}
+.sidebar-item.active svg {
+  fill: var(--accent-blue);
 }
 
 /* MAIN CONTENT */
@@ -109,9 +137,9 @@ body {
 .header-container {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 35px;
-  border-bottom: 1px solid #22222c;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 25px;
 }
 
@@ -122,46 +150,54 @@ body {
 }
 
 .header-title {
-  font-size: 32px;
+  font-size: 30px;
   color: #ffffff;
   margin: 0;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 .header-subtitle {
   font-size: 14px;
-  color: #888899;
+  color: var(--text-muted);
 }
 
-/* DYNAMIC TRACK STATUS BADGE (Locked to Training Selection) */
+/* TRACK STATUS BADGE */
 .track-context-badge {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #16161f;
-  border: 1px solid #2a2a3b;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   padding: 10px 18px;
   border-radius: 30px;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
 .context-dot {
   width: 10px;
   height: 10px;
-  background: #00ffcc;
+  background: var(--accent-cyan);
   border-radius: 50%;
-  box-shadow: 0 0 10px #00ffcc;
+  box-shadow: 0 0 12px var(--accent-cyan);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.4); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 255, 204, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
 }
 
 .context-text {
-  font-size: 13px;
-  font-weight: bold;
-  color: #cccccc;
+  font-size: 12px;
+  font-weight: 700;
+  color: #dddded;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-/* ADVANCED METRIC CARDS ROW */
+/* METRICS ROW */
 .metrics-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -170,12 +206,18 @@ body {
 }
 
 .metric-card {
-  background: #14141c;
-  border: 1px solid #22222c;
-  border-radius: 12px;
-  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 22px;
   position: relative;
   overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 170, 255, 0.3);
 }
 
 .metric-card::before {
@@ -185,31 +227,33 @@ body {
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(to right, #00aaff, #00ffcc);
+  background: linear-gradient(to right, var(--accent-blue), var(--accent-cyan));
 }
 
 .metric-label {
   font-size: 11px;
   text-transform: uppercase;
-  color: #777788;
+  color: var(--text-muted);
   letter-spacing: 1px;
-  margin-bottom: 8px;
-  font-weight: bold;
+  margin-bottom: 10px;
+  font-weight: 700;
 }
 
 .metric-value {
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 30px;
+  font-weight: 800;
   color: #ffffff;
+  letter-spacing: -0.5px;
 }
 
 .metric-sub {
   font-size: 12px;
-  color: #00ffcc;
-  margin-top: 6px;
+  color: var(--accent-cyan);
+  margin-top: 8px;
+  font-weight: 500;
 }
 
-/* MAIN ANALYTICS GRID */
+/* ANALYTICS GRID */
 .analytics-grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
@@ -218,26 +262,26 @@ body {
 }
 
 .analytics-card {
-  background: #14141c;
-  border: 1px solid #22222c;
-  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
   padding: 25px;
   box-sizing: border-box;
 }
 
 .card-header-title {
-  font-size: 14px;
+  font-size: 13px;
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 700;
   color: #ffffff;
-  margin-bottom: 25px;
+  margin-bottom: 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
-/* ADVANCED SVG TREND CHART CONTAINER */
+/* CHART CONTAINER */
 .chart-wrapper {
   position: relative;
   height: 200px;
@@ -250,7 +294,7 @@ body {
   overflow: visible;
 }
 
-/* EXPLOITED VULNERABILITIES MATRIX */
+/* VULNERABILITY BREAKDOWN */
 .vuln-item {
   margin-bottom: 18px;
 }
@@ -264,33 +308,34 @@ body {
   justify-content: space-between;
   font-size: 13px;
   margin-bottom: 8px;
-  font-weight: 500;
+  font-weight: 600;
   color: #d1d1e0;
 }
 
 .vuln-bar-bg {
   width: 100%;
-  background: #1a1a24;
-  height: 10px;
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.04);
+  height: 8px;
+  border-radius: 4px;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.02);
 }
 
 .vuln-bar-fill {
   height: 100%;
-  background: linear-gradient(to right, #ff3366, #ff6644);
-  border-radius: 5px;
-  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(to right, var(--accent-pink), #ff6644);
+  border-radius: 4px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ACQUIRED HONORS & BADGES SECTION */
+/* HONORS SECTION */
 .section-subtitle {
-  font-size: 16px;
+  font-size: 15px;
   color: #ffffff;
   margin-bottom: 18px;
-  font-weight: bold;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -304,18 +349,18 @@ body {
 }
 
 .honor-card {
-  background: #14141c;
-  border: 1px solid #22222c;
-  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
   padding: 22px;
-  transition: 0.3s;
+  transition: all 0.3s ease;
   position: relative;
 }
 
 .honor-card.unlocked {
-  border-color: #00aaff55;
-  background: linear-gradient(135deg, #14141c, #161c29);
-  box-shadow: 0 4px 20px rgba(0, 170, 255, 0.08);
+  border-color: rgba(0, 170, 255, 0.3);
+  background: linear-gradient(135deg, var(--bg-card), #161c29);
+  box-shadow: 0 4px 20px rgba(0, 170, 255, 0.06);
 }
 
 .honor-card.locked {
@@ -331,25 +376,63 @@ body {
 }
 
 .honor-title {
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 700;
   color: white;
 }
 
 .honor-status {
-  font-size: 11px;
+  font-size: 10px;
   padding: 3px 8px;
   border-radius: 4px;
-  font-weight: bold;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.unlocked-tag { background: rgba(0, 255, 204, 0.15); color: #00ffcc; border: 1px solid #00ffcc44; }
-.locked-tag { background: rgba(255, 255, 255, 0.05); color: #888; border: 1px solid #444; }
+.unlocked-tag { background: rgba(0, 255, 204, 0.15); color: var(--accent-cyan); border: 1px solid rgba(0, 255, 204, 0.3); }
+.locked-tag { background: rgba(255, 255, 255, 0.05); color: #888; border: 1px solid #333; }
 
 .honor-desc {
   font-size: 13px;
-  color: #888899;
+  color: var(--text-muted);
   line-height: 1.4;
+}
+
+/* EMPTY STATE BANNER */
+.empty-state-banner {
+  background: linear-gradient(135deg, #14141c, #1a1a29);
+  border: 1px dashed rgba(0, 170, 255, 0.3);
+  border-radius: 14px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+  display: none;
+}
+.empty-state-banner h3 {
+  margin: 0 0 8px 0;
+  color: #fff;
+  font-size: 18px;
+}
+.empty-state-banner p {
+  margin: 0 0 20px 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.cta-button {
+  display: inline-block;
+  background: var(--accent-blue);
+  color: #000;
+  font-weight: 700;
+  padding: 10px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  transition: 0.2s;
+  box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+}
+.cta-button:hover {
+  background: var(--accent-cyan);
+  box-shadow: 0 4px 20px rgba(0, 255, 204, 0.4);
 }
 </style>
 </head>
@@ -400,29 +483,35 @@ body {
 <!-- MAIN CONTENT -->
 <main class="main">
   
-  <!-- HEADER & AUTOMATIC TRACK CONTEXT -->
+  <!-- HEADER & TRACK CONTEXT -->
   <div class="header-container">
     <div class="header-title-area">
       <h1 class="header-title" id="dashboardMainTitle">Executive Threat Dashboard</h1>
       <div class="header-subtitle" id="dashboardSubtitle">Real-time telemetry analysis and cognitive vulnerability matrix.</div>
     </div>
     
-    <!-- LOCKED TO TRAINING SELECTION BADGE (No manual toggle here, controlled by entry/training) -->
     <div class="track-context-badge">
       <div class="context-dot"></div>
       <div>
-        <div style="font-size: 10px; color: #777; text-transform: uppercase;">Active Track Profile</div>
+        <div style="font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Active Track Profile</div>
         <div class="context-text" id="activeTrackContextLabel">University Student Mode</div>
       </div>
     </div>
   </div>
 
-  <!-- TOP ADVANCED METRICS ROW -->
+  <!-- EMPTY STATE NOTICE (Appears if zero training sessions played yet) -->
+  <div class="empty-state-banner" id="emptyStateBanner">
+    <h3>No Training Telemetry Recorded Yet</h3>
+    <p>Complete your first simulation drill in the training center to populate your live executive analytics.</p>
+    <a href="training.html" class="cta-button" id="startTrainingBtn">Start Training Drill Now</a>
+  </div>
+
+  <!-- TOP METRICS ROW -->
   <div class="metrics-row">
     <div class="metric-card">
       <div class="metric-label">Total Completed Operations</div>
       <div class="metric-value" id="statSessionsCount">0</div>
-      <div class="metric-sub">Active telemetry logged</div>
+      <div class="metric-sub">Verified sessions logged</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">Cumulative Accuracy Rating</div>
@@ -435,30 +524,28 @@ body {
       <div class="metric-sub">Ranked score pool</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">Avg Response Speed</div>
-      <div class="metric-value" id="statAvgSpeed">1.4s</div>
-      <div class="metric-sub">Per decision vector</div>
+      <div class="metric-label">Avg Decision Speed</div>
+      <div class="metric-value" id="statAvgSpeed">1.2s</div>
+      <div class="metric-sub">Per threat vector</div>
     </div>
   </div>
 
   <!-- MAIN ANALYTICS GRID -->
   <div class="analytics-grid">
     
-    <!-- Accuracy Trend Line Chart (SVG Advanced Visual) -->
+    <!-- ACCURACY TREND CHART -->
     <div class="analytics-card">
       <div class="card-header-title">
         <span>📈 Longitudinal Accuracy Trend</span>
-        <span style="font-size: 12px; color: #00aaff; font-weight: normal;" id="chartTrackTag">Student Track</span>
+        <span style="font-size: 11px; color: var(--accent-blue); font-weight: normal;" id="chartTrackTag">Student Vector Stream</span>
       </div>
       <div class="chart-wrapper">
         <svg class="chart-svg" viewBox="0 0 500 180" preserveAspectRatio="none">
-          <!-- Background Grid Lines -->
-          <line x1="0" y1="0" x2="500" y2="0" stroke="#22222c" stroke-width="1" stroke-dasharray="4"/>
-          <line x1="0" y1="60" x2="500" y2="60" stroke="#22222c" stroke-width="1" stroke-dasharray="4"/>
-          <line x1="0" y1="120" x2="500" y2="120" stroke="#22222c" stroke-width="1" stroke-dasharray="4"/>
-          <line x1="0" y1="180" x2="500" y2="180" stroke="#22222c" stroke-width="1"/>
+          <line x1="0" y1="0" x2="500" y2="0" stroke="#212130" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="0" y1="60" x2="500" y2="60" stroke="#212130" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="0" y1="120" x2="500" y2="120" stroke="#212130" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="0" y1="180" x2="500" y2="180" stroke="#212130" stroke-width="1"/>
           
-          <!-- Gradient Area Under Curve -->
           <defs>
             <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#00aaff" stop-opacity="0.35"/>
@@ -466,27 +553,23 @@ body {
             </linearGradient>
           </defs>
           <polygon id="svgAreaPolygon" points="0,180 500,180" fill="url(#chartGlow)" />
-          
-          <!-- Dynamic Polyline Path -->
-          <polyline id="svgTrendPath" fill="none" stroke="#00ffcc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,150 500,150"/>
+          <polyline id="svgTrendPath" fill="none" stroke="var(--accent-cyan)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,150 500,150"/>
         </svg>
       </div>
-      <div style="display: flex; justify-content: space-between; font-size: 11px; color: #666677; margin-top: 10px;" id="chartAxisLabels">
+      <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 10px;" id="chartAxisLabels">
         <span>Session 1</span>
-        <span>Session 2</span>
-        <span>Session 3</span>
-        <span>Latest</span>
+        <span>Latest Session</span>
       </div>
     </div>
 
-    <!-- Exploited Vulnerabilities Matrix -->
+    <!-- COGNITIVE VULNERABILITY MATRIX -->
     <div class="analytics-card">
       <div class="card-header-title">
-        <span style="color: #ff3366;">⚠️ Cognitive Vulnerability Breakdown</span>
-        <span style="font-size: 11px; color: #888; font-weight: normal;">Risk Factor Index</span>
+        <span style="color: var(--accent-pink);">⚠️ Cognitive Vulnerability Breakdown</span>
+        <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">Risk Factor Index</span>
       </div>
       <div id="vulnerabilityMatrixContainer" style="margin-top: 5px;">
-        <!-- Dynamically injected bars based on active mode -->
+        <!-- Dynamically injected bars -->
       </div>
     </div>
 
@@ -495,19 +578,19 @@ body {
   <!-- ACQUIRED HONORS & BADGES -->
   <div class="section-subtitle">🏆 Acquired Honors & Achievement Badges</div>
   <div class="honors-grid" id="advancedHonorsGrid">
-    <!-- Dynamically Injected Badges -->
+    <!-- Dynamically injected badges -->
   </div>
 
 </main>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Automatically inherit mode from URL parameters passed from training.html / index.html
+  // 1. Inherit mode from URL parameters (?mode=student or ?mode=elderly)
   const params = new URLSearchParams(window.location.search);
   const mode = params.get("mode") || "student";
   const isStudent = mode === "student";
 
-  // 2. Set Dynamic UI Text based on Active Track Context
+  // 2. Set UI Text according to Active Track
   document.getElementById("dashboardMainTitle").textContent = isStudent ? "Student Resilience Dashboard" : "Senior Security Operations Dashboard";
   document.getElementById("dashboardSubtitle").textContent = isStudent 
     ? "Real-time audit of campus portal drills, academic urgency traps, and tuition scams." 
@@ -516,49 +599,56 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("activeTrackContextLabel").textContent = isStudent ? "University Student Mode" : "Senior / Elder Track Mode";
   document.getElementById("chartTrackTag").textContent = isStudent ? "Student Vector Stream" : "Elder Vector Stream";
 
-  // 3. Fetch Mode-Specific LocalStorage Telemetry
+  // 3. Fetch exact player telemetry data from LocalStorage
   const storageKey = isStudent ? "phishguard_student_data" : "phishguard_elderly_data";
   const sessionData = JSON.parse(localStorage.getItem(storageKey)) || [];
 
-  // Fallback demo metrics if storage is fresh so the dashboard looks advanced immediately
-  const dataToUse = sessionData.length > 0 ? sessionData : [
-    { type: "Inbox Intercept", score: 2, total: 3, accuracy: 67, points: 200 },
-    { type: "URL Inspection", score: 3, total: 4, accuracy: 75, points: 300 },
-    { type: "Spoof Detection", score: 3, total: 3, accuracy: 100, points: 300 }
-  ];
+  // Show empty state banner if no recorded gameplay yet
+  if (sessionData.length === 0) {
+    document.getElementById("emptyStateBanner").style.display = "block";
+  }
 
-  let totalSessions = dataToUse.length;
+  let totalSessions = sessionData.length;
   let totalCorrect = 0;
   let totalQuestions = 0;
   let cumulativePoints = 0;
 
-  dataToUse.forEach(s => {
+  sessionData.forEach(s => {
     totalCorrect += (s.score || 0);
-    totalQuestions += (s.total || 3);
-    cumulativePoints += (s.points || (s.score * 100));
+    let qTotal = s.total || (s.questions ? s.questions.length : 3);
+    totalQuestions += qTotal;
+    cumulativePoints += (s.points || (s.score * 100) || 100);
   });
 
   let overallAccuracy = totalQuestions === 0 ? 0 : Math.round((totalCorrect / totalQuestions) * 100);
 
-  // Update Top Metrics Row
+  // Update Top Metrics
   document.getElementById("statSessionsCount").textContent = totalSessions;
   document.getElementById("statAccuracyRating").textContent = overallAccuracy + "%";
   document.getElementById("statTotalPoints").textContent = cumulativePoints + " pts";
-  document.getElementById("statAccuracySub").textContent = overallAccuracy >= 70 ? "High Resilience" : "Review Recommended";
+  document.getElementById("statAccuracySub").textContent = overallAccuracy >= 70 ? "High Resilience" : (totalSessions === 0 ? "Awaiting Drill Data" : "Review Recommended");
 
-  // 4. Build Advanced SVG Polyline Trend Chart
+  // 4. Build Trend Chart (Using exact player session accuracies)
   const svgPath = document.getElementById("svgTrendPath");
   const svgPolygon = document.getElementById("svgAreaPolygon");
   
-  // Extract accuracies or build point string
-  let pointsArray = dataToUse.map(s => s.accuracy || (s.total > 0 ? Math.round((s.score / s.total) * 100) : 50));
-  if (pointsArray.length === 1) pointsArray = [pointsArray[0], pointsArray[0]]; // Ensure at least 2 points for polyline
+  let pointsArray = sessionData.map(s => {
+    if (s.accuracy !== undefined) return s.accuracy;
+    let sTotal = s.total || 3;
+    return sTotal > 0 ? Math.round(((s.score || 0) / sTotal) * 100) : 50;
+  });
+
+  if (pointsArray.length === 0) {
+    pointsArray = [50, 50]; // Flat line if no data yet
+  } else if (pointsArray.length === 1) {
+    pointsArray = [pointsArray[0], pointsArray[0]];
+  }
 
   const stepX = 500 / (pointsArray.length - 1 || 1);
   let coords = [];
   pointsArray.forEach((acc, idx) => {
     let x = idx * stepX;
-    let y = 180 - (acc / 100) * 160; // Map 0-100% to 180-20px SVG space
+    let y = 180 - (acc / 100) * 160;
     coords.push(`${x},${y}`);
   });
 
@@ -566,23 +656,23 @@ document.addEventListener("DOMContentLoaded", () => {
   svgPath.setAttribute("points", polylineStr);
   svgPolygon.setAttribute("points", `0,180 ${polylineStr} 500,180`);
 
-  // 5. Build Mode-Specific Cognitive Vulnerability Breakdown Matrix
+  // 5. Build Vulnerability Breakdown Matrix
   const vulnContainer = document.getElementById("vulnerabilityMatrixContainer");
   const vulnerabilities = isStudent ? [
-    { name: "Academic Deadline Urgency", risk: 78 },
-    { name: "IT Helpdesk Authority Impersonation", risk: 62 },
-    { name: "Blackboard Portal Domain Spoofing", risk: 45 }
+    { name: "Academic Deadline Urgency", risk: totalSessions > 0 ? Math.max(15, 100 - overallAccuracy + 10) : 78 },
+    { name: "IT Helpdesk Authority Impersonation", risk: totalSessions > 0 ? Math.max(20, 100 - overallAccuracy) : 62 },
+    { name: "Blackboard Portal Domain Spoofing", risk: totalSessions > 0 ? Math.max(10, 90 - overallAccuracy) : 45 }
   ] : [
-    { name: "State Pension Claim Urgency", risk: 85 },
-    { name: "HMRC / NHS Authority Impersonation", risk: 72 },
-    { name: "Bank Security Alert Fear", risk: 58 }
+    { name: "State Pension Claim Urgency", risk: totalSessions > 0 ? Math.max(20, 100 - overallAccuracy + 10) : 85 },
+    { name: "HMRC / NHS Authority Impersonation", risk: totalSessions > 0 ? Math.max(15, 95 - overallAccuracy) : 72 },
+    { name: "Bank Security Alert Fear", risk: totalSessions > 0 ? Math.max(10, 80 - overallAccuracy) : 58 }
   ];
 
   vulnContainer.innerHTML = vulnerabilities.map(v => `
     <div class="vuln-item">
       <div class="vuln-meta">
         <span>${v.name}</span>
-        <span style="color: #ff3366; font-weight: bold;">${v.risk}% Vulnerability</span>
+        <span style="color: var(--accent-pink); font-weight: bold;">${v.risk}% Risk</span>
       </div>
       <div class="vuln-bar-bg">
         <div class="vuln-bar-fill" style="width: ${v.risk}%;"></div>
@@ -590,12 +680,12 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `).join('');
 
-  // 6. Build Acquired Honors & Achievement Badges Grid
+  // 6. Build Honors & Badges Grid based on real achievements
   const honorsGrid = document.getElementById("advancedHonorsGrid");
   const badges = [
     { title: "First Mission Lock", desc: "Complete your initial security simulation drill.", unlocked: totalSessions >= 1 },
     { title: "Velocity Demon", desc: "Maintain rapid decision timing across operations.", unlocked: totalSessions >= 2 },
-    { title: "Flawless Intercept", desc: "Achieve 100% accuracy in a complete training session.", unlocked: dataToUse.some(s => s.accuracy === 100 || s.score === s.total) },
+    { title: "Flawless Intercept", desc: "Achieve 100% accuracy in a complete training session.", unlocked: sessionData.some(s => s.accuracy === 100 || s.score === s.total) },
     { title: "Resilience Veteran", desc: "Complete 5 or more total simulation sessions.", unlocked: totalSessions >= 5 },
     { title: "Sharpshooter", desc: "Correctly identify 10 or more threat vectors.", unlocked: totalCorrect >= 10 },
     { title: "Master Sentinel", desc: "Achieve an overall resilience rating exceeding 90%.", unlocked: overallAccuracy >= 90 && totalSessions > 0 }
@@ -611,10 +701,13 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `).join('');
 
-  // 7. Dynamically Inject Mode Parameter Across All Sidebar Navigation Links
-  document.querySelectorAll(".sidebar a").forEach(link => {
-    let baseHref = link.getAttribute("href").split("?")[0];
-    link.setAttribute("href", `${baseHref}?mode=${mode}`);
+  // 7. Pass mode parameter across all sidebar links & start training button
+  document.querySelectorAll(".sidebar a, #startTrainingBtn").forEach(link => {
+    let href = link.getAttribute("href");
+    if (href && !href.includes("mode=")) {
+      let baseHref = href.split("?")[0];
+      link.setAttribute("href", `${baseHref}?mode=${mode}`);
+    }
   });
 });
 </script>
