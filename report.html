@@ -53,71 +53,123 @@ body {
   pointer-events: none;
 }
 
-/* SIDEBAR */
 .sidebar {
-  width: 260px;
-  background: rgba(11, 16, 28, 0.95);
-  border-right: 1px solid var(--border-color);
-  padding: 30px 20px;
+  width: 240px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
-  flex-shrink: 0;
+  padding: 24px 16px;
+  background: rgba(9, 13, 23, 0.95);
+  border-right: 1px solid var(--line, #26334a);
   backdrop-filter: blur(10px);
 }
 
-.sidebar-logo {
+.sidebar-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
+  padding-left: 8px;
 }
 
-.sidebar-logo svg {
-  width: 36px;
-  height: 36px;
-  filter: drop-shadow(0 0 8px rgba(0, 170, 255, 0.5));
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: rgba(54, 224, 208, 0.1);
+  border: 1px solid rgba(54, 224, 208, 0.4);
+  border-radius: 8px;
+  color: var(--cyan, #36e0d0);
+  box-shadow: 0 0 15px rgba(54, 224, 208, 0.15);
 }
 
-.sidebar-title {
-  font-size: 20px;
+.brand-text {
+  color: var(--cyan, #36e0d0);
+  letter-spacing: 1.2px;
   font-weight: 800;
-  letter-spacing: 1px;
-  background: linear-gradient(90deg, #00aaff, #00f0ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: 15px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
 }
 
 .sidebar-item {
-  font-size: 15px;
-  font-weight: 500;
-  padding: 12px 16px;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.25s ease;
   display: flex;
   align-items: center;
   gap: 12px;
-  text-decoration: none;
+  padding: 11px 14px;
   border-radius: 8px;
-  margin-bottom: 4px;
+  text-decoration: none;
+  color: var(--muted, #9aa8bd);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .sidebar-item svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
 .sidebar-item:hover {
-  color: var(--accent-blue);
-  background: rgba(0, 170, 255, 0.05);
+  color: var(--text, #f4f7fb);
+  background: rgba(86, 183, 255, 0.08);
+}
+
+.sidebar-item:hover svg {
+  opacity: 1;
 }
 
 .sidebar-item.active {
-  color: var(--accent-cyan);
-  background: rgba(0, 240, 255, 0.1);
-  border-left: 3px solid var(--accent-cyan);
+  color: var(--cyan, #36e0d0);
+  background: rgba(54, 224, 208, 0.1);
+  border: 1px solid rgba(54, 224, 208, 0.25);
+  font-weight: 600;
+}
+
+.sidebar-item.active svg {
+  opacity: 1;
+  color: var(--cyan, #36e0d0);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--line, #26334a);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.telemetry-label {
+  color: var(--muted, #9aa8bd);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text, #f4f7fb);
+  font-size: 12px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--green, #55d98b);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(85, 217, 139, 0.6);
 }
 
 /* MAIN DASHBOARD CONTAINER */
@@ -186,7 +238,7 @@ body {
   background: linear-gradient(135deg, #00aaff, #0088cc);
   color: #000;
   border: none;
-  padding: 10px 20px;
+  padding: 10px 18px;
   border-radius: 6px;
   font-weight: 700;
   font-size: 13px;
@@ -201,6 +253,25 @@ body {
 .btn-cyber:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 170, 255, 0.5);
+}
+
+.btn-cyber-alt {
+  background: rgba(0, 170, 255, 0.1);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 170, 255, 0.3);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-cyber-alt:hover {
+  background: rgba(0, 170, 255, 0.2);
 }
 
 /* GLASSMORPHIC AUDIT REPORT CARD */
@@ -489,7 +560,7 @@ body {
   font-size: 11px;
 }
 
-/* RECOMMENDATIONS LIST */
+/* INTERACTIVE RECOMMENDATIONS CHECKLIST */
 .rec-list {
   background: rgba(245, 158, 11, 0.05);
   border: 1px solid rgba(245, 158, 11, 0.2);
@@ -501,101 +572,168 @@ body {
 .rec-item {
   font-size: 13px;
   color: #fde68a;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   line-height: 1.5;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
+  cursor: pointer;
 }
 
 .rec-item:last-child {
   margin-bottom: 0;
 }
 
-.rec-bullet {
-  color: var(--warning);
-  font-weight: bold;
+.rec-item input[type="checkbox"] {
+  accent-color: var(--warning);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  margin-top: 2px;
 }
 
-/* SIGN-OFF FOOTER */
-.sign-block {
+.rec-item.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* SESSION LOG MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal-content {
+  background: #121a2b;
+  border: 1px solid var(--border-color);
+  width: 600px;
+  max-height: 80vh;
+  border-radius: 12px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+}
+
+.modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-color);
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.sign-line {
-  width: 180px;
-  border-top: 1px solid var(--text-muted);
-  margin-top: 25px;
-  padding-top: 4px;
-  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+  font-weight: 700;
+  font-size: 16px;
   color: var(--text-main);
-  font-weight: 600;
 }
 
-/* Print styling adjustments for clean PDF export */
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+}
+.modal-close:hover { color: white; }
+
+.modal-body {
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Print styling adjustments */
 @media print {
   body { background: white !important; color: black !important; display: block !important; }
-  .sidebar, .top-bar, .bg-grid, .glow-orb { display: none !important; }
+  .sidebar, .top-bar, .bg-grid, .glow-orb, .btn-cyber-alt { display: none !important; }
   .main { padding: 0 !important; height: auto !important; overflow: visible !important; }
   .audit-card { background: white !important; border: none !important; box-shadow: none !important; padding: 0 !important; color: black !important; }
   .telemetry-strip, .exec-summary, .metric-box, .progress-container, .cyber-table, .vuln-panel, .rec-list { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; color: black !important; }
   .metric-val, .metric-lbl, .top-bar-title, .report-meta span, .sign-line, .cyber-table td, .cyber-table th { color: #0f172a !important; }
   .accent-cyan, .trigger-bar-fill { background: #0284c7 !important; }
 }
+
+/* ACCESSIBILITY MODE */
+body.a11y-mode {
+  zoom: 1.2;
+  filter: contrast(1.08);
+}
 </style>
 </head>
 
 <body>
+<script>
+(function() {
+  try {
+    if (localStorage.getItem("phishguard_a11y_mode") === "true") {
+      document.body.classList.add("a11y-mode");
+    }
+  } catch (e) {}
+})();
+</script>
 
 <div class="bg-grid"></div>
 <div class="glow-orb"></div>
 
 <!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sidebar-logo">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#00aaff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-    </svg>
-    <div class="sidebar-title">PHISHGUARD</div>
+<aside class="sidebar" aria-label="Primary navigation">
+  <div class="sidebar-brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/></svg>
+    </div>
+    <span class="brand-text">PHISHGUARD</span>
   </div>
 
-  <a href="training.html" class="sidebar-item" id="nav-training">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
-    Training
-  </a>
+  <nav class="sidebar-nav">
+    <a href="training.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Training
+    </a>
 
-  <a href="dashboard.html" class="sidebar-item" id="nav-dashboard">
-    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-    Dashboard
-  </a>
+    <a href="dashboard.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
 
-  <a href="leaderboard.html" class="sidebar-item" id="nav-leaderboard">
-    <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-    Leaderboard
-  </a>
+    <a href="leaderboard.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H2v12h4zM14 3h-4v18h4zM22 13h-4v8h4z"/></svg>
+      Leaderboard
+    </a>
 
-  <a href="learn.html" class="sidebar-item" id="nav-learn">
-    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-    Learn
-  </a>
+    <a href="learn.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0-5H20"/></svg>
+      Learn
+    </a>
 
-  <a href="report.html" class="sidebar-item active" id="nav-report">
-    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-    Report
-  </a>
+    <a href="report.html" class="sidebar-item active">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Report
+    </a>
 
-  <a href="settings.html" class="sidebar-item" id="nav-settings">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    Settings
-  </a>
-</div>
+    <a href="compare.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Compare
+    </a>
+
+    <a href="settings.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <span class="telemetry-label">System Telemetry</span>
+    <div class="status-indicator">
+      <div class="status-dot"></div> 
+      <span>Online</span>
+    </div>
+  </div>
+</aside>
 
 <!-- MAIN CONTENT -->
 <div class="main">
@@ -605,6 +743,10 @@ body {
       Security Operations Center &bull; Audit Intelligence
     </div>
     <div class="action-btns">
+      <button class="btn-cyber-alt" onclick="openSessionLogModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Raw Drill Logs
+      </button>
       <button class="btn-cyber" onclick="window.print()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
         Export PDF Report
@@ -741,22 +883,46 @@ body {
       <!-- 4.0 Audit Recommendations -->
       <div class="section-title">
         4.0 Threat Remediation & Recommendations
-        <span>Section 4 of 4</span>
+        <span>Section 4 of 4 (Interactive Checklist)</span>
       </div>
       <div class="rec-list" id="recommendationsList">
         <!-- Dynamically populated -->
       </div>
 
     </div>
+  </div>
+</div>
 
-    
+<!-- MODAL FOR RAW DRILL LOGS -->
+<div id="sessionLogModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span>Raw Session Telemetry Log</span>
+      <button class="modal-close" onclick="closeSessionLogModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <table class="cyber-table" style="font-size: 12px;">
+        <thead>
+          <tr>
+            <th>Simulation</th>
+            <th>Score</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="modalLogBody">
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
 <script>
+let sessionData = [];
+let mode = "student";
+
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
-  const mode = params.get("mode") || "student";
+  mode = params.get("mode") || "student";
   const isStudent = mode === "student";
 
   // 1. Setup Header Metadata
@@ -767,7 +933,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 2. Fetch live session records from LocalStorage
   const storageKey = isStudent ? "phishguard_student_data" : "phishguard_elderly_data";
-  const sessionData = JSON.parse(localStorage.getItem(storageKey)) || [];
+  sessionData = JSON.parse(localStorage.getItem(storageKey)) || [];
 
   const emptyContainer = document.getElementById("emptyNoticeContainer");
   const reportWrapper = document.getElementById("reportContentWrapper");
@@ -782,6 +948,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 3. Compute telemetry metrics
+  const typeDisplayNames = {
+    inbox: "Inbox Intercept",
+    url: "URL Inspection",
+    spoof: "Spoof Detection",
+    challenge: "Challenge Mode"
+  };
+
   let totalSessions = sessionData.length;
   let totalQuestions = 0;
   let totalCorrect = 0;
@@ -793,7 +966,7 @@ document.addEventListener("DOMContentLoaded", () => {
     totalQuestions += qCount;
     totalCorrect += sCount;
 
-    let moduleType = item.type || item.gameMode || "Inbox Intercept";
+    let moduleType = typeDisplayNames[item.simulation] || "Challenge Mode";
     if (!typeStats[moduleType]) {
       typeStats[moduleType] = { sessions: 0, questions: 0, correct: 0 };
     }
@@ -859,32 +1032,70 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `).join('');
 
-  // 7. Tailored Recommendations
+  // 7. Tailored Interactive Recommendations Checklist
   const recList = document.getElementById("recommendationsList");
+  let savedChecks = JSON.parse(localStorage.getItem(`phishguard_checks_${mode}`)) || {};
   let recommendations = isStudent ? [
-    { title: "Domain Inspection Protocol:", text: "Always examine URL structures closely for typosquatting before submitting institutional login credentials." },
-    { title: "Out-of-Band Verification:", text: "Verify unexpected IT or library security notices through official campus portals rather than email action links." },
-    { title: "Continuous Threat Awareness:", text: "Review the <strong>Learn</strong> module regularly to keep pace with emerging student phishing vector campaigns." }
+    { id: "rec1", title: "Domain Inspection Protocol:", text: "Always examine URL structures closely for typosquatting before submitting institutional login credentials." },
+    { id: "rec2", title: "Out-of-Band Verification:", text: "Verify unexpected IT or library security notices through official campus portals rather than email action links." },
+    { id: "rec3", title: "Continuous Threat Awareness:", text: "Review the <strong>Learn</strong> module regularly to keep pace with emerging student phishing vector campaigns." }
   ] : [
-    { title: "Financial Verification Standards:", text: "Never act on urgent SMS or email notifications concerning pension freezes or tax rebates without calling official verified telephone numbers." },
-    { title: "Government Policy Recognition:", text: "Note that official entities will never request immediate wire transfers or passwords via unsolicited links." },
-    { title: "Trusted Circle Consultation:", text: "Consult designated family members or support contacts before responding to urgent financial alerts." }
+    { id: "rec1", title: "Financial Verification Standards:", text: "Never act on urgent SMS or email notifications concerning pension freezes or tax rebates without calling official verified telephone numbers." },
+    { id: "rec2", title: "Government Policy Recognition:", text: "Note that official entities will never request immediate wire transfers or passwords via unsolicited links." },
+    { id: "rec3", title: "Trusted Circle Consultation:", text: "Consult designated family members or support contacts before responding to urgent financial alerts." }
   ];
 
-  recList.innerHTML = recommendations.map(rec => `
-    <div class="rec-item">
-      <span class="rec-bullet">▪</span>
-      <div><strong>${rec.title}</strong> ${rec.text}</div>
-    </div>
+  recList.innerHTML = recommendations.map(rec => {
+    let isChecked = savedChecks[rec.id] ? "checked" : "";
+    let completedClass = savedChecks[rec.id] ? "completed" : "";
+    return `
+      <label class="rec-item ${completedClass}" id="label_${rec.id}">
+        <input type="checkbox" id="${rec.id}" ${isChecked} onchange="toggleCheck('${rec.id}')">
+        <div><strong>${rec.title}</strong> ${rec.text}</div>
+      </label>
+    `;
+  }).join('');
+
+  // 8. Populate Modal Log Table
+  const modalLogBody = document.getElementById("modalLogBody");
+  modalLogBody.innerHTML = sessionData.map(item => `
+    <tr>
+      <td>${typeDisplayNames[item.simulation] || item.simulation || 'Drill'}</td>
+      <td>${item.score || 0} / ${item.total || 3}</td>
+      <td>${item.timestamp ? new Date(item.timestamp).toLocaleTimeString() : 'Recent Session'}</td>
+    </tr>
   `).join('');
 
-  // 8. Preserve mode parameter across sidebar links
+  // 9. Preserve mode parameter across sidebar links
   document.querySelectorAll(".sidebar a").forEach(link => {
     let baseHref = link.getAttribute("href").split("?")[0];
     link.setAttribute("href", `${baseHref}?mode=${mode}`);
   });
 });
-</script>
 
+function toggleCheck(id) {
+  let checkbox = document.getElementById(id);
+  let label = document.getElementById(`label_${id}`);
+  let savedChecks = JSON.parse(localStorage.getItem(`phishguard_checks_${mode}`)) || {};
+  
+  if (checkbox.checked) {
+    savedChecks[id] = true;
+    label.classList.add("completed");
+  } else {
+    delete savedChecks[id];
+    label.classList.remove("completed");
+  }
+  localStorage.setItem(`phishguard_checks_${mode}`, JSON.stringify(savedChecks));
+}
+
+function openSessionLogModal() {
+  document.getElementById("sessionLogModal").style.display = "flex";
+}
+
+function closeSessionLogModal() {
+  document.getElementById("sessionLogModal").style.display = "none";
+}
+</script>
+<script src="js/js/behaviour-engine.js"></script>
 </body>
 </html>

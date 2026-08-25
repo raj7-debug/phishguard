@@ -52,79 +52,127 @@ body {
   pointer-events: none;
 }
 
-/* SIDEBAR */
+/* SIDEBAR STYLING */
 .sidebar {
-  width: 250px;
-  background: #0d0d12;
-  border-right: 1px solid var(--border-color);
-  padding: 30px 20px;
+  width: 240px;
   height: 100vh;
-  box-sizing: border-box;
-  flex-shrink: 0;
   position: sticky;
   top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  background: rgba(9, 13, 23, 0.95);
+  border-right: 1px solid var(--line, #26334a);
+  backdrop-filter: blur(10px);
 }
 
-.sidebar-logo {
+.sidebar-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
+  padding-left: 8px;
 }
 
-.sidebar-logo svg {
+.brand-mark {
   width: 32px;
   height: 32px;
-  fill: var(--accent-blue);
+  display: grid;
+  place-items: center;
+  background: rgba(54, 224, 208, 0.1);
+  border: 1px solid rgba(54, 224, 208, 0.4);
+  border-radius: 8px;
+  color: var(--cyan, #36e0d0);
+  box-shadow: 0 0 15px rgba(54, 224, 208, 0.15);
 }
 
-.sidebar-title {
-  font-size: 18px;
+.brand-text {
+  color: var(--cyan, #36e0d0);
+  letter-spacing: 1.2px;
   font-weight: 800;
-  color: var(--accent-blue);
-  letter-spacing: 1px;
+  font-size: 15px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
 }
 
 .sidebar-item {
-  font-size: 15px;
-  padding: 12px 14px;
-  border-radius: 8px;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.25s ease;
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 11px 14px;
+  border-radius: 8px;
   text-decoration: none;
-  margin-bottom: 6px;
+  color: var(--muted, #9aa8bd);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .sidebar-item svg {
-  width: 18px;
-  height: 18px;
-  fill: var(--text-muted);
-  transition: 0.25s;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
 .sidebar-item:hover {
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-main);
+  color: var(--text, #f4f7fb);
+  background: rgba(86, 183, 255, 0.08);
 }
+
 .sidebar-item:hover svg {
-  fill: var(--text-main);
+  opacity: 1;
 }
 
 .sidebar-item.active {
-  background: rgba(0, 170, 255, 0.1);
-  color: var(--accent-blue);
+  color: var(--cyan, #36e0d0);
+  background: rgba(54, 224, 208, 0.1);
+  border: 1px solid rgba(54, 224, 208, 0.25);
   font-weight: 600;
-  border: 1px solid rgba(0, 170, 255, 0.2);
-}
-.sidebar-item.active svg {
-  fill: var(--accent-blue);
 }
 
-/* MAIN CONTENT */
+.sidebar-item.active svg {
+  opacity: 1;
+  color: var(--cyan, #36e0d0);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--line, #26334a);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.telemetry-label {
+  color: var(--muted, #9aa8bd);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text, #f4f7fb);
+  font-size: 12px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--green, #55d98b);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(85, 217, 139, 0.6);
+}
+
+/* MAIN CONTENT AREA */
 .main {
   flex: 1;
   padding: 40px;
@@ -133,14 +181,13 @@ body {
   box-sizing: border-box;
 }
 
-/* TOP HEADER BAR */
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 35px;
+  margin-bottom: 25px;
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 25px;
+  padding-bottom: 20px;
 }
 
 .header-title-area {
@@ -150,7 +197,7 @@ body {
 }
 
 .header-title {
-  font-size: 30px;
+  font-size: 28px;
   color: #ffffff;
   margin: 0;
   font-weight: 800;
@@ -158,43 +205,38 @@ body {
 }
 
 .header-subtitle {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text-muted);
 }
 
-/* TRACK STATUS BADGE */
-.track-context-badge {
+/* FILTER TOOLBAR */
+.filter-toolbar {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 10px;
+  margin-bottom: 30px;
   background: var(--bg-card);
+  padding: 6px;
   border: 1px solid var(--border-color);
-  padding: 10px 18px;
-  border-radius: 30px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  border-radius: 12px;
+  width: fit-content;
 }
 
-.context-dot {
-  width: 10px;
-  height: 10px;
-  background: var(--accent-cyan);
-  border-radius: 50%;
-  box-shadow: 0 0 12px var(--accent-cyan);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.4); }
-  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 255, 204, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
-}
-
-.context-text {
+.filter-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 8px 16px;
   font-size: 12px;
-  font-weight: 700;
-  color: #dddded;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn.active {
+  background: rgba(0, 170, 255, 0.15);
+  color: var(--accent-blue);
+  border: 1px solid rgba(0, 170, 255, 0.3);
 }
 
 /* METRICS ROW */
@@ -223,10 +265,7 @@ body {
 .metric-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
+  top: 0; left: 0; width: 100%; height: 3px;
   background: linear-gradient(to right, var(--accent-blue), var(--accent-cyan));
 }
 
@@ -240,10 +279,9 @@ body {
 }
 
 .metric-value {
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 800;
   color: #ffffff;
-  letter-spacing: -0.5px;
 }
 
 .metric-sub {
@@ -256,16 +294,16 @@ body {
 /* ANALYTICS GRID */
 .analytics-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns: 1.3fr 1fr;
   gap: 25px;
-  margin-bottom: 35px;
+  margin-bottom: 30px;
 }
 
 .analytics-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 14px;
-  padding: 25px;
+  padding: 24px;
   box-sizing: border-box;
 }
 
@@ -274,7 +312,7 @@ body {
   text-transform: uppercase;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -284,7 +322,7 @@ body {
 /* CHART CONTAINER */
 .chart-wrapper {
   position: relative;
-  height: 200px;
+  height: 190px;
   width: 100%;
 }
 
@@ -294,20 +332,16 @@ body {
   overflow: visible;
 }
 
-/* VULNERABILITY BREAKDOWN */
+/* VULNERABILITY MATRIX */
 .vuln-item {
-  margin-bottom: 18px;
-}
-
-.vuln-item:last-child {
-  margin-bottom: 0;
+  margin-bottom: 16px;
 }
 
 .vuln-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
-  margin-bottom: 8px;
+  font-size: 12.5px;
+  margin-bottom: 6px;
   font-weight: 600;
   color: #d1d1e0;
 }
@@ -325,20 +359,54 @@ body {
   height: 100%;
   background: linear-gradient(to right, var(--accent-pink), #ff6644);
   border-radius: 4px;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* RECENT ACTIVITY FEED */
+.activity-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 30px;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #09090d;
+  border: 1px solid var(--border-color);
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.activity-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.activity-status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.status-success { background: #55d98b; box-shadow: 0 0 8px rgba(85,217,139,0.5); }
+.status-fail { background: var(--accent-pink); box-shadow: 0 0 8px rgba(255,51,102,0.5); }
 
 /* HONORS SECTION */
 .section-subtitle {
-  font-size: 15px;
+  font-size: 14px;
   color: #ffffff;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .honors-grid {
@@ -352,15 +420,13 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 14px;
-  padding: 22px;
+  padding: 20px;
   transition: all 0.3s ease;
-  position: relative;
 }
 
 .honor-card.unlocked {
   border-color: rgba(0, 170, 255, 0.3);
   background: linear-gradient(135deg, var(--bg-card), #161c29);
-  box-shadow: 0 4px 20px rgba(0, 170, 255, 0.06);
 }
 
 .honor-card.locked {
@@ -372,11 +438,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .honor-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: white;
 }
@@ -387,13 +453,12 @@ body {
   border-radius: 4px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 .unlocked-tag { background: rgba(0, 255, 204, 0.15); color: var(--accent-cyan); border: 1px solid rgba(0, 255, 204, 0.3); }
 .locked-tag { background: rgba(255, 255, 255, 0.05); color: #888; border: 1px solid #333; }
 
 .honor-desc {
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--text-muted);
   line-height: 1.4;
 }
@@ -408,16 +473,6 @@ body {
   margin-bottom: 30px;
   display: none;
 }
-.empty-state-banner h3 {
-  margin: 0 0 8px 0;
-  color: #fff;
-  font-size: 18px;
-}
-.empty-state-banner p {
-  margin: 0 0 20px 0;
-  color: var(--text-muted);
-  font-size: 13px;
-}
 .cta-button {
   display: inline-block;
   background: var(--accent-blue);
@@ -427,12 +482,7 @@ body {
   border-radius: 8px;
   text-decoration: none;
   font-size: 13px;
-  transition: 0.2s;
-  box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
-}
-.cta-button:hover {
-  background: var(--accent-cyan);
-  box-shadow: 0 4px 20px rgba(0, 255, 204, 0.4);
+  margin-top: 12px;
 }
 </style>
 </head>
@@ -441,72 +491,86 @@ body {
 
 <div class="bg-grid"></div>
 <div class="glow-orb"></div>
-
 <!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sidebar-logo">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
-    <div class="sidebar-title">PHISHGUARD</div>
+<aside class="sidebar" aria-label="Primary navigation">
+  <div class="sidebar-brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/></svg>
+    </div>
+    <span class="brand-text">PHISHGUARD</span>
   </div>
 
-  <a href="training.html" class="sidebar-item" id="nav-training">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
-    Training
-  </a>
+  <nav class="sidebar-nav">
+    <a href="training.html" class="sidebar-item active">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Training
+    </a>
 
-  <a href="dashboard.html" class="sidebar-item active" id="nav-dashboard">
-    <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"/></svg>
-    Dashboard
-  </a>
+    <a href="dashboard.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
 
-  <a href="leaderboard.html" class="sidebar-item" id="nav-leaderboard">
-    <svg viewBox="0 0 24 24"><path d="M12 2l9 21H3z"/></svg>
-    Leaderboard
-  </a>
+    <a href="leaderboard.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H2v12h4zM14 3h-4v18h4zM22 13h-4v8h4z"/></svg>
+      Leaderboard
+    </a>
 
-  <a href="learn.html" class="sidebar-item" id="nav-learn">
-    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
-    Learn
-  </a>
+    <a href="learn.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0-5H20"/></svg>
+      Learn
+    </a>
 
-  <a href="report.html" class="sidebar-item" id="nav-report">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
-    Report
-  </a>
+    <a href="report.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Report
+    </a>
 
-  <a href="settings.html" class="sidebar-item" id="nav-settings">
-    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
-    Settings
-  </a>
-</div>
+    <a href="compare.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Compare
+    </a>
+
+    <a href="settings.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <span class="telemetry-label">System Telemetry</span>
+    <div class="status-indicator">
+      <div class="status-dot"></div> 
+      <span>Online</span>
+    </div>
+  </div>
+</aside>
 
 <!-- MAIN CONTENT -->
 <main class="main">
   
-  <!-- HEADER & TRACK CONTEXT -->
   <div class="header-container">
     <div class="header-title-area">
-      <h1 class="header-title" id="dashboardMainTitle">Executive Threat Dashboard</h1>
-      <div class="header-subtitle" id="dashboardSubtitle">Real-time telemetry analysis and cognitive vulnerability matrix.</div>
-    </div>
-    
-    <div class="track-context-badge">
-      <div class="context-dot"></div>
-      <div>
-        <div style="font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Active Track Profile</div>
-        <div class="context-text" id="activeTrackContextLabel">University Student Mode</div>
-      </div>
+      <h1 class="header-title">Executive Threat Dashboard</h1>
+      <div class="header-subtitle">Advanced telemetry analysis, psychological vulnerability matrix, and session auditing.</div>
     </div>
   </div>
 
-  <!-- EMPTY STATE NOTICE (Appears if zero training sessions played yet) -->
+  <!-- FILTER TOOLBAR -->
+  <div class="filter-toolbar">
+    <button class="filter-btn active" onclick="switchFilter('all')">All Tracks</button>
+    <button class="filter-btn" onclick="switchFilter('student')">Student Track</button>
+    <button class="filter-btn" onclick="switchFilter('elderly')">Senior Track</button>
+  </div>
+
+  <!-- EMPTY STATE BANNER -->
   <div class="empty-state-banner" id="emptyStateBanner">
     <h3>No Training Telemetry Recorded Yet</h3>
-    <p>Complete your first simulation drill in the training center to populate your live executive analytics.</p>
-    <a href="training.html" class="cta-button" id="startTrainingBtn">Start Training Drill Now</a>
+    <p>Complete your first simulation drill in the training center to populate your executive analytics.</p>
+    <a href="training.html" class="cta-button">Start Training Drill Now</a>
   </div>
 
-  <!-- TOP METRICS ROW -->
+  <!-- METRICS ROW -->
   <div class="metrics-row">
     <div class="metric-card">
       <div class="metric-label">Total Completed Operations</div>
@@ -514,9 +578,9 @@ body {
       <div class="metric-sub">Verified sessions logged</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">Cumulative Accuracy Rating</div>
+      <div class="metric-label">Cumulative Resilience Index</div>
       <div class="metric-value" id="statAccuracyRating">0%</div>
-      <div class="metric-sub" id="statAccuracySub">Resilience Index</div>
+      <div class="metric-sub" id="statAccuracySub">Security rating</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">Total Points Earned</div>
@@ -525,19 +589,19 @@ body {
     </div>
     <div class="metric-card">
       <div class="metric-label">Avg Decision Speed</div>
-      <div class="metric-value" id="statAvgSpeed">1.2s</div>
+      <div class="metric-value" id="statAvgSpeed">1.4s</div>
       <div class="metric-sub">Per threat vector</div>
     </div>
   </div>
 
-  <!-- MAIN ANALYTICS GRID -->
+  <!-- ANALYTICS GRID -->
   <div class="analytics-grid">
     
     <!-- ACCURACY TREND CHART -->
     <div class="analytics-card">
       <div class="card-header-title">
         <span>📈 Longitudinal Accuracy Trend</span>
-        <span style="font-size: 11px; color: var(--accent-blue); font-weight: normal;" id="chartTrackTag">Student Vector Stream</span>
+        <span style="font-size: 11px; color: var(--accent-blue); font-weight: normal;" id="chartTrackTag">Global Stream</span>
       </div>
       <div class="chart-wrapper">
         <svg class="chart-svg" viewBox="0 0 500 180" preserveAspectRatio="none">
@@ -556,56 +620,68 @@ body {
           <polyline id="svgTrendPath" fill="none" stroke="var(--accent-cyan)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,150 500,150"/>
         </svg>
       </div>
-      <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 10px;" id="chartAxisLabels">
-        <span>Session 1</span>
-        <span>Latest Session</span>
-      </div>
     </div>
 
     <!-- COGNITIVE VULNERABILITY MATRIX -->
     <div class="analytics-card">
       <div class="card-header-title">
-        <span style="color: var(--accent-pink);">⚠️ Cognitive Vulnerability Breakdown</span>
-        <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">Risk Factor Index</span>
+        <span style="color: var(--accent-pink);">⚠️ Psychological Exploit Vulnerability</span>
+        <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">Risk Breakdown</span>
       </div>
-      <div id="vulnerabilityMatrixContainer" style="margin-top: 5px;">
-        <!-- Dynamically injected bars -->
-      </div>
+      <div id="vulnerabilityMatrixContainer" style="margin-top: 5px;"></div>
     </div>
 
   </div>
 
-  <!-- ACQUIRED HONORS & BADGES -->
-  <div class="section-subtitle">🏆 Acquired Honors & Achievement Badges</div>
-  <div class="honors-grid" id="advancedHonorsGrid">
-    <!-- Dynamically injected badges -->
+  <!-- RECENT ACTIVITY FEED -->
+  <div class="activity-card">
+    <div class="card-header-title">
+      <span>⚡ Recent Simulation Telemetry Logs</span>
+    </div>
+    <div class="activity-list" id="activityFeedList"></div>
   </div>
+
+  <!-- HONORS & BADGES -->
+  <div class="section-subtitle">🏆 Acquired Honors & Badges</div>
+  <div class="honors-grid" id="advancedHonorsGrid"></div>
 
 </main>
 
+<!-- ENGINE LINK AT THE BOTTOM (AS REQUESTED) -->
+<script src="js/js/behaviour-engine.js'"></script>
+
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  // 1. Inherit mode from URL parameters (?mode=student or ?mode=elderly)
-  const params = new URLSearchParams(window.location.search);
-  const mode = params.get("mode") || "student";
-  const isStudent = mode === "student";
+let currentFilter = "all";
 
-  // 2. Set UI Text according to Active Track
-  document.getElementById("dashboardMainTitle").textContent = isStudent ? "Student Resilience Dashboard" : "Senior Security Operations Dashboard";
-  document.getElementById("dashboardSubtitle").textContent = isStudent 
-    ? "Real-time audit of campus portal drills, academic urgency traps, and tuition scams." 
-    : "Real-time audit of pension security, authority verification, and elder protection metrics.";
-  
-  document.getElementById("activeTrackContextLabel").textContent = isStudent ? "University Student Mode" : "Senior / Elder Track Mode";
-  document.getElementById("chartTrackTag").textContent = isStudent ? "Student Vector Stream" : "Elder Vector Stream";
+function switchFilter(mode) {
+  currentFilter = mode;
+  document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+  event.target.classList.add("active");
+  loadDashboardData();
+}
 
-  // 3. Fetch exact player telemetry data from LocalStorage
-  const storageKey = isStudent ? "phishguard_student_data" : "phishguard_elderly_data";
-  const sessionData = JSON.parse(localStorage.getItem(storageKey)) || [];
+function loadDashboardData() {
+  let sessionData = [];
+  if (window.PhishGuardEngine && typeof window.PhishGuardEngine.getData === "function") {
+    const engineData = window.PhishGuardEngine.getData();
+    sessionData = engineData.simulations || [];
+  }
 
-  // Show empty state banner if no recorded gameplay yet
+  if (sessionData.length === 0) {
+    sessionData = [
+      ...(JSON.parse(localStorage.getItem("phishguard_student_data")) || []),
+      ...(JSON.parse(localStorage.getItem("phishguard_elderly_data")) || [])
+    ];
+  }
+
+  if (currentFilter !== "all") {
+    sessionData = sessionData.filter(s => s.userMode === currentFilter);
+  }
+
   if (sessionData.length === 0) {
     document.getElementById("emptyStateBanner").style.display = "block";
+  } else {
+    document.getElementById("emptyStateBanner").style.display = "none";
   }
 
   let totalSessions = sessionData.length;
@@ -614,58 +690,44 @@ document.addEventListener("DOMContentLoaded", () => {
   let cumulativePoints = 0;
 
   sessionData.forEach(s => {
-    totalCorrect += (s.score || 0);
-    let qTotal = s.total || (s.questions ? s.questions.length : 3);
-    totalQuestions += qTotal;
-    cumulativePoints += (s.points || (s.score * 100) || 100);
+    if (s.correct !== undefined) {
+      if (s.correct) totalCorrect++;
+      totalQuestions++;
+      cumulativePoints += s.correct ? 100 : 0;
+    } else {
+      totalCorrect += (s.score || 0);
+      let qTotal = s.total || (s.questions ? s.questions.length : 3);
+      totalQuestions += qTotal;
+      cumulativePoints += (s.points || (s.score * 100) || 100);
+    }
   });
 
   let overallAccuracy = totalQuestions === 0 ? 0 : Math.round((totalCorrect / totalQuestions) * 100);
 
-  // Update Top Metrics
   document.getElementById("statSessionsCount").textContent = totalSessions;
   document.getElementById("statAccuracyRating").textContent = overallAccuracy + "%";
   document.getElementById("statTotalPoints").textContent = cumulativePoints + " pts";
-  document.getElementById("statAccuracySub").textContent = overallAccuracy >= 70 ? "High Resilience" : (totalSessions === 0 ? "Awaiting Drill Data" : "Review Recommended");
+  document.getElementById("statAccuracySub").textContent = overallAccuracy >= 70 ? "High Resilience" : "Review Recommended";
 
-  // 4. Build Trend Chart (Using exact player session accuracies)
+  // Trend Chart Generation
   const svgPath = document.getElementById("svgTrendPath");
   const svgPolygon = document.getElementById("svgAreaPolygon");
-  
-  let pointsArray = sessionData.map(s => {
-    if (s.accuracy !== undefined) return s.accuracy;
-    let sTotal = s.total || 3;
-    return sTotal > 0 ? Math.round(((s.score || 0) / sTotal) * 100) : 50;
-  });
-
-  if (pointsArray.length === 0) {
-    pointsArray = [50, 50]; // Flat line if no data yet
-  } else if (pointsArray.length === 1) {
-    pointsArray = [pointsArray[0], pointsArray[0]];
-  }
+  let pointsArray = sessionData.map(s => s.correct !== undefined ? (s.correct ? 100 : 0) : 75);
+  if (pointsArray.length === 0) pointsArray = [50, 50];
+  else if (pointsArray.length === 1) pointsArray = [pointsArray[0], pointsArray[0]];
 
   const stepX = 500 / (pointsArray.length - 1 || 1);
-  let coords = [];
-  pointsArray.forEach((acc, idx) => {
-    let x = idx * stepX;
-    let y = 180 - (acc / 100) * 160;
-    coords.push(`${x},${y}`);
-  });
-
+  let coords = pointsArray.map((acc, idx) => `${idx * stepX},${180 - (acc / 100) * 160}`);
   let polylineStr = coords.join(" ");
   svgPath.setAttribute("points", polylineStr);
   svgPolygon.setAttribute("points", `0,180 ${polylineStr} 500,180`);
 
-  // 5. Build Vulnerability Breakdown Matrix
+  // Vulnerability Matrix Matrix Data
   const vulnContainer = document.getElementById("vulnerabilityMatrixContainer");
-  const vulnerabilities = isStudent ? [
-    { name: "Academic Deadline Urgency", risk: totalSessions > 0 ? Math.max(15, 100 - overallAccuracy + 10) : 78 },
-    { name: "IT Helpdesk Authority Impersonation", risk: totalSessions > 0 ? Math.max(20, 100 - overallAccuracy) : 62 },
-    { name: "Blackboard Portal Domain Spoofing", risk: totalSessions > 0 ? Math.max(10, 90 - overallAccuracy) : 45 }
-  ] : [
-    { name: "State Pension Claim Urgency", risk: totalSessions > 0 ? Math.max(20, 100 - overallAccuracy + 10) : 85 },
-    { name: "HMRC / NHS Authority Impersonation", risk: totalSessions > 0 ? Math.max(15, 95 - overallAccuracy) : 72 },
-    { name: "Bank Security Alert Fear", risk: totalSessions > 0 ? Math.max(10, 80 - overallAccuracy) : 58 }
+  const vulnerabilities = [
+    { name: "Artificial Urgency & Time Pressure", risk: totalSessions > 0 ? Math.max(15, 100 - overallAccuracy + 5) : 75 },
+    { name: "Authority & Institutional Spoofing", risk: totalSessions > 0 ? Math.max(20, 100 - overallAccuracy) : 62 },
+    { name: "Financial Panic Vector", risk: totalSessions > 0 ? Math.max(10, 85 - overallAccuracy) : 50 }
   ];
 
   vulnContainer.innerHTML = vulnerabilities.map(v => `
@@ -680,36 +742,42 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `).join('');
 
-  // 6. Build Honors & Badges Grid based on real achievements
+  // Activity Feed Data
+  const feedList = document.getElementById("activityFeedList");
+  if (sessionData.length === 0) {
+    feedList.innerHTML = `<div style="color: var(--text-muted); font-size: 13px; text-align:center; padding: 10px;">No telemetry events recorded.</div>`;
+  } else {
+    feedList.innerHTML = sessionData.slice(-4).reverse().map(s => `
+      <div class="activity-item">
+        <div class="activity-info">
+          <div class="activity-status-dot ${s.correct !== false ? 'status-success' : 'status-fail'}"></div>
+          <span>Simulation Drill (${s.userMode || 'General'})</span>
+        </div>
+        <span style="color: var(--text-muted); font-size: 12px;">${s.correct !== false ? 'Successfully Intercepted (+100 pts)' : 'Compromised'}</span>
+      </div>
+    `).join('');
+  }
+
+  // Honors Grid Badges
   const honorsGrid = document.getElementById("advancedHonorsGrid");
   const badges = [
-    { title: "First Mission Lock", desc: "Complete your initial security simulation drill.", unlocked: totalSessions >= 1 },
-    { title: "Velocity Demon", desc: "Maintain rapid decision timing across operations.", unlocked: totalSessions >= 2 },
-    { title: "Flawless Intercept", desc: "Achieve 100% accuracy in a complete training session.", unlocked: sessionData.some(s => s.accuracy === 100 || s.score === s.total) },
-    { title: "Resilience Veteran", desc: "Complete 5 or more total simulation sessions.", unlocked: totalSessions >= 5 },
-    { title: "Sharpshooter", desc: "Correctly identify 10 or more threat vectors.", unlocked: totalCorrect >= 10 },
-    { title: "Master Sentinel", desc: "Achieve an overall resilience rating exceeding 90%.", unlocked: overallAccuracy >= 90 && totalSessions > 0 }
+    { title: "First Mission Lock", desc: "Complete initial security simulation drill.", unlocked: totalSessions >= 1 },
+    { title: "Flawless Intercept", desc: "Achieve 100% accuracy in a training session.", unlocked: totalCorrect > 0 },
+    { title: "Master Sentinel", desc: "Exceed 90% overall resilience rating.", unlocked: overallAccuracy >= 90 && totalSessions > 0 }
   ];
 
   honorsGrid.innerHTML = badges.map(b => `
     <div class="honor-card ${b.unlocked ? 'unlocked' : 'locked'}">
       <div class="honor-header-row">
-        <div class="honor-title" style="color: ${b.unlocked ? '#ffffff' : '#888'};">${b.title}</div>
+        <div class="honor-title">${b.title}</div>
         <span class="honor-status ${b.unlocked ? 'unlocked-tag' : 'locked-tag'}">${b.unlocked ? 'Unlocked' : 'Locked'}</span>
       </div>
       <div class="honor-desc">${b.desc}</div>
     </div>
   `).join('');
+}
 
-  // 7. Pass mode parameter across all sidebar links & start training button
-  document.querySelectorAll(".sidebar a, #startTrainingBtn").forEach(link => {
-    let href = link.getAttribute("href");
-    if (href && !href.includes("mode=")) {
-      let baseHref = href.split("?")[0];
-      link.setAttribute("href", `${baseHref}?mode=${mode}`);
-    }
-  });
-});
+document.addEventListener("DOMContentLoaded", loadDashboardData);
 </script>
 
 </body>

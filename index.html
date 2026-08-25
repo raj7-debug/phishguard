@@ -122,10 +122,27 @@ body {
     cursor: pointer;
     font-weight: bold;
 }
+
+/* ACCESSIBILITY MODE - applies large text & higher contrast site-wide */
+body.a11y-mode {
+  zoom: 1.2;
+  filter: contrast(1.08);
+}
 </style>
 </head>
 
 <body>
+<script>
+/* Apply accessibility mode ASAP to avoid flash of unstyled content */
+(function() {
+  try {
+    if (localStorage.getItem("phishguard_a11y_mode") === "true") {
+      document.body.classList.add("a11y-mode");
+    }
+  } catch (e) {}
+})();
+</script>
+
 
 <div class="bg-grid"></div>
 <div class="glow"></div>
@@ -200,8 +217,8 @@ body {
     startBtn.onclick = () => {
       if (!selected) return;
     
-      // Redirect to login page with the chosen mode
-      window.location.href = `login.html?mode=${selected}`;
+      // Redirect to the consent page first, which then forwards to login
+      window.location.href = `consent.html?mode=${selected}`;
     };
     </script>
     

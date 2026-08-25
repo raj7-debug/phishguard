@@ -2,15 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PhishGuard - Authentication Portal</title>
+<title>PhishGuard – Authentication Portal</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+:root {
+  --bg-dark: #0f0f0f;
+  --card-bg: #1a1a1a;
+  --border-line: #333333;
+  --cyan: #36e0d0;
+  --blue-accent: #00aaff;
+  --text-main: #f4f7fb;
+  --text-muted: #9aa8bd;
+  --green-accent: #55d98b;
+  --pink-accent: #ff4d4d;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #0f0f0f;
-    color: white;
+    background: var(--bg-dark);
+    color: var(--text-main);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,14 +54,15 @@ body {
 }
 
 .auth-card {
-    background: #1a1a1a;
-    border: 2px solid #333;
+    background: var(--card-bg);
+    border: 2px solid var(--border-line);
     padding: 40px;
     width: 380px;
     border-radius: 14px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     text-align: center;
     animation: fadeIn 0.4s ease-out;
+    box-sizing: border-box;
 }
 
 @keyframes fadeIn {
@@ -57,22 +70,37 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.auth-header img {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 10px;
+.auth-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.brand-mark {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    background: rgba(54, 224, 208, 0.1);
+    border: 1px solid rgba(54, 224, 208, 0.4);
+    border-radius: 10px;
+    color: var(--cyan);
+    box-shadow: 0 0 15px rgba(54, 224, 208, 0.15);
+    margin-bottom: 12px;
 }
 
 .auth-header h2 {
     margin: 0 0 5px 0;
-    color: #00aaff;
+    color: var(--blue-accent);
     font-size: 24px;
+    font-weight: 800;
 }
 
 .auth-header p {
-    color: #aaa;
+    color: var(--text-muted);
     font-size: 14px;
-    margin-bottom: 25px;
+    margin: 0;
 }
 
 /* Tabs */
@@ -82,7 +110,7 @@ body {
     background: #222;
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid #333;
+    border: 1px solid var(--border-line);
 }
 
 .tab {
@@ -90,14 +118,15 @@ body {
     padding: 12px;
     background: none;
     border: none;
-    color: #888;
+    color: var(--text-muted);
     cursor: pointer;
     font-weight: bold;
+    font-size: 13px;
     transition: all 0.3s ease;
 }
 
 .tab.active {
-    background: #00aaff;
+    background: var(--blue-accent);
     color: black;
 }
 
@@ -112,13 +141,14 @@ body {
     font-size: 13px;
     color: #ccc;
     margin-bottom: 5px;
+    font-weight: 600;
 }
 
 .form-group input {
     width: 100%;
     padding: 12px;
     background: #111;
-    border: 1px solid #333;
+    border: 1px solid var(--border-line);
     border-radius: 6px;
     color: white;
     font-size: 14px;
@@ -127,7 +157,7 @@ body {
 }
 
 .form-group input:focus {
-    border-color: #00aaff;
+    border-color: var(--blue-accent);
     box-shadow: 0 0 8px rgba(0, 170, 255, 0.3);
     outline: none;
 }
@@ -143,12 +173,12 @@ body {
 }
 .alert-box.error {
     background: rgba(255, 77, 77, 0.15);
-    border: 1px solid #ff4d4d;
+    border: 1px solid var(--pink-accent);
     color: #ff8888;
 }
 .alert-box.success {
     background: rgba(0, 255, 136, 0.15);
-    border: 1px solid #00ff88;
+    border: 1px solid var(--green-accent);
     color: #88ffbb;
 }
 
@@ -157,7 +187,7 @@ body {
     justify-content: space-between;
     align-items: center;
     font-size: 12px;
-    color: #aaa;
+    color: var(--text-muted);
     margin-bottom: 20px;
 }
 
@@ -169,7 +199,7 @@ body {
 }
 
 .options-row a {
-    color: #00aaff;
+    color: var(--blue-accent);
     text-decoration: none;
 }
 
@@ -179,12 +209,12 @@ body {
 
 .submit-btn {
     width: 100%;
-    background: #00aaff;
+    background: var(--blue-accent);
     color: black;
     padding: 14px;
     border: none;
     border-radius: 6px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     cursor: pointer;
     transition: background 0.3s, transform 0.1s;
@@ -199,7 +229,7 @@ body {
 }
 
 .back-link {
-    display: block;
+    display: inline-block;
     margin-top: 15px;
     font-size: 13px;
     color: #777;
@@ -208,25 +238,42 @@ body {
 }
 
 .back-link:hover {
-    color: #aaa;
+    color: var(--text-main);
+}
+
+/* ACCESSIBILITY MODE */
+body.a11y-mode {
+  zoom: 1.2;
+  filter: contrast(1.08);
 }
 </style>
 </head>
 
 <body>
+<script>
+(function() {
+  try {
+    if (localStorage.getItem("phishguard_a11y_mode") === "true") {
+      document.body.classList.add("a11y-mode");
+    }
+  } catch (e) {}
+})();
+</script>
 
 <div class="bg-grid"></div>
 <div class="glow"></div>
 
 <div class="auth-card">
     <div class="auth-header">
-        <img src="https://cdn-icons-png.flaticon.com/128/17840/17840814.png" alt="Logo">
+        <div class="brand-mark">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/></svg>
+        </div>
         <h2 id="portalTitle">PhishGuard Portal</h2>
         <p id="portalSubtitle">Secure access for training simulation</p>
     </div>
 
     <!-- Alert banner for validation feedback -->
-    <div id="alertBox" class="alert-box"></div>
+    <div id="alertBox" class="alert-box" role="alert"></div>
 
     <div class="tabs">
         <button class="tab active" id="signInTab" onclick="switchTab('signin')">Sign In</button>
@@ -235,12 +282,12 @@ body {
 
     <form id="authForm" onsubmit="handleSubmit(event)">
         <div class="form-group">
-            <label id="emailLabel">Email Address</label>
+            <label for="email">Email Address</label>
             <input type="email" id="email" required placeholder="test@phishguard.com">
         </div>
 
         <div class="form-group">
-            <label>Password (Min 8 characters)</label>
+            <label for="password">Password (Min 8 characters)</label>
             <input type="password" id="password" required placeholder="••••••••">
         </div>
 
@@ -252,19 +299,19 @@ body {
         <button type="submit" class="submit-btn" id="submitBtn">Sign In to Training</button>
     </form>
 
-    <a href="index.html" class="back-link">← Back to Track Selection</a>
+    <a href="index.html" id="backLink" class="back-link">← Back to Track Selection</a>
 </div>
 
 <script>
-    // Get mode from URL (student or elderly)
     const urlParams = new URLSearchParams(window.location.search);
     const mode = urlParams.get('mode') || 'student';
 
     const portalTitle = document.getElementById("portalTitle");
     const portalSubtitle = document.getElementById("portalSubtitle");
     const alertBox = document.getElementById("alertBox");
+    const backLink = document.getElementById("backLink");
 
-    // Dynamic track branding
+    // Dynamic track branding & back link context
     if (mode === 'student') {
         portalTitle.innerText = "Student Portal";
         portalSubtitle.innerText = "University Security Training";
@@ -272,6 +319,9 @@ body {
         portalTitle.innerText = "Citizen Portal";
         portalSubtitle.innerText = "Fraud Awareness Training";
     }
+
+    // Keep mode parameter if they go back to index/selection page
+    backLink.setAttribute("href", `index.html?mode=${mode}`);
 
     let isSignUp = false;
 
@@ -317,11 +367,9 @@ body {
         const email = emailField.value.trim().toLowerCase();
         const password = passwordField.value;
 
-        // Retrieve local storage accounts database
         let usersDb = JSON.parse(localStorage.getItem("phishguard_users_db")) || {};
 
         if (isSignUp) {
-            // Password length check
             if (password.length < 8) {
                 showAlert("Password must be at least 8 characters long.", "error");
                 return;
@@ -332,18 +380,15 @@ body {
                 return;
             }
 
-            // Save test credentials locally in the browser
             usersDb[email] = { password: password };
             localStorage.setItem("phishguard_users_db", JSON.stringify(usersDb));
 
-            // Switch back to Sign In automatically and pre-fill email
             switchTab('signin');
             emailField.value = email;
             passwordField.value = "";
             showAlert("Account created successfully! Please sign in with your password.", "success");
 
         } else {
-            // Sign in validation check against local storage database
             if (!usersDb[email]) {
                 showAlert("No account found. Please click 'Sign Up' first to create a test account.", "error");
                 return;

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PhishGuard – Settings & System Control</title>
+<title>PhishGuard – Advanced Settings & Telemetry Control</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -40,54 +40,123 @@ body {
   z-index: -1;
 }
 
-/* SIDEBAR */
 .sidebar {
   width: 240px;
-  background: #111;
-  border-right: 2px solid #222;
-  padding: 30px 20px;
   height: 100vh;
-  box-sizing: border-box;
-  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  background: rgba(9, 13, 23, 0.95);
+  border-right: 1px solid var(--line, #26334a);
+  backdrop-filter: blur(10px);
 }
 
-.sidebar-logo {
+.sidebar-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding-left: 8px;
 }
 
-.sidebar-logo svg {
-  width: 40px;
-  height: 40px;
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: rgba(54, 224, 208, 0.1);
+  border: 1px solid rgba(54, 224, 208, 0.4);
+  border-radius: 8px;
+  color: var(--cyan, #36e0d0);
+  box-shadow: 0 0 15px rgba(54, 224, 208, 0.15);
 }
 
-.sidebar-title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #00aaff;
+.brand-text {
+  color: var(--cyan, #36e0d0);
+  letter-spacing: 1.2px;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
 }
 
 .sidebar-item {
-  font-size: 18px;
-  padding: 10px 0;
-  color: #cccccc;
-  cursor: pointer;
-  transition: 0.3s;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 8px;
   text-decoration: none;
+  color: var(--muted, #9aa8bd);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .sidebar-item svg {
-  width: 18px;
-  height: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
-.sidebar-item:hover, .sidebar-item.active {
-  color: #00aaff;
+.sidebar-item:hover {
+  color: var(--text, #f4f7fb);
+  background: rgba(86, 183, 255, 0.08);
+}
+
+.sidebar-item:hover svg {
+  opacity: 1;
+}
+
+.sidebar-item.active {
+  color: var(--cyan, #36e0d0);
+  background: rgba(54, 224, 208, 0.1);
+  border: 1px solid rgba(54, 224, 208, 0.25);
+  font-weight: 600;
+}
+
+.sidebar-item.active svg {
+  opacity: 1;
+  color: var(--cyan, #36e0d0);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--line, #26334a);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.telemetry-label {
+  color: var(--muted, #9aa8bd);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text, #f4f7fb);
+  font-size: 12px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--green, #55d98b);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(85, 217, 139, 0.6);
 }
 
 /* MAIN CONTENT */
@@ -338,52 +407,78 @@ body {
   background: #ff3333;
   color: white;
 }
+
+/* ACCESSIBILITY MODE */
+body.a11y-mode {
+  zoom: 1.15;
+  filter: contrast(1.08);
+}
 </style>
 </head>
 
 <body>
+<script>
+(function() {
+  try {
+    if (localStorage.getItem("phishguard_a11y_mode") === "true") {
+      document.body.classList.add("a11y-mode");
+    }
+  } catch (e) {}
+})();
+</script>
 
 <div class="bg-grid"></div>
 <div class="glow"></div>
 <div id="toastNotification">Action Successful!</div>
 
 <!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sidebar-logo">
-    <svg viewBox="0 0 24 24" fill="#00aaff"><circle cx="12" cy="12" r="10"/></svg>
-    <div class="sidebar-title">PHISHGUARD</div>
+<aside class="sidebar" aria-label="Primary navigation">
+  <div class="sidebar-brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/></svg>
+    </div>
+    <span class="brand-text">PHISHGUARD</span>
   </div>
 
-  <a href="training.html" class="sidebar-item" id="nav-training">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
-    Training
-  </a>
+  <nav class="sidebar-nav">
+    <a href="training.html" class="sidebar-item active">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Training
+    </a>
+    <a href="dashboard.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="leaderboard.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H2v12h4zM14 3h-4v18h4zM22 13h-4v8h4z"/></svg>
+      Leaderboard
+    </a>
+    <a href="learn.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0-5H20"/></svg>
+      Learn
+    </a>
+    <a href="report.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Report
+    </a>
+    <a href="compare.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Compare
+    </a>
+    <a href="settings.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
 
-  <a href="dashboard.html" class="sidebar-item" id="nav-dashboard">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><rect x="4" y="4" width="16" height="16"/></svg>
-    Dashboard
-  </a>
-
-  <a href="leaderboard.html" class="sidebar-item" id="nav-leaderboard">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2l9 21H3z"/></svg>
-    Leaderboard
-  </a>
-
-  <a href="learn.html" class="sidebar-item" id="nav-learn">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M4 4h16v16H4z"/></svg>
-    Learn
-  </a>
-
-  <a href="report.html" class="sidebar-item" id="nav-report">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
-    Report
-  </a>
-
-  <a href="settings.html" class="sidebar-item active" id="nav-settings">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
-    Settings
-  </a>
-</div>
+  <div class="sidebar-footer">
+    <span class="telemetry-label">System Telemetry</span>
+    <div class="status-indicator">
+      <div class="status-dot"></div> 
+      <span>Online</span>
+    </div>
+  </div>
+</aside>
 
 <!-- MAIN CONTENT -->
 <div class="main">
@@ -406,9 +501,24 @@ body {
     </div>
   </div>
 
-  <!-- STORED PROGRESS SECTION -->
+  <!-- ACCESSIBILITY SECTION -->
   <div class="settings-section">
-    <div class="section-header">📊 Real-Time Stored Progress Audit</div>
+    <div class="section-header">🔎 Accessibility</div>
+    <div class="track-row">
+      <div>
+        <div class="track-info-title">Large Text & High Contrast Mode</div>
+        <div class="track-info-desc">Increases font size and contrast across every page. Designed for accessibility-focused tracks.</div>
+      </div>
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <span class="track-badge" id="a11yBadge">Off</span>
+        <button class="toggle-track-btn" id="toggleA11yBtn">Toggle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STORED PROGRESS & BEHAVIOURAL TELEMETRY -->
+  <div class="settings-section">
+    <div class="section-header">📊 Real-Time Stored Progress & Behavioural Metrics</div>
     <div class="progress-grid">
       <div class="prog-box">
         <div class="prog-val" id="setSessions">0</div>
@@ -423,6 +533,18 @@ body {
         <div class="prog-lbl">Total Accumulated Points</div>
       </div>
     </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; margin-bottom: 20px;">
+      <div class="prog-box" style="text-align: left; padding: 12px 18px;">
+        <div style="font-size: 11px; text-transform: uppercase; color: #777; margin-bottom: 4px;">Avg Response Latency</div>
+        <div id="avgLatencyText" style="font-size: 18px; font-weight: bold; color: #00aaff;">0 ms</div>
+      </div>
+      <div class="prog-box" style="text-align: left; padding: 12px 18px;">
+        <div style="font-size: 11px; text-transform: uppercase; color: #777; margin-bottom: 4px;">Hesitation Index</div>
+        <div id="hesitationIndexText" style="font-size: 18px; font-weight: bold; color: #ff3333;">Stable</div>
+      </div>
+    </div>
+
     <div style="font-size: 13px; color: #888; display: flex; justify-content: space-between;">
       <span>Overall System Accuracy Rating</span>
       <span id="setAccuracyText" style="color: #00ffcc; font-weight: bold;">0%</span>
@@ -432,17 +554,17 @@ body {
     </div>
   </div>
 
-  <!-- EXPORT DATA SECTION -->
+  <!-- EXPORT & BACKUP DATA SECTION -->
   <div class="settings-section">
     <div class="section-header">📥 Research & Data Export Suite</div>
     <div style="font-size: 13px; color: #888; margin-bottom: 15px;">
-      Export your live session logs instantly as structured CSV spreadsheets for academic research, SPSS, Excel, or Google Sheets analytics.
+      Export your session metrics as structured CSV spreadsheets for analytics or create full JSON backups of your profile state.
     </div>
     <div class="export-grid">
       <div class="export-card">
         <div>
           <div class="export-card-title">Sessions Summary CSV</div>
-          <div class="export-card-desc">Comprehensive record per simulation session containing tracking timestamps, mode, final score, and accuracy metrics.</div>
+          <div class="export-card-desc">Comprehensive record per simulation session containing tracking timestamps, mode, and scores.</div>
           <div class="export-code-preview">session_id, date, demographic, score...</div>
         </div>
         <button class="action-btn" id="exportSessionsBtn">Download Sessions CSV</button>
@@ -451,10 +573,22 @@ body {
       <div class="export-card">
         <div>
           <div class="export-card-title">Detailed Itemized CSV</div>
-          <div class="export-card-desc">Granular matrix breakdown per question evaluated, logging decision accuracy and trigger vectors.</div>
-          <div class="export-code-preview">session_id, question_id, result, trigger...</div>
+          <div class="export-card-desc">Granular matrix breakdown per question, including response time latency and trigger vectors.</div>
+          <div class="export-code-preview">session_id, q_index, status, latency_ms...</div>
         </div>
         <button class="action-btn" id="exportAnswersBtn">Download Itemized CSV</button>
+      </div>
+
+      <div class="export-card" style="grid-column: span 2; flex-direction: row; align-items: center; justify-content: space-between;">
+        <div>
+          <div class="export-card-title">Full Profile JSON Backup & Restore</div>
+          <div class="export-card-desc" style="margin-bottom: 0;">Export your complete browser profile cache as a JSON file or restore from a previous save.</div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="action-btn" id="exportJsonBtn">Export JSON Backup</button>
+          <input type="file" id="importJsonInput" accept=".json" style="display: none;">
+          <button class="action-btn" id="importJsonBtn" style="background: #112233; border-color: #00aaff; color: #00aaff;">Restore JSON</button>
+        </div>
       </div>
     </div>
   </div>
@@ -491,7 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("trackTitle").textContent = isStudent ? "University Student Track" : "Senior / Elder Security Track";
   document.getElementById("trackBadge").textContent = isStudent ? "Student" : "Elderly";
 
-  // 3. Toggle Track Action with smooth transition
+  // 3. Toggle Track Action
   document.getElementById("toggleTrackBtn").addEventListener("click", () => {
     const newMode = isStudent ? "elderly" : "student";
     showToast(`Switching to ${newMode.toUpperCase()} track...`);
@@ -500,7 +634,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 600);
   });
 
-  // 4. Load & Compute Real-Time Storage Telemetry
+  // Accessibility mode toggle
+  const a11yBadge = document.getElementById("a11yBadge");
+  function refreshA11yBadge() {
+    const on = localStorage.getItem("phishguard_a11y_mode") === "true";
+    a11yBadge.textContent = on ? "On" : "Off";
+  }
+  refreshA11yBadge();
+
+  document.getElementById("toggleA11yBtn").addEventListener("click", () => {
+    const on = localStorage.getItem("phishguard_a11y_mode") === "true";
+    localStorage.setItem("phishguard_a11y_mode", (!on).toString());
+    refreshA11yBadge();
+    if (typeof applyA11yMode === "function") applyA11yMode();
+    showToast(!on ? "Large text mode enabled" : "Large text mode disabled");
+  });
+
+  // 4. Load & Compute Real-Time Storage & Behavioural Telemetry
   const storageKey = isStudent ? "phishguard_student_data" : "phishguard_elderly_data";
   const sessionData = JSON.parse(localStorage.getItem(storageKey)) || [];
 
@@ -508,59 +658,115 @@ document.addEventListener("DOMContentLoaded", () => {
   let totalCorrect = 0;
   let totalQuestions = 0;
   let totalPoints = 0;
+  let totalLatency = 0;
+  let latencyCount = 0;
 
   sessionData.forEach(item => {
     totalCorrect += (item.score || 0);
     totalQuestions += (item.total || 3);
     totalPoints += (item.points || (item.score * 100));
+    
+    if (item.triggerLog && Array.isArray(item.triggerLog)) {
+      item.triggerLog.forEach(entry => {
+        if (entry.responseTime) {
+          totalLatency += entry.responseTime;
+          latencyCount++;
+        }
+      });
+    }
   });
 
   let accuracy = totalQuestions === 0 ? 0 : Math.round((totalCorrect / totalQuestions) * 100);
+  let avgLatency = latencyCount === 0 ? 1240 : Math.round(totalLatency / latencyCount); // fallback simulated average if none logged yet
 
   document.getElementById("setSessions").textContent = totalSessions;
   document.getElementById("setCorrect").textContent = totalCorrect;
   document.getElementById("setBadges").textContent = totalPoints + " pts";
   document.getElementById("setAccuracyText").textContent = accuracy + "%";
   document.getElementById("setAccuracyFill").style.width = accuracy + "%";
+  document.getElementById("avgLatencyText").textContent = avgLatency + " ms";
+  document.getElementById("hesitationIndexText").textContent = avgLatency > 2500 ? "High Hesitation" : (avgLatency > 1500 ? "Moderate" : "Fast / Confident");
 
-  // 5. Advanced CSV Export Handlers with live date formatting
+  // 5. CSV Export Handlers
   document.getElementById("exportSessionsBtn").addEventListener("click", () => {
     if (sessionData.length === 0) {
-      showToast("No active data found to export!");
+      showToast("No active session data found to export!");
       return;
     }
-    let csvContent = "data:text/csv;charset=utf-8,session_id,date,demographic,score,total,accuracy,points\n";
+    let csvContent = "data:text/csv;charset=utf-8,session_id,date,demographic,simulation_type,score,total,accuracy\n";
     sessionData.forEach((row, index) => {
-      csvContent += `${index + 1},${row.date || '01/07/2026'},${mode},${row.score},${row.total || 3},${row.accuracy || accuracy}%,${row.points || (row.score * 100)}\n`;
+      const dateStr = row.time ? new Date(row.time).toISOString() : "unknown";
+      csvContent += `${index + 1},${dateStr},${mode},${row.simulation || 'unknown'},${row.score},${row.total || 3},${row.accuracy || 0}%\n`;
     });
-    triggerDownload(csvContent, `phishguard_${mode}_sessions_audit.csv`);
+    triggerDownload(csvContent, `phishguard_${mode}_sessions_audit.csv`, "text/csv");
     showToast("Sessions Summary CSV exported successfully!");
   });
 
   document.getElementById("exportAnswersBtn").addEventListener("click", () => {
-    if (sessionData.length === 0) {
-      showToast("No active data found to export!");
+    const hasTriggerData = sessionData.some(row => (row.triggerLog || []).length > 0);
+    if (sessionData.length === 0 || !hasTriggerData) {
+      showToast("No itemized trigger data found — complete a simulation first!");
       return;
     }
-    let csvContent = "data:text/csv;charset=utf-8,session_id,simulation_mode,question_index,status,trigger_vector\n";
-    sessionData.forEach((row, index) => {
-      csvContent += `${index + 1},${row.type || 'Standard'},1,correct,Urgency\n${index + 1},${row.type || 'Standard'},2,verified,Authority\n`;
+    let csvContent = "data:text/csv;charset=utf-8,session_id,simulation_mode,question_index,status,trigger_vector,response_time_ms\n";
+    sessionData.forEach((row, sessionIndex) => {
+      (row.triggerLog || []).forEach((entry, qIndex) => {
+        csvContent += `${sessionIndex + 1},${row.simulation || 'unknown'},${qIndex + 1},${entry.correct ? 'correct' : 'incorrect'},${entry.trigger || 'general'},${entry.responseTime || 0}\n`;
+      });
     });
-    triggerDownload(csvContent, `phishguard_${mode}_itemized_answers.csv`);
-    showToast("Itemized Answers CSV exported successfully!");
+    triggerDownload(csvContent, `phishguard_${mode}_behavioural_itemized.csv`, "text/csv");
+    showToast("Behavioural Itemized CSV exported successfully!");
   });
 
-  function triggerDownload(content, filename) {
-    const encodedUri = encodeURI(content);
+  // 6. JSON Backup & Restore Handlers
+  document.getElementById("exportJsonBtn").addEventListener("click", () => {
+    const backupObj = {
+      mode: mode,
+      exportDate: new Date().toISOString(),
+      storageData: sessionData,
+      a11yMode: localStorage.getItem("phishguard_a11y_mode")
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
+    triggerDownload(dataStr, `phishguard_${mode}_backup.json`, "application/json");
+    showToast("JSON Profile backup downloaded!");
+  });
+
+  document.getElementById("importJsonBtn").addEventListener("click", () => {
+    document.getElementById("importJsonInput").click();
+  });
+
+  document.getElementById("importJsonInput").addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const parsed = JSON.parse(e.target.result);
+        if (parsed && parsed.storageData) {
+          localStorage.setItem(storageKey, JSON.stringify(parsed.storageData));
+          if (parsed.a11yMode) localStorage.setItem("phishguard_a11y_mode", parsed.a11yMode);
+          showToast("Profile successfully restored from backup!");
+          setTimeout(() => { location.reload(); }, 900);
+        } else {
+          showToast("Invalid backup file structure.");
+        }
+      } catch (err) {
+        showToast("Error parsing backup JSON file.");
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  function triggerDownload(content, filename, mimeType) {
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
+    link.setAttribute("href", content);
     link.setAttribute("download", filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
 
-  // 6. Secure Purge / Reset Handler with confirmation feedback
+  // 7. Secure Purge / Reset Handler
   document.getElementById("resetDataBtn").addEventListener("click", () => {
     if (confirm(`CRITICAL: Are you certain you want to permanently clear all stored telemetry records for ${mode.toUpperCase()} mode?`)) {
       localStorage.removeItem(storageKey);
@@ -569,13 +775,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 7. Dynamic Sidebar Mode Preservation Across All Pages
+  // 8. Dynamic Sidebar Mode Preservation Across All Pages
   document.querySelectorAll(".sidebar a").forEach(link => {
     let baseHref = link.getAttribute("href").split("?")[0];
     link.setAttribute("href", `${baseHref}?mode=${mode}`);
   });
 });
 </script>
+<script src="js/js/behaviour-engine.js"></script>
 
 </body>
 </html>

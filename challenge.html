@@ -2,321 +2,836 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PhishGuard – Challenge Mode</title>
+<title>PhishGuard – Threat Challenge Mode</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
-  overflow-x: hidden;
+  padding: 0;
 }
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #09090b;
+  color: #f4f4f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  transition: background 0.3s ease;
+}
+
+body.flash-green { background: #042f1e; }
+body.flash-red { background: #3f0f0f; }
 
 /* Background grid */
 .bg-grid {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(to right, #80808012 1px, transparent 1px),
-    linear-gradient(to bottom, #80808012 1px, transparent 1px);
-  background-size: 24px 24px;
+    linear-gradient(to right, #ffffff06 1px, transparent 1px),
+    linear-gradient(to bottom, #ffffff06 1px, transparent 1px);
+  background-size: 28px 28px;
   z-index: -2;
 }
 
-/* Glow */
 .glow {
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 800px;
-  height: 800px;
-  background: rgba(0, 150, 255, 0.1);
+  width: 700px;
+  height: 700px;
+  background: rgba(0, 170, 255, 0.04);
   border-radius: 50%;
-  filter: blur(120px);
+  filter: blur(140px);
   transform: translate(-50%, -50%);
   z-index: -1;
+  pointer-events: none;
 }
 
 .container {
-  max-width: 900px;
-  margin: auto;
-  padding: 40px 20px;
-  text-align: center;
+  width: 100%;
+  max-width: 740px;
+  padding: 20px;
 }
 
-.title {
-  font-size: 38px;
+/* Header Box */
+.header-card {
+  background: #121216;
+  border: 1px solid #27272a;
+  padding: 18px 22px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.title-group h1 {
+  font-size: 19px;
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.title-group p {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin-top: 2px;
+}
+
+.score-pill {
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: bold;
-  margin-bottom: 10px;
-  color: #00aaff;
+  color: #34d399;
 }
 
-.subtitle {
-  font-size: 18px;
-  color: #cccccc;
-  margin-bottom: 20px;
+/* HUD Bar */
+.hud-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
-/* Timer */
-.timer {
-  font-size: 26px;
+.timer-pill {
+  background: #121216;
+  border: 1px solid #27272a;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: bold;
-  color: #ffaa00;
-  margin-bottom: 30px;
+  color: #fbbf24;
+  transition: color 0.3s, transform 0.3s;
 }
 
-/* Scenario box */
+.timer-pill.warning {
+  color: #ef4444;
+  animation: pulse-warn 0.6s infinite alternate;
+}
+
+@keyframes pulse-warn {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+.progress-pill {
+  background: #121216;
+  border: 1px solid #3f3f46;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #38bdf8;
+}
+
+/* Scenario Box */
 .scenario-box {
-  background: #1a1a1a;
-  border: 2px solid #333;
-  padding: 25px;
-  border-radius: 12px;
-  text-align: left;
-  margin-bottom: 30px;
+  background: #121216;
+  border: 1px solid #27272a;
+  padding: 28px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.scenario-box.fade {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.scenario-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.scenario-tag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 700;
 }
 
 .scenario-title {
-  font-size: 22px;
-  color: #00aaff;
+  font-size: 20px;
+  color: #ffffff;
   margin-bottom: 10px;
+  font-weight: 600;
 }
 
 .scenario-content {
-  color: #cccccc;
-  line-height: 1.5;
+  color: #d4d4d8;
+  line-height: 1.6;
+  font-size: 15px;
+  margin-bottom: 15px;
 }
 
-/* URL style */
-.url-box {
-  background: #0d0d0d;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #333;
-  color: #00ffcc;
-  font-family: monospace;
-  font-size: 16px;
-  margin-top: 10px;
-}
-
-/* Login preview */
-.login-field {
-  background: #111;
-  border: 1px solid #333;
-  padding: 12px;
-  border-radius: 6px;
+/* Interactive Inspector / Email View */
+.email-header-box {
+  background: #09090b;
+  border: 1px solid #27272a;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #a1a1aa;
   margin-bottom: 12px;
-  color: #cccccc;
 }
 
-.login-btn {
-  background: #00aaff;
-  color: black;
-  padding: 12px;
-  border-radius: 6px;
-  text-align: center;
-  font-weight: bold;
+.email-header-box span {
+  color: #38bdf8;
+  font-weight: 500;
+}
+
+.url-inspect {
+  background: #09090b;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px dashed #3f3f46;
+  color: #2dd4bf;
+  font-family: monospace;
+  font-size: 14px;
   margin-top: 10px;
+  word-break: break-all;
+}
+
+/* Concept Checklist Box */
+.concept-hint {
+  font-size: 13px;
+  color: #a1a1aa;
+  background: rgba(56, 189, 248, 0.05);
+  border-left: 3px solid #38bdf8;
+  padding: 8px 12px;
+  margin-top: 15px;
+  border-radius: 0 6px 6px 0;
 }
 
 /* Buttons */
 .btn-row {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 25px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 .sim-btn {
-  background: #00aaff;
-  color: black;
-  padding: 14px 30px;
+  padding: 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 15px;
+  transition: filter 0.2s, transform 0.1s;
 }
 
-/* Modal */
+.sim-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.sim-btn:active {
+  transform: translateY(0);
+}
+
+.btn-safe {
+  background: #10b981;
+  color: #000;
+}
+
+.btn-phish {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* Modal & Countdown Overlay */
 .modal-bg {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 10;
+  padding: 20px;
 }
 
 .modal {
-  background: #1a1a1a;
-  border: 2px solid #00aaff;
-  padding: 30px;
-  width: 420px;
-  border-radius: 12px;
+  background: #121216;
+  border: 1px solid #3f3f46;
+  padding: 35px;
+  width: 100%;
+  max-width: 460px;
+  border-radius: 16px;
   text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
 }
 
 .modal h2 {
-  color: #00aaff;
-  margin-bottom: 15px;
+  color: #38bdf8;
+  font-size: 22px;
+  margin-bottom: 10px;
 }
 
 .modal p {
-  color: #cccccc;
+  color: #a1a1aa;
+  font-size: 14px;
   margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.countdown-number {
+  font-size: 64px;
+  font-weight: 800;
+  color: #fbbf24;
+  margin: 20px 0;
+  animation: pop 0.5s ease;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .modal-btn {
-  background: #00aaff;
-  color: black;
-  padding: 12px 25px;
+  background: #38bdf8;
+  color: #000;
+  padding: 13px 20px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 14px;
+  width: 100%;
+  transition: filter 0.2s;
+}
+
+.modal-btn:hover {
+  filter: brightness(1.1);
+}
+
+.modal-btn-secondary {
+  background: #27272a;
+  color: #f4f4f5;
+  margin-top: 10px;
+}
+
+body.a11y-mode {
+  zoom: 1.1;
+  filter: contrast(1.1);
 }
 </style>
 </head>
 
 <body>
 
+<script>
+(function() {
+  try {
+    if (localStorage.getItem("phishguard_a11y_mode") === "true") {
+      document.body.classList.add("a11y-mode");
+    }
+  } catch (e) {}
+})();
+</script>
+
 <div class="bg-grid"></div>
 <div class="glow"></div>
 
 <div class="container">
-  <div class="title">Challenge Mode – 60s Blitz</div>
-  <div class="subtitle">Mixed emails, URLs, and login screens. Answer as many as you can before time runs out.</div>
+  <div class="header-card">
+    <div class="title-group">
+      <h1>Threat Challenge</h1>
+      <p id="modeSubtitle">Active Defense Simulation</p>
+    </div>
+    <div id="scoreBadge" class="score-pill">Score: 0 / 12</div>
+  </div>
 
-  <div id="timer" class="timer">Time Left: 60s</div>
+  <div class="hud-bar">
+    <div id="timer" class="timer-pill">Time Left: 100s</div>
+    <div id="progressBadge" class="progress-pill">Item 1 of 12</div>
+  </div>
 
   <div id="scenarioBox" class="scenario-box">
-    <div id="scenarioTitle" class="scenario-title"></div>
+    <div class="scenario-meta">
+      <span id="scenarioTag" class="scenario-tag">Vector Analysis</span>
+    </div>
+    <div id="scenarioTitle" class="scenario-title">Preparing Challenge...</div>
     <div id="scenarioContent" class="scenario-content"></div>
+    <div id="conceptHint" class="concept-hint">Testing Concept: Domain Verification & Urgency Pressure</div>
   </div>
 
   <div class="btn-row">
-    <button class="sim-btn" onclick="answer('safe')">Safe</button>
-    <button class="sim-btn" onclick="answer('phishing')">Phishing</button>
+    <button class="sim-btn btn-safe" onclick="answer('safe')">✔ Legitimate (Safe)</button>
+    <button class="sim-btn btn-phish" onclick="answer('phishing')">✖ Phishing Threat</button>
   </div>
 </div>
 
 <div id="modalContainer"></div>
 
 <script>
-    /* READ MODE & INITIAL SETUP */
     const params = new URLSearchParams(window.location.search);
     const mode = params.get("mode") || "student";
     
-    /* SCENARIO DATA */
+    document.getElementById("modeSubtitle").textContent = mode === "student" ? "Track: Higher Education & Student Vectors" : "Track: Senior Security & Financial Defense";
+
+    /* 12 Rigorous Scenarios designed for a 100-second rapid challenge */
     const studentScenarios = [
-      { title: "Library Access", content: "Action Required: Unpaid library fine. Secure payment at <div class='url-box'>library-uwe-ac.uk.pay-verify.net</div>", correct: "phishing" },
-      { title: "Portal Security", content: "Mandatory security patch for UWE student portal. Login at <div class='url-box'>https://portal.uwe.ac.uk/login</div>", correct: "safe" },
-      { title: "Grant Update", content: "New scholarship opportunity. Check eligibility: <div class='url-box'>scholarship-apply-portal.com</div>", correct: "phishing" },
-      { title: "Course Feedback", content: "Submit your module feedback before the Friday deadline.", correct: "safe" },
-      { title: "Server Alert", content: "Unauthorized login detected. Reset password immediately: <div class='url-box'>auth-uwe.com/reset</div>", correct: "phishing" },
-      { title: "IT Service", content: "Scheduled maintenance for Blackboard on Saturday at 2 AM.", correct: "safe" },
-      { title: "Thesis Storage", content: "Your thesis file exceeds storage limits. Click here to increase: <div class='url-box'>drive-increase-limit.net</div>", correct: "phishing" },
-      { title: "Meeting Invite", content: "Join the Software Engineering group meeting on Teams.", correct: "safe" },
-      { title: "Credential Expiry", content: "Your university account expires in 24 hours. Reactivate now: <div class='url-box'>uwe-account-verify.info</div>", correct: "phishing" },
-      { title: "Campus News", content: "The library will close early due to upcoming holidays.", correct: "safe" }
+      {
+        title: "Campus Accommodation Deposit",
+        header: "From: housing-deposits@uwe-ac-accommodation.net",
+        content: "Urgent: Your room reservation deposit is pending. Wire funds immediately to avoid cancellation.",
+        url: "https://uwe-ac-accommodation.net/secure-pay",
+        correct: "phishing",
+        trigger: "urgency",
+        concept: "Concept 1: Typosquatting / Misleading top-level domain spoofing university infrastructure."
+      },
+      {
+        title: "Blackboard Learning LMS Portal",
+        header: "From: noreply@blackboard.uwe.ac.uk",
+        content: "Your module assignment grades have been updated. Log in through your standard dashboard to review feedback.",
+        url: "https://blackboard.uwe.ac.uk/auth/login",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 2: Valid institutional subdomain matching official campus registry."
+      },
+      {
+        title: "IT Helpdesk Mandatory Migration",
+        header: "From: admin@uwe-it-support-desk.com",
+        content: "Network security upgrade required. Verify your Microsoft 365 credentials or account access will be terminated.",
+        url: "https://uwe-it-support-desk.com/m365-verify",
+        correct: "phishing",
+        trigger: "authority",
+        concept: "Concept 3: Authority coercion combined with external credential harvester domain."
+      },
+      {
+        title: "Library Book Overdue Notice",
+        header: "From: library-services@uwe.ac.uk",
+        content: "Friendly reminder: 'Introduction to Algorithms' is due back at Frenchay Library by Thursday.",
+        url: "https://library.uwe.ac.uk/my-account",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 1: Legitimate transactional notification from institutional domain."
+      },
+      {
+        title: "Student Finance England Grant",
+        header: "From: service@gov-uk-student-maintenance.info",
+        content: "Your maintenance loan disbursement has failed due to banking validation errors. Update details now.",
+        url: "https://gov-uk-student-maintenance.info/portal",
+        correct: "phishing",
+        trigger: "financial-fear",
+        concept: "Concept 2: Financial fear tactic paired with a fraudulent non-gov extension."
+      },
+      {
+        title: "Computing Society Hackathon",
+        header: "From: events@uwecompsoc.co.uk",
+        content: "Join us this Friday in Room 3Q62 for our beginner-friendly Python workshop and pizza.",
+        url: "https://uwecompsoc.co.uk/events/python",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 3: Verified student society domain and normal informational content."
+      },
+      {
+        title: "Cloud Storage Quota Exhaustion",
+        header: "From: drive-admin@google-edu-storage-alert.net",
+        content: "Your student OneDrive/Drive account has reached maximum capacity. Upgrade storage space immediately.",
+        url: "https://drive-increase-limit.net/auth",
+        correct: "phishing",
+        trigger: "urgency",
+        concept: "Concept 1: Artificial scarcity and urgency prompting malicious credential input."
+      },
+      {
+        title: "Graduation Ceremony Ticketing",
+        header: "From: graduation@uwe.ac.uk",
+        content: "Allocate your guest passes for the upcoming summer graduation ceremony through the graduation portal.",
+        url: "https://www.uwe.ac.uk/graduation/tickets",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 2: Official institutional URL structure without anomalies."
+      },
+      {
+        title: "Campus Parking Fine Warning",
+        header: "From: parking@uwe-campus-citations.com",
+        content: "Unpaid parking violation detected near Glenside campus. Pay within 24 hours to prevent legal escalation.",
+        url: "https://uwe-campus-citations.com/pay",
+        correct: "phishing",
+        trigger: "urgency",
+        concept: "Concept 3: Coercive penalty threat hosted on an unrelated registrar."
+      },
+      {
+        title: "Student Union Elections",
+        header: "From: su-elections@uwe.ac.uk",
+        content: "Cast your vote for the new student union executive officers before polls close tonight at midnight.",
+        url: "https://www.thesu.co.uk/elections",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 1: Authentic student representation portal link."
+      },
+      {
+        title: "Campus Wi-Fi Security Certificate",
+        header: "From: network-ops@uwe-wifi-update.org",
+        content: "Eduroam security certificate expired. Download and execute the automated trust profile patch.",
+        url: "https://uwe-wifi-update.org/download/patch.exe",
+        correct: "phishing",
+        trigger: "authority",
+        concept: "Concept 2: Malicious binary payload disguised as an administrative network update."
+      },
+      {
+        title: "Student Wellbeing Drop-in Session",
+        header: "From: wellbeing@uwe.ac.uk",
+        content: "Confidential mental health and academic counseling support appointments are available this week.",
+        url: "https://www.uwe.ac.uk/life/health-and-wellbeing",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 3: Standard university support service link with clean headers."
+      }
     ];
-    
+
     const elderlyScenarios = [
-      { title: "Pension Tax", content: "Your tax refund is ready. Confirm details at <div class='url-box'>https://gov.uk/tax-refund</div>", correct: "safe" },
-      { title: "Bank Alert", content: "Unusual login from Russia. Verify your identity here: <div class='url-box'>bank-security-secure-login.net</div>", correct: "phishing" },
-      { title: "NHS Booking", content: "Your blood test appointment is confirmed for Tuesday.", correct: "safe" },
-      { title: "Inheritance", content: "Formal notice: Processing fee required to claim inheritance: <div class='url-box'>legal-funds-claim.com</div>", correct: "phishing" },
-      { title: "Energy Bill", content: "Your energy provider has changed. Login to view: <div class='url-box'>energy-bill-portal-login.net</div>", correct: "phishing" },
-      { title: "Gov Health", content: "Check your local clinic's opening hours online.", correct: "safe" },
-      { title: "Property Tax", content: "Your council tax band has been updated. Review here:", correct: "safe" },
-      { title: "Identity Theft", content: "Protect your identity. Install this security software: <div class='url-box'>pc-protection-tool.com</div>", correct: "phishing" },
-      { title: "Pension Review", content: "Schedule your free annual pension review with our advisor.", correct: "safe" },
-      { title: "Mail Package", content: "Failed delivery of your parcel. Pay redelivery fee: <div class='url-box'>royal-mail-delivery-fee.com</div>", correct: "phishing" }
+      {
+        title: "HMRC Tax Refund Notification",
+        header: "From: rebates@gov.uk-tax-return-portal.net",
+        content: "You are owed a calculated tax rebate of £428.50. Submit your debit card details to process direct transfer.",
+        url: "https://gov.uk-tax-return-portal.net/claim",
+        correct: "phishing",
+        trigger: "financial-fear",
+        concept: "Concept 1: Financial lure mimicking government tax authorities."
+      },
+      {
+        title: "NHS Repeat Prescription Status",
+        header: "From: donotreply@nhs.net",
+        content: "Your scheduled monthly repeat prescription has been approved at your nominated pharmacy.",
+        url: "https://www.nhs.uk/health-services",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 2: Legitimate health service communication domain."
+      },
+      {
+        title: "Bank Fraud Department Alert",
+        header: "From: security@barclays-account-secure-verify.com",
+        content: "Suspicious transaction attempted in Manchester. Transfer your savings to a secure safe account immediately.",
+        url: "https://barclays-account-secure-verify.com/safe-transfer",
+        correct: "phishing",
+        trigger: "urgency",
+        concept: "Concept 3: High-pressure panic manipulation mimicking major banking institutions."
+      },
+      {
+        title: "Winter Fuel Payment Confirmation",
+        header: "From: pensions@dwp.gov.uk",
+        content: "Your winter fuel allowance has been verified and will automatically deposit into your nominated bank account.",
+        url: "https://www.gov.uk/winter-fuel-payment",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 1: Authentic government service domain verification (.gov.uk)."
+      },
+      {
+        title: "Royal Mail Redelivery Fee",
+        header: "From: tracking@royalmail-parcel-redelivery-fee.info",
+        content: "We attempted delivery of your parcel today but incurred a customs handling fee of £1.50. Pay to release.",
+        url: "https://royalmail-parcel-redelivery-fee.info/pay",
+        correct: "phishing",
+        trigger: "financial-fear",
+        concept: "Concept 2: Small transactional fee trap used to steal full card details."
+      },
+      {
+        title: "Local Council Tax Band Review",
+        header: "From: council-tax@bristol.gov.uk",
+        content: "Your annual council tax statement for the upcoming financial year is now available to view online.",
+        url: "https://www.bristol.gov.uk/council-tax",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 3: Local municipal authority domain structure."
+      },
+      {
+        title: "TV Licence Direct Debit Failure",
+        header: "From: support@tvlicensing-auto-renew.net",
+        content: "Your direct debit mandate for your colour TV licence failed. Update payment info to avoid prosecution.",
+        url: "https://tvlicensing-auto-renew.net/update",
+        correct: "phishing",
+        trigger: "urgency",
+        concept: "Concept 1: Legal penalty threat combined with fake renewal portal."
+      },
+      {
+        title: "GP Surgery Appointment Reminder",
+        header: "From: appointments@lehigh-surgery.nhs.uk",
+        content: "Reminder: You have a routine blood pressure review booked with Dr. Evans on Wednesday at 10:30 AM.",
+        url: "https://www.lehigh-surgery.nhs.uk",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 2: Valid NHS clinical subdomain structure."
+      },
+      {
+        title: "Energy Supplier Tariff Expiry",
+        header: "From: billing@britishgas-energy-discount.com",
+        content: "Your fixed energy tariff is expiring. Claim your government-backed energy bill subsidy immediately.",
+        url: "https://britishgas-energy-discount.com/claim",
+        correct: "phishing",
+        trigger: "authority",
+        concept: "Concept 3: Exploiting utility price anxiety with external fraudulent domain."
+      },
+      {
+        title: "State Pension Annual Statement",
+        header: "From: pension-service@dwp.gov.uk",
+        content: "Your state pension forecast statement has been updated. Log in to check your qualifying years.",
+        url: "https://www.gov.uk/check-state-pension",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 1: Standard official government portal link."
+      },
+      {
+        title: "Computer Virus Infection Warning",
+        header: "From: alert@microsoft-windows-security-center.org",
+        content: "Critical Trojan virus detected on your system. Call the toll-free Microsoft support helpline immediately.",
+        url: "https://microsoft-windows-security-center.org/scan",
+        correct: "phishing",
+        trigger: "urgency",
+        concept: "Concept 2: Tech-support scam pop-up tactic designed to induce panic."
+      },
+      {
+        title: "Water Board Scheduled Maintenance",
+        header: "From: service@bristolwater.co.uk",
+        content: "Scheduled water main maintenance in your postcode area on Tuesday between 1 PM and 4 PM.",
+        url: "https://www.bristolwater.co.uk/supply",
+        correct: "safe",
+        trigger: null,
+        concept: "Concept 3: Valid utility company domain and informational message."
+      }
     ];
     
-    /* GAME ENGINE */
-    let scenarios = mode === "student" ? [...studentScenarios].sort(() => Math.random() - 0.5) : [...elderlyScenarios].sort(() => Math.random() - 0.5);
+    let scenarios = mode === "student" ? [...studentScenarios] : [...elderlyScenarios];
     let score = 0;
-    let totalAnswered = 0;
+    let currentIndex = 0;
     let history = [];
     let gameActive = false;
-    let currentScenario;
-    
-    window.onload = () => {
-      document.getElementById("modalContainer").innerHTML = `
-        <div class="modal-bg"><div class="modal">
-          <h2>PhishGuard Challenge</h2>
-          <p>Identify 10 security threats. Watch the URLs carefully!</p>
-          <button class="modal-btn" onclick="startGame()">Start Challenge</button>
-        </div></div>`;
-    };
-    
-    function startGame() {
-      document.getElementById("modalContainer").innerHTML = "";
-      gameActive = true;
-      startTimer();
-      loadScenario();
+    let timeLeft = 100; // Exactly 100 seconds
+    let timerInterval;
+
+    function playAudio(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'correct') {
+          osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+          osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.2);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(160, ctx.currentTime);
+          gain.gain.setValueAtTime(0.1, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.25);
+        } else if (type === 'warn') {
+          osc.frequency.setValueAtTime(440, ctx.currentTime);
+          gain.gain.setValueAtTime(0.05, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.15);
+        }
+      } catch (e) {}
     }
     
-    function startTimer() {
-      let timeLeft = 60;
+    window.onload = () => {
+      showWelcomeModal();
+    };
+
+    function showWelcomeModal() {
+      document.getElementById("modalContainer").innerHTML = `
+        <div class="modal-bg">
+          <div class="modal">
+            <h2>Threat Challenge Mode</h2>
+            <p>You have <strong>100 seconds</strong> to evaluate <strong>12 real-world threat scenarios</strong>. Put everything you learned from training into action!<br><br>Be sharp!</p>
+            <button class="modal-btn" onclick="startCountdownSequence()">Start Challenge Protocol</button>
+          </div>
+        </div>`;
+    }
+
+    function startCountdownSequence() {
+      let count = 3;
+      document.getElementById("modalContainer").innerHTML = `
+        <div class="modal-bg">
+          <div class="modal">
+            <h2>Initializing Challenge</h2>
+            <p>Get Ready...</p>
+            <div id="countNum" class="countdown-number">3</div>
+          </div>
+        </div>`;
+
+      const int = setInterval(() => {
+        count--;
+        if (count > 0) {
+          document.getElementById("countNum").textContent = count;
+        } else if (count === 0) {
+          document.getElementById("countNum").textContent = "GO!";
+        } else {
+          clearInterval(int);
+          document.getElementById("modalContainer").innerHTML = "";
+          gameActive = true;
+          startChallengeTimer();
+          loadScenario();
+        }
+      }, 1000);
+    }
+    
+    function startChallengeTimer() {
       const timerElement = document.getElementById("timer");
-      const timer = setInterval(() => {
+      timerInterval = setInterval(() => {
         timeLeft--;
         timerElement.textContent = `Time Left: ${timeLeft}s`;
+        
+        // 10-Second Panic Warning Cue
+        if (timeLeft <= 10 && timeLeft > 0) {
+          timerElement.classList.add("warning");
+          playAudio('warn');
+        }
+
         if (timeLeft <= 0 || !gameActive) {
-          clearInterval(timer);
-          if (gameActive) endSimulation("Time's up!");
+          clearInterval(timerInterval);
+          if (gameActive) endChallenge("Time Expired");
         }
       }, 1000);
     }
     
     function loadScenario() {
-      if (totalAnswered >= 10) {
-        endSimulation("Challenge Complete!");
+      if (currentIndex >= scenarios.length) {
+        clearInterval(timerInterval);
+        endChallenge("Challenge Completed Successfully");
         return;
       }
-      currentScenario = scenarios[totalAnswered];
-      document.getElementById("scenarioTitle").textContent = currentScenario.title;
-      document.getElementById("scenarioContent").innerHTML = currentScenario.content;
+      
+      const item = scenarios[currentIndex];
+      const box = document.getElementById("scenarioBox");
+      box.classList.add("fade");
+      
+      setTimeout(() => {
+        document.getElementById("scenarioTag").textContent = `Question ${currentIndex + 1} of ${scenarios.length}`;
+        document.getElementById("scenarioTitle").textContent = item.title;
+        document.getElementById("progressBadge").textContent = `Item ${currentIndex + 1} / ${scenarios.length}`;
+        
+        let contentHTML = `<div class="email-header-box"><span>Header:</span> ${item.header}</div>`;
+        contentHTML += `<div class="scenario-content">${item.content}</div>`;
+        contentHTML += `<div style="font-size: 12px; color: #a1a1aa; margin-top:8px;">Inspected Destination URL / Link:</div>`;
+        contentHTML += `<div class='url-inspect'>${item.url}</div>`;
+        
+        document.getElementById("scenarioContent").innerHTML = contentHTML;
+        document.getElementById("conceptHint").textContent = item.concept;
+        
+        box.classList.remove("fade");
+      }, 120);
     }
     
     function answer(choice) {
       if (!gameActive) return;
-      const isCorrect = choice === currentScenario.correct;
-      if (isCorrect) score++;
-      history.push({ title: currentScenario.title, isCorrect, correctAnswer: currentScenario.correct });
-      totalAnswered++;
+      const item = scenarios[currentIndex];
+      const isCorrect = choice === item.correct;
+      
+      if (isCorrect) {
+        score++;
+        playAudio('correct');
+        flashScreen('green');
+      } else {
+        playAudio('wrong');
+        flashScreen('red');
+      }
+
+      document.getElementById("scoreBadge").textContent = `Score: ${score} / ${scenarios.length}`;
+      
+      history.push({ 
+        title: item.title, 
+        isCorrect, 
+        correctAnswer: item.correct,
+        concept: item.concept
+      });
+      
+      currentIndex++;
       loadScenario();
     }
-    
-    function endSimulation(message) {
-      gameActive = false;
-      document.getElementById("modalContainer").innerHTML = `
-        <div class="modal-bg"><div class="modal">
-          <h2>${message}</h2>
-          <p>Final Score: ${score} / 10</p>
-          <button class="modal-btn" onclick="showResults()">View My Results</button>
-          <button class="modal-btn" style="margin-top:10px; background:#444;" onclick="window.location.href='training.html?mode=${mode}'">Return to Training</button>
-        </div></div>`;
+
+    function flashScreen(color) {
+      document.body.classList.add(color === 'green' ? 'flash-green' : 'flash-red');
+      setTimeout(() => {
+        document.body.classList.remove('flash-green', 'flash-red');
+      }, 180);
+    }
+
+    function saveResult() {
+      const key = mode === "student" ? "phishguard_student_data" : "phishguard_elderly_data";
+      const total = history.length;
+      const accuracy = total === 0 ? 0 : Math.round((score / total) * 100);
+
+      const record = {
+        simulation: "threat_challenge",
+        score,
+        total,
+        accuracy,
+        time: new Date().toISOString()
+      };
+
+      let data = JSON.parse(localStorage.getItem(key)) || [];
+      data.push(record);
+      localStorage.setItem(key, JSON.stringify(data));
     }
     
-    function showResults() {
+    function endChallenge(message) {
+      gameActive = false;
+      clearInterval(timerInterval);
+      saveResult();
+
+      const success = score >= 9; // 75%+ success benchmark
+
+      document.getElementById("modalContainer").innerHTML = `
+        <div class="modal-bg">
+          <div class="modal">
+            <h2>${message}</h2>
+            <p>Final Score: <strong>${score} / ${scenarios.length}</strong><br>
+            Status: <span style="color: ${success ? '#34d399' : '#f87171'}; font-weight: bold;">${success ? 'DEFENSE MASTERED ✔' : 'NEEDS PRACTICE ✘'}</span></p>
+            <button class="modal-btn" onclick="showChallengeResults()">Review challenge Analysis</button>
+            <button class="modal-btn modal-btn-secondary" onclick="window.location.href='training.html?mode=${mode}'">Return to Training Hub</button>
+          </div>
+        </div>`;
+    }
+    
+    function showChallengeResults() {
       let resultsHTML = history.map(item => `
-        <div style="margin-bottom: 8px; text-align: left; font-size: 14px; color: ${item.isCorrect ? '#00ffcc' : '#ff4444'}">
-          ${item.isCorrect ? '✔' : '✘'} ${item.title} <small style="color: #666">(Was: ${item.correctAnswer})</small>
+        <div style="margin-bottom: 10px; padding: 10px; background: #09090b; border-radius: 6px; font-size: 13px; border-left: 3px solid ${item.isCorrect ? '#10b981' : '#ef4444'}">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; color: #f4f4f5; margin-bottom: 4px;">
+            <span>${item.title}</span>
+            <span style="color: ${item.isCorrect ? '#34d399' : '#f87171'};">${item.isCorrect ? 'Correct' : 'Missed'}</span>
+          </div>
+          <div style="color: #a1a1aa; font-size: 11px;">${item.concept}</div>
         </div>`).join('');
     
       document.getElementById("modalContainer").innerHTML = `
-        <div class="modal-bg"><div class="modal" style="max-height:80vh; overflow-y:auto;">
-          <h2>Detailed Results</h2>
-          <div style="background:#0d0d0d; padding:15px; border-radius:8px; margin-bottom:20px;">${resultsHTML}</div>
-          <button class="modal-btn" onclick="window.location.href='training.html?mode=${mode}'">Return to Training</button>
-        </div></div>`;
+        <div class="modal-bg">
+          <div class="modal" style="max-height:85vh; overflow-y:auto; text-align: left;">
+            <h2 style="text-align: center; margin-bottom: 15px;">Challenge Breakdown</h2>
+            <div style="margin-bottom: 20px;">${resultsHTML}</div>
+            <button class="modal-btn" onclick="window.location.href='training.html?mode=${mode}'">Return to Training Hub</button>
+          </div>
+        </div>`;
     }
-    </script>
+</script>
+<script src="js/js/behaviour-engine.js"></script>
 
 </body>
 </html>

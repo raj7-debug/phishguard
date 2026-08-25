@@ -2,302 +2,523 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PhishGuard – Student Inbox Simulation</title>
+<title>UWE Outlook Web – Student Mailbox</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+:root {
+  --outlook-blue: #0078d4;
+  --outlook-dark: #f3f2f1;
+  --bg-sidebar: #faf9f8;
+  --bg-reading: #ffffff;
+  --border-color: #edebe9;
+  --text-main: #323130;
+  --text-muted: #605e5c;
+  --accent-red: #d13438;
+  --accent-green: #107c41;
+}
+
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--outlook-dark);
+  color: var(--text-main);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Office 365 Top Navigation Bar */
+.o365-header {
+  height: 48px;
+  background: var(--outlook-blue);
   color: white;
-  overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-/* Background grid */
-.bg-grid {
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(to right, #80808012 1px, transparent 1px),
-    linear-gradient(to bottom, #80808012 1px, transparent 1px);
-  background-size: 24px 24px;
-  z-index: -2;
+.o365-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* Glow */
-.glow {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 800px;
-  height: 800px;
-  background: rgba(0, 150, 255, 0.1);
+.o365-status {
+  font-size: 12px;
+  font-weight: 400;
+  background: rgba(0,0,0,0.15);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+/* Mail Workspace Layout */
+.mail-app-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  overflow: hidden;
+  background: white;
+}
+
+@media(max-width: 800px) {
+  .mail-app-container { grid-template-columns: 1fr; }
+  .sidebar-pane { display: none; }
+}
+
+/* Left Sidebar: Message List */
+.sidebar-pane {
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.sidebar-title-bar {
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mail-list-item {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.mail-list-item:hover { background: #f1f0ef; }
+.mail-list-item.active { background: #eff6fc; border-left: 4px solid var(--outlook-blue); }
+
+.mail-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.mail-item-sender {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.mail-item-time {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.mail-item-subj {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.mail-item-preview {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Right Pane: Reading Canvas */
+.reading-pane {
+  background: var(--bg-reading);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
+  padding: 32px 40px;
+}
+
+.email-header-section {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.email-subject-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 16px 0;
+}
+
+.sender-info-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sender-avatar-circle {
+  width: 40px; height: 40px;
   border-radius: 50%;
-  filter: blur(120px);
-  transform: translate(-50%, -50%);
-  z-index: -1;
+  background: #004578;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: 15px;
 }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 40px 20px;
-  text-align: center;
+.sender-details h4 {
+  margin: 0 0 2px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
 }
 
-.title {
-  font-size: 38px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #00aaff;
+.sender-details span {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: monospace;
 }
 
-.subtitle {
-  font-size: 18px;
-  color: #cccccc;
+.email-body-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #3b3a39;
   margin-bottom: 40px;
 }
 
-/* Email box */
-.email-box {
-  background: #1a1a1a;
-  border: 2px solid #333;
-  padding: 25px;
-  border-radius: 12px;
-  text-align: left;
-  margin-bottom: 30px;
-}
-
-.email-header {
-  font-size: 20px;
-  color: #00aaff;
-  margin-bottom: 10px;
-}
-
-.email-body {
-  color: #cccccc;
-  line-height: 1.5;
-}
-
-/* Buttons */
-.btn-row {
+/* Action Control Toolbar */
+.mail-action-toolbar {
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  padding: 16px 20px;
+  border-radius: 6px;
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 25px;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.sim-btn {
-  background: #00aaff;
-  color: black;
-  padding: 14px 30px;
-  border: none;
-  border-radius: 8px;
+.toolbar-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.toolbar-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 13px;
   cursor: pointer;
-  font-weight: bold;
+  border: 1px solid transparent;
+  transition: background 0.15s;
 }
 
-.hint-btn {
-  background: #ffaa00;
-  color: black;
-  padding: 14px 30px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
+.btn-legit { background: #ffffff; color: var(--accent-green); border-color: var(--accent-green); }
+.btn-legit:hover { background: rgba(16, 124, 65, 0.05); }
 
-/* Modal */
-.modal-bg {
+.btn-phish { background: #ffffff; color: var(--accent-red); border-color: var(--accent-red); }
+.btn-phish:hover { background: rgba(209, 52, 56, 0.05); }
+
+.btn-hint { background: #ffffff; color: #8a6d3b; border-color: #f0ad4e; }
+.btn-hint:hover { background: rgba(240, 173, 78, 0.05); }
+
+/* Modal Feedback System */
+.modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 100;
+  padding: 16px;
 }
 
-.modal {
-  background: #1a1a1a;
-  border: 2px solid #00aaff;
-  padding: 30px;
-  width: 420px;
-  border-radius: 12px;
+.modal-dialog {
+  background: white;
+  border-radius: 8px;
+  padding: 28px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   text-align: center;
 }
 
-.modal h2 {
-  color: #00aaff;
-  margin-bottom: 15px;
-}
+.modal-dialog h2 { margin-top: 0; font-size: 20px; }
+.modal-dialog h2.correct { color: var(--accent-green); }
+.modal-dialog h2.wrong { color: var(--accent-red); }
+.modal-dialog p { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin: 16px 0 24px 0; }
 
-.modal p {
-  color: #cccccc;
-  margin-bottom: 20px;
-}
-
-.modal-btn {
-  background: #00aaff;
-  color: black;
-  padding: 12px 25px;
+.modal-confirm-btn {
+  background: var(--outlook-blue);
+  color: white;
   border: none;
-  border-radius: 8px;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
-  font-weight: bold;
+}
+
+/* Accessibility Mode */
+body.a11y-mode {
+  zoom: 1.15;
+  filter: contrast(1.08);
 }
 </style>
 </head>
 
 <body>
+<script>
+(function() {
+  try {
+    if (localStorage.getItem("phishguard_a11y_mode") === "true") {
+      document.body.classList.add("a11y-mode");
+    }
+  } catch (e) {}
+})();
+</script>
 
-<div class="bg-grid"></div>
-<div class="glow"></div>
-
-<div class="container">
-  <div class="title">Inbox Intercept – Student Track</div>
-  <div class="subtitle">Analyze each email and decide if it is legitimate or phishing.</div>
-
-  <div id="emailBox" class="email-box">
-    <div id="emailHeader" class="email-header"></div>
-    <div id="emailBody" class="email-body"></div>
+<header class="o365-header">
+  <div class="o365-brand">
+    <span>Outlook – Student Webmail</span>
   </div>
+  <div class="o365-status" id="caseCounter">Inbox Case 1 of 4</div>
+</header>
 
-  <div class="btn-row">
-    <button class="sim-btn" onclick="answer('safe')">Safe</button>
-    <button class="sim-btn" onclick="answer('phishing')">Phishing</button>
-    <button class="hint-btn" onclick="showHint()">Hint</button>
-  </div>
-</div>
+<main class="mail-app-container">
+  <!-- Sidebar Message List -->
+  <aside class="sidebar-pane">
+    <div class="sidebar-title-bar">
+      <span>Focused Inbox</span>
+      <span style="font-size: 12px; color: var(--text-muted);">Unread</span>
+    </div>
+    <div id="sidebarMailList"></div>
+  </aside>
+
+  <!-- Reading Pane -->
+  <section class="reading-pane">
+    <div>
+      <div class="email-header-section">
+        <h1 class="email-subject-title" id="viewSubject">Loading Subject...</h1>
+        <div class="sender-info-block">
+          <div class="avatar-circle" id="viewAvatar">U</div>
+          <div class="sender-details">
+            <h4 id="viewSenderName">University IT Helpdesk</h4>
+            <span id="viewSenderAddress">&lt;support@uwe-ac-uk-verify.com&gt;</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="email-body-content" id="viewBody">
+        Loading email body...
+      </div>
+    </div>
+
+    <!-- Action Toolbar -->
+    <div class="mail-action-toolbar">
+      <span class="toolbar-label">Assess Email Legitimacy:</span>
+      <div class="toolbar-buttons">
+        <button class="action-btn btn-legit" onclick="processVerdict('safe')">✓ Mark Safe</button>
+        <button class="action-btn btn-phish" onclick="processVerdict('phishing')">🚨 Report Phishing</button>
+        <button class="action-btn btn-hint" onclick="openHint()">🔍 Clue</button>
+      </div>
+    </div>
+  </section>
+</main>
 
 <div id="modalContainer"></div>
 
+<script src="js/behaviour-engine.js"></script>
 <script>
-/* STUDENT EMAIL SCENARIOS */
-const scenarios = [
-  {
-    header: "University Portal Verification Required",
-    body: "Your university portal password must be verified immediately. Failure to do so will result in account suspension.",
-    correct: "phishing",
-    hint: "Universities never threaten immediate suspension in emails."
-  },
-  {
-    header: "Course Registration Confirmation",
-    body: "Your course registration for next semester has been successfully processed.",
-    correct: "safe",
-    hint: "Official course confirmations come from your university domain."
-  },
-  {
-    header: "Scholarship Opportunity",
-    body: "You have been selected for a scholarship. Click the link to claim your reward.",
-    correct: "phishing",
-    hint: "Scholarships never require clicking external links to claim rewards."
-  }
-];
+document.addEventListener("DOMContentLoaded", () => {
+  const scenarios = [
+    {
+      id: "student-portal-verify",
+      senderName: "University IT Services",
+      senderEmail: "support@uwe-ac-uk-verify.com",
+      timestamp: "08:42",
+      subject: "Action Required: Verify Your Student Portal Password",
+      preview: "Your university portal password must be verified...",
+      body: "Dear Student,<br><br>Routine maintenance requires all active student accounts to re-verify credentials within 24 hours. Failure to complete this process will result in immediate suspension of network access, library privileges, and student portal access.<br><br>👉 <strong><a href='#' onclick='return false;' style='color:#0078d4;'>Click here to verify your UWE account credentials</a></strong><br><br>Regards,<br>Campus IT Services",
+      correct: "phishing",
+      trigger: "authority",
+      hint: "Examine the sender address domain carefully. Does 'uwe-ac-uk-verify.com' match the genuine university web infrastructure?"
+    },
+    {
+      id: "student-course-reg",
+      senderName: "Academic Registry & Timetabling",
+      senderEmail: "registry@uwe.ac.uk",
+      timestamp: "Yesterday",
+      subject: "Course Registration Confirmation - Semester B",
+      preview: "Your course registration for the upcoming semester...",
+      body: "Dear Student,<br><br>This is an automated confirmation that your module selections for Semester B have been successfully recorded in the central database. You can review your finalized timetable by logging directly into your standard student portal.<br><br>Regards,<br>Academic Registry Office",
+      correct: "safe",
+      trigger: null,
+      hint: "This message originates from the official institutional domain (@uwe.ac.uk) and contains no threatening urgency or suspicious links."
+    },
+    {
+      id: "student-scholarship",
+      senderName: "Student Financial Awards Office",
+      senderEmail: "awards-grant-portal@student-fund-hub.net",
+      timestamp: "2 days ago",
+      subject: "Exclusive Student Grant Allocation",
+      body: "Congratulations Student,<br><br>You have been randomly selected from the institutional database to receive a special student cost-of-living financial allocation. To deposit these funds into your bank account, claim your grant via the external link below before the deadline expires.<br><br>👉 <strong><a href='#' onclick='return false;' style='color:#0078d4;'>Claim Student Financial Grant Now</a></strong><br><br>Student Awards Team",
+      correct: "phishing",
+      trigger: "financial-fear",
+      hint: "Official financial awards or grants are never distributed via random external domains like 'student-fund-hub.net'."
+    },
+    {
+      id: "student-library-notice",
+      senderName: "UWE Library Services",
+      senderEmail: "library-loans@uwe.ac.uk",
+      timestamp: "3 days ago",
+      subject: "Library Book Due Date Reminder",
+      body: "Hello,<br><br>This is a standard reminder that your library loan item 'Database Systems Architecture' is due for return or renewal within 3 days. You can log into your account online or visit the campus library desk to renew.<br><br>Best wishes,<br>UWE Library Services",
+      correct: "safe",
+      trigger: null,
+      hint: "Standard administrative notices from the library come from recognized institutional addresses and use normal self-service procedures."
+    }
+  ];
 
-let index = 0;
-let score = 0;
+  let currentIndex = 0;
+  let userScore = 0;
+  let startTime = Date.now();
 
-/* LOAD EMAIL */
-function loadEmail() {
-  const s = scenarios[index];
-  document.getElementById("emailHeader").textContent = s.header;
-  document.getElementById("emailBody").textContent = s.body;
-}
-
-loadEmail();
-
-/* ANSWER LOGIC */
-function answer(choice) {
-  const s = scenarios[index];
-  const correct = (choice === s.correct);
-
-  if (correct) score++;
-
-  showFeedback(correct, s.correct);
-}
-
-/* FEEDBACK MODAL */
-function showFeedback(correct, correctAnswer) {
-  const modal = `
-    <div class="modal-bg">
-      <div class="modal">
-        <h2>${correct ? "Correct!" : "Incorrect"}</h2>
-        <p>The correct answer was: <strong>${correctAnswer.toUpperCase()}</strong></p>
-        <button class="modal-btn" onclick="nextEmail()">Next</button>
-      </div>
-    </div>
-  `;
-  document.getElementById("modalContainer").innerHTML = modal;
-}
-
-/* HINT */
-function showHint() {
-  const s = scenarios[index];
-  const modal = `
-    <div class="modal-bg">
-      <div class="modal">
-        <h2>Hint</h2>
-        <p>${s.hint}</p>
-        <button class="modal-btn" onclick="closeModal()">Close</button>
-      </div>
-    </div>
-  `;
-  document.getElementById("modalContainer").innerHTML = modal;
-}
-
-function closeModal() {
-  document.getElementById("modalContainer").innerHTML = "";
-}
-
-/* NEXT EMAIL */
-function nextEmail() {
-  document.getElementById("modalContainer").innerHTML = "";
-  index++;
-
-  if (index >= scenarios.length) {
-    endSimulation();
-    return;
+  function renderSidebar() {
+    let listHTML = "";
+    scenarios.forEach((s, idx) => {
+      listHTML += `
+        <div class="mail-list-item ${idx === currentIndex ? 'active' : ''}" onclick="switchScenario(${idx})">
+          <div class="mail-item-header">
+            <span class="mail-item-sender">${s.senderName}</span>
+            <span class="mail-item-time">${s.timestamp}</span>
+          </div>
+          <div class="mail-item-subj">${s.subject}</div>
+          <div class="mail-item-preview">${s.preview}</div>
+        </div>
+      `;
+    });
+    document.getElementById("sidebarMailList").innerHTML = listHTML;
   }
 
-  loadEmail();
-}
+  function renderActiveEmail() {
+    const s = scenarios[currentIndex];
+    document.getElementById("caseCounter").textContent = `Inbox Case ${currentIndex + 1} of ${scenarios.length}`;
+    document.getElementById("viewSubject").textContent = s.subject;
+    document.getElementById("viewSenderName").textContent = s.senderName;
+    document.getElementById("viewSenderAddress").textContent = `<${s.senderEmail}>`;
+    document.getElementById("viewAvatar").textContent = s.senderName.charAt(0);
+    document.getElementById("viewBody").innerHTML = s.body;
 
-/* SAVE RESULT TO LOCALSTORAGE */
-function saveResult(score, total) {
-  const key = "phishguard_student_data";
+    renderSidebar();
+    startTime = Date.now();
+  }
 
-  const accuracy = Math.round((score / total) * 100);
-
-  const record = {
-    simulation: "inbox",
-    score,
-    total,
-    accuracy,
-    time: new Date().toISOString()
+  window.switchScenario = function(idx) {
+    currentIndex = idx;
+    renderActiveEmail();
   };
 
-  let data = JSON.parse(localStorage.getItem(key)) || [];
-  data.push(record);
-  localStorage.setItem(key, JSON.stringify(data));
-}
+  window.processVerdict = function(choice) {
+    const s = scenarios[currentIndex];
+    const isCorrect = (choice === s.correct);
+    const responseTime = Date.now() - startTime;
 
-/* END SIMULATION */
-function endSimulation() {
-  saveResult(score, scenarios.length);
+    if (isCorrect) userScore++;
 
-  const modal = `
-    <div class="modal-bg">
-      <div class="modal">
-        <h2>Simulation Complete</h2>
-        <p>Your score: ${score} / ${scenarios.length}</p>
-        <button class="modal-btn" onclick="window.location.href='training.html?mode=student'">Return to Command Center</button>
+    if (window.PhishGuardEngine) {
+      window.PhishGuardEngine.recordSimulation({
+        userMode: "student",
+        simulation: "inbox",
+        scenarioId: s.id,
+        trigger: s.trigger || "none",
+        correct: isCorrect,
+        action: choice === "safe" ? "mark_safe" : "flag_phish",
+        responseTime: responseTime,
+        confidence: 4,
+        hintUsed: false,
+        difficulty: 1,
+        phase: "standard"
+      });
+    }
+
+    showModalFeedback(isCorrect, s);
+  };
+
+  window.openHint = function() {
+    const s = scenarios[currentIndex];
+    document.getElementById("modalContainer").innerHTML = `
+      <div class="modal-backdrop">
+        <div class="modal-dialog">
+          <h2 style="color: #b8860b;">🔍 Security Investigator Clue</h2>
+          <p>${s.hint}</p>
+          <button class="modal-confirm-btn" onclick="closeModal()">Return to Mailbox</button>
+        </div>
       </div>
-    </div>
-  `;
-  document.getElementById("modalContainer").innerHTML = modal;
-}
+    `;
+  };
+
+  function showModalFeedback(isCorrect, s) {
+    const isLast = currentIndex + 1 >= scenarios.length;
+    document.getElementById("modalContainer").innerHTML = `
+      <div class="modal-backdrop">
+        <div class="modal-dialog">
+          <h2 class="${isCorrect ? 'correct' : 'wrong'}">${isCorrect ? "✓ Correct Assessment!" : "⚠️ Threat Misidentified"}</h2>
+          <p>This message was actually <strong>${s.correct.toUpperCase()}</strong>. ${isCorrect ? "Excellent job inspecting the underlying sender domain and headers." : "Falling for this trap in a real university inbox would compromise your credentials."}</p>
+          <button class="modal-confirm-btn" onclick="${isLast ? 'finishLabSession()' : 'advanceScenario()'}">${isLast ? 'View Final Results' : 'Next Email →'}</button>
+        </div>
+      </div>
+    `;
+  }
+
+  window.closeModal = function() {
+    document.getElementById("modalContainer").innerHTML = "";
+  };
+
+  window.advanceScenario = function() {
+    closeModal();
+    currentIndex++;
+    renderActiveEmail();
+  };
+
+  window.finishLabSession = function() {
+    const accuracy = Math.round((userScore / scenarios.length) * 100);
+    const redirectUrl = `training.html?mode=student&score=${userScore}&total=${scenarios.length}&accuracy=${accuracy}`;
+
+    document.getElementById("modalContainer").innerHTML = `
+      <div class="modal-backdrop">
+        <div class="modal-dialog">
+          <h2 class="correct">Module Completed Successfully</h2>
+          <p>Final Score: <strong>${userScore} / ${scenarios.length}</strong> (${accuracy}% accuracy).<br><br>All telemetry recorded to your behavioral command center.</p>
+          <button class="modal-confirm-btn" onclick="window.location.href='${redirectUrl}'">Return to Dashboard</button>
+        </div>
+      </div>
+    `;
+  };
+
+  renderActiveEmail();
+});
 </script>
 
 </body>

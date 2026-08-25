@@ -2,280 +2,491 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PhishGuard – Leaderboard & Personal Records</title>
+<title>PhishGuard – Global Intelligence Leaderboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
-  display: flex;
-  overflow-x: hidden;
-}
-
-/* Background grid */
-.bg-grid {
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(to right, #80808012 1px, transparent 1px),
-    linear-gradient(to bottom, #80808012 1px, transparent 1px);
-  background-size: 24px 24px;
-  z-index: -2;
-}
-
-/* Glow */
-.glow {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 800px;
-  height: 800px;
-  background: rgba(0, 150, 255, 0.1);
-  border-radius: 50%;
-  filter: blur(120px);
-  transform: translate(-50%, -50%);
-  z-index: -1;
-}
-
-/* SIDEBAR */
-.sidebar {
-  width: 240px;
-  background: #111;
-  border-right: 2px solid #222;
-  padding: 30px 20px;
-  height: 100vh;
-  box-sizing: border-box;
-}
-
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
-}
-
-.sidebar-logo svg {
-  width: 40px;
-  height: 40px;
-}
-
-.sidebar-title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #00aaff;
-}
-
-.sidebar-item {
-  font-size: 18px;
-  padding: 10px 0;
-  color: #cccccc;
-  cursor: pointer;
-  transition: 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sidebar-item svg {
-  width: 18px;
-  height: 18px;
-}
-
-.sidebar-item:hover, .sidebar-item.active {
-  color: #00aaff;
-}
-
-/* MAIN CONTENT */
-.main {
-  flex: 1;
-  padding: 40px;
-  overflow-y: auto;
-  height: 100vh;
-  box-sizing: border-box;
-}
-
-.header-title {
-  font-size: 38px;
-  color: #00aaff;
-  margin-bottom: 30px;
-}
-
-/* Top Stat Cards */
-.top-stats {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 35px;
-}
-
-.top-stat-box {
-  background: #1a1a1a;
-  border: 2px solid #333;
-  padding: 20px;
-  flex: 1;
-  border-radius: 12px;
-}
-
-.top-stat-title {
-  color: #00aaff;
-  font-size: 14px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.top-stat-value {
-  color: #ffffff;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-/* Section Header */
-.section-subtitle {
-  font-size: 18px;
-  color: #cccccc;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Category Grid */
-.record-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.record-card {
-  background: #141414;
-  border: 2px solid #222;
-  padding: 20px;
-  border-radius: 12px;
-  position: relative;
-}
-
-.record-card.inbox { border-left: 4px solid #00aaff; }
-.record-card.url { border-left: 4px solid #9933ff; }
-.record-card.spoof { border-left: 4px solid #ff3366; }
-
-.record-cat-title {
-  font-size: 14px;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-.inbox .record-cat-title { color: #00aaff; }
-.url .record-cat-title { color: #9933ff; }
-.spoof .record-cat-title { color: #ff3366; }
-
-.record-score {
-  font-size: 32px;
-  font-weight: bold;
-  color: white;
-  margin-bottom: 10px;
-}
-
-.record-details {
-  font-size: 13px;
-  color: #aaaaaa;
-  display: flex;
-  gap: 15px;
-}
-
-/* Table Section */
-.table-container {
-  background: #141414;
-  border: 2px solid #222;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.table-header {
-  background: #1a1a1a;
-  padding: 15px 20px;
-  font-size: 14px;
-  color: #888;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-  border-bottom: 2px solid #222;
-}
-
-.table-row {
-  padding: 15px 20px;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-  align-items: center;
-  border-bottom: 1px solid #222;
-  font-size: 14px;
-}
-
-.table-row:last-child {
-  border-bottom: none;
-}
-
-.badge-tag {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: bold;
-}
-.tag-inbox { background: rgba(0, 170, 255, 0.15); color: #00aaff; border: 1px solid #00aaff; }
-.tag-url { background: rgba(153, 51, 255, 0.15); color: #9933ff; border: 1px solid #9933ff; }
-.tag-spoof { background: rgba(255, 51, 102, 0.15); color: #ff3366; border: 1px solid #ff3366; }
-.tag-challenge { background: rgba(255, 170, 0, 0.15); color: #ffaa00; border: 1px solid #ffaa00; }
-</style>
+  :root {
+    --bg-dark: #0a0e17;
+    --sidebar-bg: rgba(9, 13, 23, 0.95);
+    --card-bg: #131a29;
+    --card-hover: #17223b;
+    --border-line: #1e293b;
+    --cyan: #36e0d0;
+    --cyan-glow: rgba(54, 224, 208, 0.15);
+    --blue-accent: #00aaff;
+    --purple-accent: #9933ff;
+    --pink-accent: #ff3366;
+    --green-accent: #55d98b;
+    --yellow-accent: #ffaa00;
+    --text-main: #f4f7fb;
+    --text-muted: #8b9bb4;
+  }
+  
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-main);
+    display: flex;
+    overflow-x: hidden;
+    height: 100vh;
+  }
+  
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 32px 32px;
+    z-index: -2;
+  }
+  
+  .glow {
+    position: fixed;
+    top: 20%;
+    left: 60%;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(0, 170, 255, 0.08) 0%, rgba(54, 224, 208, 0.03) 50%, transparent 80%);
+    border-radius: 50%;
+    filter: blur(100px);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    pointer-events: none;
+  }
+  
+  .sidebar {
+    width: 240px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px;
+    background: rgba(9, 13, 23, 0.95);
+    border-right: 1px solid var(--line, #26334a);
+    backdrop-filter: blur(10px);
+  }
+  
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding-left: 8px;
+  }
+  
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    background: rgba(54, 224, 208, 0.1);
+    border: 1px solid rgba(54, 224, 208, 0.4);
+    border-radius: 8px;
+    color: var(--cyan);
+    box-shadow: 0 0 15px rgba(54, 224, 208, 0.15);
+  }
+  
+  .brand-text {
+    color: var(--cyan);
+    letter-spacing: 1.2px;
+    font-weight: 800;
+    font-size: 15px;
+  }
+  
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+  
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .sidebar-item svg {
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  
+  .sidebar-item:hover {
+    color: var(--text-main);
+    background: rgba(86, 183, 255, 0.08);
+  }
+  
+  .sidebar-item:hover svg {
+    opacity: 1;
+  }
+  
+  .sidebar-item.active {
+    color: var(--cyan);
+    background: rgba(54, 224, 208, 0.1);
+    border: 1px solid rgba(54, 224, 208, 0.25);
+    font-weight: 600;
+  }
+  
+  .sidebar-item.active svg {
+    opacity: 1;
+    color: var(--cyan);
+  }
+  
+  .sidebar-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--line, #26334a);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .telemetry-label {
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+  }
+  
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-main);
+    font-size: 12px;
+  }
+  
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    background-color: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(85, 217, 139, 0.6);
+  }
+  
+  /* MAIN CONTENT */
+  .main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    height: 100vh;
+    box-sizing: border-box;
+  }
+  
+  .header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-line);
+    padding-bottom: 20px;
+  }
+  
+  .header-title {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff 0%, var(--blue-accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    margin: 0 0 6px 0;
+  }
+  
+  .header-subtitle-text {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blue-accent), #0077cc);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 170, 255, 0.2);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 170, 255, 0.35);
+  }
+  
+  /* TOP STATS */
+  .top-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 35px;
+  }
+  
+  .top-stat-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border-line);
+    padding: 20px;
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .top-stat-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--blue-accent);
+  }
+  
+  .top-stat-box:nth-child(2)::before { background: var(--cyan); }
+  .top-stat-box:nth-child(3)::before { background: var(--purple-accent); }
+  .top-stat-box:nth-child(4)::before { background: var(--yellow-accent); }
+  
+  .top-stat-title {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .top-stat-value {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 700;
+  }
+  
+  /* SECTION HEADERS */
+  .section-subtitle {
+    font-size: 16px;
+    color: #e2e8f0;
+    margin-bottom: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* TABLE SECTION & CONTROLS */
+  .table-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+  
+  .filter-chip {
+    background: var(--card-bg);
+    border: 1px solid var(--border-line);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .filter-chip:hover,
+  .filter-chip.active {
+    background: rgba(0, 170, 255, 0.15);
+    border-color: var(--blue-accent);
+    color: white;
+  }
+  
+  .table-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border-line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  
+  .table-header {
+    background: rgba(26, 34, 51, 0.5);
+    padding: 16px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.2fr 1fr;
+    border-bottom: 1px solid var(--border-line);
+  }
+  
+  .table-row {
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.2fr 1fr;
+    align-items: center;
+    border-bottom: 1px solid var(--border-line);
+    font-size: 14px;
+  }
+  
+  .table-row:last-child {
+    border-bottom: none;
+  }
+  
+  .badge-tag {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  
+  .tag-inbox {
+    background: rgba(0, 170, 255, 0.12);
+    color: var(--blue-accent);
+    border: 1px solid rgba(0, 170, 255, 0.3);
+  }
+  
+  .tag-url {
+    background: rgba(153, 51, 255, 0.12);
+    color: var(--purple-accent);
+    border: 1px solid rgba(153, 51, 255, 0.3);
+  }
+  
+  .tag-spoof {
+    background: rgba(255, 51, 102, 0.12);
+    color: var(--pink-accent);
+    border: 1px solid rgba(255, 51, 102, 0.3);
+  }
+  
+  /* PRINT STYLES */
+  @media print {
+    body {
+      background: white !important;
+      color: black !important;
+      height: auto;
+    }
+  
+    .sidebar,
+    .action-buttons,
+    .table-controls,
+    .bg-grid,
+    .glow {
+      display: none !important;
+    }
+  
+    .main {
+      padding: 0 !important;
+      overflow: visible !important;
+      width: 100%;
+    }
+  
+    .top-stat-box,
+    .table-container {
+      background: #f8fafc !important;
+      border: 1px solid #cbd5e1 !important;
+      color: black !important;
+      box-shadow: none !important;
+    }
+  
+    .top-stat-value,
+    .header-title {
+      color: #0f172a !important;
+      -webkit-text-fill-color: #0f172a !important;
+    }
+  
+    .table-header {
+      background: #e2e8f0 !important;
+      color: #334155 !important;
+    }
+  
+    .table-row {
+      border-bottom: 1px solid #cbd5e1 !important;
+    }
+  }
+  </style>
+  
 </head>
 
 <body>
-
 <div class="bg-grid"></div>
 <div class="glow"></div>
 
+
 <!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sidebar-logo">
-    <svg viewBox="0 0 24 24" fill="#00aaff"><circle cx="12" cy="12" r="10"/></svg>
-    <div class="sidebar-title">PHISHGUARD</div>
+<aside class="sidebar" aria-label="Primary navigation">
+  <div class="sidebar-brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/></svg>
+    </div>
+    <span class="brand-text">PHISHGUARD</span>
   </div>
 
-  <div class="sidebar-item" id="nav-training">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
-    Training
-  </div>
+  <nav class="sidebar-nav">
+    <a href="training.html" class="sidebar-item active">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Training
+    </a>
 
-  <div class="sidebar-item" id="nav-dashboard">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><rect x="4" y="4" width="16" height="16"/></svg>
-    Dashboard
-  </div>
+    <a href="dashboard.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
 
-  <div class="sidebar-item active" id="nav-leaderboard">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2l9 21H3z"/></svg>
-    Leaderboard
-  </div>
+    <a href="leaderboard.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H2v12h4zM14 3h-4v18h4zM22 13h-4v8h4z"/></svg>
+      Leaderboard
+    </a>
 
-  <div class="sidebar-item" id="nav-learn">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M4 4h16v16H4z"/></svg>
-    Learn
-  </div>
+    <a href="learn.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0-5H20"/></svg>
+      Learn
+    </a>
 
-  <div class="sidebar-item" id="nav-report">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
-    Report
-  </div>
+    <a href="report.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Report
+    </a>
 
-  <div class="sidebar-item" id="nav-settings">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
-    Settings
+    <a href="compare.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Compare
+    </a>
+
+    <a href="settings.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <span class="telemetry-label">System Telemetry</span>
+    <div class="status-indicator">
+      <div class="status-dot"></div> 
+      <span>Online</span>
+    </div>
   </div>
-</div>
+</aside>
 
 <!-- MAIN CONTENT -->
 <div class="main">
-  <div class="header-title" id="pageTitle">Leaderboard – Personal Records</div>
+  <div class="header-wrapper">
+    <div>
+      <h1 class="header-title" id="pageTitle"> Leaderboard</h1>
+      <div class="header-subtitle-text">Advanced behavioral threat mapping and performance telemetry.</div>
+    </div>
+    <div class="action-buttons">
+      <button class="btn-primary" id="savePdfBtn">🖨️ Save Report as PDF</button>
+    </div>
+  </div>
 
   <!-- TOP STATS -->
   <div class="top-stats">
@@ -288,100 +499,67 @@ body {
       <div class="top-stat-value" id="statAccuracy">0%</div>
     </div>
     <div class="top-stat-box">
-      <div class="top-stat-title">Sessions Played</div>
+      <div class="top-stat-title">Sessions Logged</div>
       <div class="top-stat-value" id="statSessions">0</div>
     </div>
     <div class="top-stat-box">
-      <div class="top-stat-title">Active Mode</div>
-      <div class="top-stat-value" id="statMode" style="text-transform: capitalize; color: #00ffcc;">Student</div>
-    </div>
-  </div>
-
-  <!-- PERSONAL BESTS BY CATEGORY -->
-  <div class="section-subtitle">🏆 Personal Bests by Category</div>
-  <div class="record-grid">
-    <div class="record-card inbox">
-      <div class="record-cat-title">Inbox Intercept</div>
-      <div class="record-score" id="bestInboxScore">0 pts</div>
-      <div class="record-details">
-        <span id="bestInboxAcc">0% accurate</span>
-        <span id="bestInboxDate">-</span>
-      </div>
-    </div>
-
-    <div class="record-card url">
-      <div class="record-cat-title">URL Inspection</div>
-      <div class="record-score" id="bestUrlScore">0 pts</div>
-      <div class="record-details">
-        <span id="bestUrlAcc">0% accurate</span>
-        <span id="bestUrlDate">-</span>
-      </div>
-    </div>
-
-    <div class="record-card spoof">
-      <div class="record-cat-title">Spoof Detection</div>
-      <div class="record-score" id="bestSpoofScore">0 pts</div>
-      <div class="record-details">
-        <span id="bestSpoofAcc">0% accurate</span>
-        <span id="bestSpoofDate">-</span>
-      </div>
+      <div class="top-stat-title">Security Tier</div>
+      <div class="top-stat-value" id="statTier" style="color: var(--cyan); font-size: 20px;">Novice</div>
     </div>
   </div>
 
   <!-- ALL SESSIONS TABLE -->
-  <div class="section-subtitle">📋 All Sessions — Ranked</div>
+  <div class="section-subtitle">
+    <span>📋 Verified Telemetry Records</span>
+    <div class="table-controls">
+      <button class="filter-chip active" data-filter="all">All</button>
+      <button class="filter-chip" data-filter="inbox">Inbox</button>
+      <button class="filter-chip" data-filter="url">URL</button>
+      <button class="filter-chip" data-filter="spoof">Spoof</button>
+    </div>
+  </div>
+
   <div class="table-container">
     <div class="table-header">
-      <div>Mode / Simulation</div>
+      <div>Simulation Type</div>
       <div>Score</div>
       <div>Accuracy</div>
-      <div>Date</div>
+      <div>Date Logged</div>
       <div>Points Earned</div>
     </div>
     <div id="sessionTableBody">
-      <!-- Dynamically injected rows -->
+      <!-- Injected dynamically -->
     </div>
   </div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Detect Mode from URL Parameter (?mode=student or ?mode=elderly)
   const params = new URLSearchParams(window.location.search);
   const mode = params.get("mode") || "student";
+  document.getElementById("pageTitle").textContent = ` Leaderboard (${mode.toUpperCase()})`;
 
-  // Update visual header and stat indicator
-  document.getElementById("pageTitle").textContent = `Leaderboard — Personal Records (${mode.toUpperCase()})`;
-  document.getElementById("statMode").textContent = mode;
-
-  // 2. Wire up Sidebar Navigation links to preserve mode state across all pages
-  const pages = {
-    "nav-training": "training.html",
-    "nav-dashboard": "dashboard.html",
-    "nav-leaderboard": "leaderboard.html",
-    "nav-learn": "learn.html",
-    "nav-report": "report.html",
-    "nav-settings": "settings.html"
+  // Navigation state preservation
+  const pageMap = {
+    "nav-training": "training.html", "nav-dashboard": "dashboard.html",
+    "nav-leaderboard": "leaderboard.html", "nav-learn": "learn.html",
+    "nav-report": "report.html", "nav-compare": "compare.html", "nav-settings": "settings.html"
   };
-
-  Object.keys(pages).forEach(id => {
+  Object.keys(pageMap).forEach(id => {
     const el = document.getElementById(id);
     if (el) {
-      el.addEventListener("click", () => {
-        window.location.href = `${pages[id]}?mode=${mode}`;
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = `${pageMap[id]}?mode=${mode}`;
       });
     }
   });
 
-  // 3. Fetch Mode-Specific Real Data from LocalStorage
+  // Fetch Storage Data
   const storageKey = mode === "student" ? "phishguard_student_data" : "phishguard_elderly_data";
   let sessionData = JSON.parse(localStorage.getItem(storageKey)) || [];
 
-  // 4. Compute High-Level Metrics from Real Data
-  let totalPoints = 0;
-  let totalCorrect = 0;
-  let totalQuestions = 0;
-
+  let totalPoints = 0, totalCorrect = 0, totalQuestions = 0;
   sessionData.forEach(item => {
     let pts = item.points || (item.score * 100);
     totalPoints += pts;
@@ -395,71 +573,67 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("statAccuracy").textContent = overallAccuracy + "%";
   document.getElementById("statSessions").textContent = sessionData.length;
 
-  // 5. Calculate Category Bests Dynamically
-  let categories = {
-    "Inbox Intercept": { score: 0, accuracy: 0, date: "-" },
-    "URL Inspection": { score: 0, accuracy: 0, date: "-" },
-    "Spoof Detection": { score: 0, accuracy: 0, date: "-" }
-  };
+  // Rank Tier Assignment
+  let userTier = "Novice Analyst";
+  if (totalPoints > 500) userTier = "Phish Hunter";
+  if (totalPoints > 1500) userTier = "Cyber Guardian";
+  if (totalPoints > 3000) userTier = "Elite Sentinel";
+  document.getElementById("statTier").textContent = userTier;
 
-  sessionData.forEach(item => {
-    let typeName = item.type || item.gameMode || "Inbox Intercept";
-    let pts = item.points || (item.score * 100);
-    let acc = item.accuracy || (item.total > 0 ? Math.round((item.score / item.total) * 100) : 0);
-    let sDate = item.date || new Date().toLocaleDateString();
-
-    if (categories[typeName] && pts >= categories[typeName].score) {
-      categories[typeName] = {
-        score: pts,
-        accuracy: acc,
-        date: sDate
-      };
-    }
-  });
-
-  document.getElementById("bestInboxScore").textContent = categories["Inbox Intercept"].score + " pts";
-  document.getElementById("bestInboxAcc").textContent = categories["Inbox Intercept"].accuracy + "% accurate";
-  document.getElementById("bestInboxDate").textContent = categories["Inbox Intercept"].date;
-
-  document.getElementById("bestUrlScore").textContent = categories["URL Inspection"].score + " pts";
-  document.getElementById("bestUrlAcc").textContent = categories["URL Inspection"].accuracy + "% accurate";
-  document.getElementById("bestUrlDate").textContent = categories["URL Inspection"].date;
-
-  document.getElementById("bestSpoofScore").textContent = categories["Spoof Detection"].score + " pts";
-  document.getElementById("bestSpoofAcc").textContent = categories["Spoof Detection"].accuracy + "% accurate";
-  document.getElementById("bestSpoofDate").textContent = categories["Spoof Detection"].date;
-
-  // 6. Populate Table Rows with Real Data
+  const typeDisplayNames = { inbox: "Inbox Intercept", url: "URL Inspection", spoof: "Spoof Detection" };
   const tableBody = document.getElementById("sessionTableBody");
-  if (sessionData.length === 0) {
-    tableBody.innerHTML = `<div style="padding: 30px; color: #777; text-align: center;">No recorded simulation sessions found for ${mode} mode yet. Complete a challenge or simulation to see data here!</div>`;
-  } else {
-    sessionData.sort((a, b) => (b.score || 0) - (a.score || 0));
 
-    tableBody.innerHTML = sessionData.map(item => {
-      let typeName = item.type || item.gameMode || "Challenge Mode";
+  function renderTable(filter = "all") {
+    let filteredData = sessionData;
+    if (filter !== "all") {
+      filteredData = sessionData.filter(item => item.simulation === filter);
+    }
+
+    if (filteredData.length === 0) {
+      tableBody.innerHTML = `<div style="padding: 30px; color: var(--text-muted); text-align: center;">No telemetry session records logged for this filter.</div>`;
+      return;
+    }
+
+    filteredData.sort((a, b) => (b.score || 0) - (a.score || 0));
+
+    tableBody.innerHTML = filteredData.map(item => {
+      let typeName = typeDisplayNames[item.simulation] || "Challenge Mode";
       let tagClass = "tag-inbox";
       if (typeName === "URL Inspection") tagClass = "tag-url";
       if (typeName === "Spoof Detection") tagClass = "tag-spoof";
-      if (typeName.includes("Challenge")) tagClass = "tag-challenge";
 
       let acc = item.accuracy || (item.total > 0 ? Math.round((item.score / item.total) * 100) : 0);
       let pts = item.points || (item.score * 100);
-      let sDate = item.date || "Recent";
+      let sDate = item.time ? new Date(item.time).toLocaleDateString() : "Recent Session";
 
       return `
         <div class="table-row">
           <div><span class="badge-tag ${tagClass}">${typeName}</span></div>
-          <div>${item.score}/${item.total}</div>
-          <div style="color: #00ffcc;">${acc}%</div>
-          <div style="color: #888;">${sDate}</div>
-          <div style="color: #ffaa00; font-weight: bold;">+${pts} pts</div>
+          <div style="font-weight: 600;">${item.score}/${item.total}</div>
+          <div style="color: var(--cyan); font-weight: 600;">${acc}%</div>
+          <div style="color: var(--text-muted);">${sDate}</div>
+          <div style="color: var(--yellow-accent); font-weight: 700;">+${pts} pts</div>
         </div>
       `;
     }).join('');
   }
+
+  renderTable("all");
+
+  document.querySelectorAll(".filter-chip").forEach(chip => {
+    chip.addEventListener("click", (e) => {
+      document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+      e.target.classList.add("active");
+      renderTable(e.target.getAttribute("data-filter"));
+    });
+  });
+
+  // Save as PDF Functionality via Native Print Dialog
+  document.getElementById("savePdfBtn").addEventListener("click", () => {
+    window.print();
+  });
 });
 </script>
-
+<script src="js/js/behaviour-engine.js"></script>
 </body>
 </html>

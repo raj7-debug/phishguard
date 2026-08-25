@@ -2,307 +2,520 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PhishGuard – Elderly URL Inspection</title>
+<title>PhishGuard Enterprise – URL Security Inspector (Senior Track)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+:root {
+  --bg: #090e17;
+  --panel: #131b2e;
+  --panel-hover: #1b2640;
+  --line: #2e3f61;
+  --text: #f8fafc;
+  --muted: #b0c2de;
+  --cyan: #36e0d0;
+  --blue: #38bdf8;
+  --amber: #fbbf24;
+  --red: #fb7185;
+  --green: #4ade80;
+}
+
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
   overflow-x: hidden;
 }
 
-/* Background grid */
+/* Background effects */
 .bg-grid {
   position: fixed;
   inset: 0;
-  background-image:
-    linear-gradient(to right, #80808012 1px, transparent 1px),
-    linear-gradient(to bottom, #80808012 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: linear-gradient(to right, rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
   z-index: -2;
 }
 
-/* Glow */
 .glow {
   position: fixed;
-  top: 50%;
+  top: 10%;
   left: 50%;
   width: 800px;
-  height: 800px;
-  background: rgba(0, 150, 255, 0.1);
+  height: 400px;
+  background: rgba(56, 189, 248, 0.04);
   border-radius: 50%;
-  filter: blur(120px);
-  transform: translate(-50%, -50%);
+  filter: blur(150px);
+  transform: translateX(-50%);
   z-index: -1;
 }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 40px 20px;
-  text-align: center;
+/* Top Navigation Bar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: rgba(13, 19, 33, 0.95);
+  border-bottom: 2px solid var(--line);
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.title {
-  font-size: 38px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #00aaff;
-}
-
-.subtitle {
-  font-size: 18px;
-  color: #cccccc;
-  margin-bottom: 40px;
-}
-
-/* URL box */
-.url-box {
-  background: #1a1a1a;
-  border: 2px solid #333;
-  padding: 25px;
-  border-radius: 12px;
-  text-align: left;
-  margin-bottom: 30px;
-}
-
-.url-title {
-  font-size: 20px;
-  color: #00aaff;
-  margin-bottom: 10px;
-}
-
-.url-display {
-  background: #0d0d0d;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #333;
-  color: #00ffcc;
-  font-family: monospace;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--blue);
   font-size: 16px;
 }
 
-/* Buttons */
-.btn-row {
+.brand-mark {
+  width: 32px; height: 32px; display: grid; place-items: center;
+  border: 2px solid rgba(56, 189, 248, 0.5); border-radius: 8px;
+  background: rgba(56, 189, 248, 0.15);
+  font-size: 16px;
+}
+
+.session-info {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.session-info span {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* Main Workspace */
+.workspace {
+  max-width: 900px;
+  width: 94%;
+  margin: 36px auto;
+  flex: 1;
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 25px;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.sim-btn {
-  background: #00aaff;
-  color: black;
-  padding: 14px 30px;
-  border: none;
-  border-radius: 8px;
+.header-intro h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 8px 0;
+}
+
+.header-intro p {
+  color: var(--muted);
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Browser Simulator Box for URL */
+.browser-inspector {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+}
+
+.browser-header {
+  background: rgba(0,0,0,0.25);
+  padding: 12px 18px;
+  border-bottom: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.browser-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-red { background: #fb7185; }
+.dot-yellow { background: #fbbf24; }
+.dot-green { background: #4ade80; }
+
+.url-bar-shell {
+  flex: 1;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--line);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 16px;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  word-break: break-all;
+}
+
+.inspector-body {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.context-tag {
+  display: inline-block;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--blue);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  width: max-content;
+}
+
+.scenario-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+
+.scenario-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Senior Safety Assistant Helper Card */
+.senior-helper-box {
+  background: rgba(56, 189, 248, 0.08);
+  border: 2px dashed rgba(56, 189, 248, 0.35);
+  padding: 16px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.senior-helper-icon { font-size: 24px; line-height: 1; }
+.senior-helper-text h4 { margin: 0 0 4px 0; font-size: 15px; color: var(--blue); }
+.senior-helper-text p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+/* Action Controls */
+.action-controls {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn {
+  padding: 16px 28px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
   cursor: pointer;
-  font-weight: bold;
-}
-
-.hint-btn {
-  background: #ffaa00;
-  color: black;
-  padding: 14px 30px;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Modal */
+.btn-safe { background: rgba(74, 222, 128, 0.18); color: var(--green); border: 2px solid rgba(74, 222, 128, 0.5); }
+.btn-safe:hover { background: rgba(74, 222, 128, 0.28); transform: translateY(-1px); }
+
+.btn-malicious { background: rgba(251, 113, 133, 0.18); color: var(--red); border: 2px solid rgba(251, 113, 133, 0.5); }
+.btn-malicious:hover { background: rgba(251, 113, 133, 0.28); transform: translateY(-1px); }
+
+.btn-hint { background: rgba(251, 191, 36, 0.18); color: var(--amber); border: 2px solid rgba(251, 191, 36, 0.5); margin-left: auto; }
+.btn-hint:hover { background: rgba(251, 191, 36, 0.28); transform: translateY(-1px); }
+
+/* Modal Overlay */
 .modal-bg {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(5, 8, 15, 0.88);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  padding: 16px;
 }
 
 .modal {
-  background: #1a1a1a;
-  border: 2px solid #00aaff;
-  padding: 30px;
-  width: 420px;
-  border-radius: 12px;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  padding: 36px;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 18px;
   text-align: center;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.7);
 }
 
-.modal h2 {
-  color: #00aaff;
-  margin-bottom: 15px;
-}
+.modal h2 { margin-top: 0; font-size: 22px; }
+.modal h2.success { color: var(--green); }
+.modal h2.danger { color: var(--red); }
 
-.modal p {
-  color: #cccccc;
-  margin-bottom: 20px;
-}
+.modal p { color: var(--muted); font-size: 15px; line-height: 1.6; margin: 16px 0 26px 0; }
 
 .modal-btn {
-  background: #00aaff;
-  color: black;
-  padding: 12px 25px;
+  background: var(--blue);
+  color: #07090f;
+  padding: 14px 32px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 15px;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
+  transition: opacity 0.2s;
 }
+.modal-btn:hover { opacity: 0.9; }
+
+body.a11y-mode { zoom: 1.15; filter: contrast(1.05); }
 </style>
 </head>
 
 <body>
+<script>
+(function() {
+  try {
+    if (localStorage.getItem("phishguard_a11y_mode") === "true") {
+      document.body.classList.add("a11y-mode");
+    }
+  } catch (e) {}
+})();
+</script>
 
 <div class="bg-grid"></div>
 <div class="glow"></div>
 
-<div class="container">
-  <div class="title">URL Inspection – Elderly Track</div>
-  <div class="subtitle">Inspect each URL carefully and decide if it is safe or malicious.</div>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">🔍</div>
+    <span>URL INSPECTION INSPECTOR</span>
+  </div>
+  <div class="session-info">Mode: <span>Senior Protection Track</span> | Case <span id="caseCounter">1 / 5</span></div>
+</header>
 
-  <div id="urlBox" class="url-box">
-    <div id="urlTitle" class="url-title"></div>
-    <div id="urlDisplay" class="url-display"></div>
+<main class="workspace">
+  <div class="header-intro">
+    <h1>Inspect Link Safety</h1>
+    <p>Examine the website web address below carefully. Decide whether it is a legitimate, trusted link or a malicious scam link.</p>
   </div>
 
-  <div class="btn-row">
-    <button class="sim-btn" onclick="answer('safe')">Safe</button>
-    <button class="sim-btn" onclick="answer('phishing')">Malicious</button>
-    <button class="hint-btn" onclick="showHint()">Hint</button>
+  <!-- Browser Simulator Container -->
+  <div class="browser-inspector">
+    <div class="browser-header">
+      <div class="browser-dots">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+      </div>
+      <div class="url-bar-shell">
+        <span>🔗</span>
+        <span id="urlDisplay">https://secure-bank-verification-alert.com</span>
+      </div>
+    </div>
+
+    <div class="inspector-body">
+      <span class="context-tag" id="urlCategory">Online Banking</span>
+      <h2 class="scenario-title" id="urlTitle">Bank Verification Alert SMS</h2>
+      <p class="scenario-desc" id="urlDesc">This link was received via text message claiming urgent action is required on your banking profile.</p>
+    </div>
   </div>
-</div>
+
+  <!-- Senior Safety Assistant Helper Card -->
+  <div class="senior-helper-box">
+    <div class="senior-helper-icon">💡</div>
+    <div class="senior-helper-text">
+      <h4>Senior Safety Assistant Tip</h4>
+      <p id="helperTipText">Scammers often use fake domains that look official at first glance but contain extra hyphens or unrelated endings.</p>
+    </div>
+  </div>
+
+  <div class="action-controls">
+    <button class="btn btn-safe" onclick="submitDecision('safe')">✓ Safe Link</button>
+    <button class="btn btn-malicious" onclick="submitDecision('phishing')">🚨 Malicious / Scam Link</button>
+    <button class="btn btn-hint" onclick="revealHint()">❓ Need Advice?</button>
+  </div>
+</main>
 
 <div id="modalContainer"></div>
 
+<script src="js/behaviour-engine.js"></script>
 <script>
-/* ELDERLY URL SCENARIOS */
-const scenarios = [
-  {
-    title: "Bank Verification Link",
-    url: "https://secure-bank-verification-alert.com",
-    correct: "phishing",
-    hint: "Banks never use long hyphenated domains."
-  },
-  {
-    title: "HMRC Tax Refund",
-    url: "https://www.gov.uk/tax-refund",
-    correct: "safe",
-    hint: "Government sites always use gov.uk."
-  },
-  {
-    title: "Pension Login",
-    url: "http://pension-secure-login.net",
-    correct: "phishing",
-    hint: "Financial services never use .net for login pages."
-  }
-];
+document.addEventListener("DOMContentLoaded", () => {
+  // 5 Realistic Senior-Targeted URL Scenarios
+  const scenarios = [
+    {
+      id: "url-bank-alert",
+      category: "Online Banking",
+      title: "Bank Security Verification SMS",
+      url: "https://barclays-security-update-portal.com/login",
+      correct: "phishing",
+      trigger: "urgency",
+      difficulty: 1,
+      helperTip: "Legitimate banks will never send text messages with external links ending in generic extensions like '.com' urging immediate login.",
+      hint: "Look at the domain name: 'barclays-security-update-portal.com' is not owned by Barclays."
+    },
+    {
+      id: "url-hmrc-tax",
+      category: "Government Services",
+      title: "HMRC Official Tax Rebate Notice",
+      url: "https://www.gov.uk/government/organisations/hmrc",
+      correct: "safe",
+      trigger: null,
+      difficulty: 1,
+      helperTip: "All official UK government services reside strictly under the '.gov.uk' domain suffix.",
+      hint: "This URL correctly starts with the official 'https://www.gov.uk' web address."
+    },
+    {
+      id: "url-pension-portal",
+      category: "Pension & Benefits",
+      title: "State Pension Annual Statement Notification",
+      url: "http://pension-claim-department-uk.net/verify",
+      correct: "phishing",
+      trigger: "financial",
+      difficulty: 1,
+      helperTip: "Pension departments do not send web links via unsecured HTTP connections ending in '.net'.",
+      hint: "Notice the missing 's' in 'http://' (unencrypted) and the deceptive hyphenated words."
+    },
+    {
+      id: "url-royal-mail",
+      category: "Parcel Delivery",
+      title: "Royal Mail Redelivery Fee Notification",
+      url: "https://royalmail-parcel-redelivery-fee.info/track",
+      correct: "phishing",
+      trigger: "urgency",
+      difficulty: 1,
+      helperTip: "Delivery scams are extremely common. Royal Mail will never charge a small fee via text link to redeliver a parcel.",
+      hint: "The domain uses '.info' instead of the official 'royalmail.com' website."
+    },
+    {
+      id: "url-nhs-booking",
+      category: "Healthcare",
+      title: "NHS COVID & Flu Vaccination Booking",
+      url: "https://www.nhs.uk/conditions/vaccinations/nhs-vaccinations/",
+      correct: "safe",
+      trigger: null,
+      difficulty: 1,
+      helperTip: "Trusted health portals use clean, verified official healthcare domain structures.",
+      hint: "This is a legitimate 'nhs.uk' healthcare link."
+    }
+  ];
 
-let index = 0;
-let score = 0;
+  let currentIndex = 0;
+  let sessionScore = 0;
+  let startTime = Date.now();
+  let triggerLog = [];
 
-/* LOAD URL */
-function loadURL() {
-  const s = scenarios[index];
-  document.getElementById("urlTitle").textContent = s.title;
-  document.getElementById("urlDisplay").textContent = s.url;
-}
+  function renderScenario() {
+    const s = scenarios[currentIndex];
+    
+    document.getElementById("caseCounter").textContent = `${currentIndex + 1} / ${scenarios.length}`;
+    document.getElementById("urlCategory").textContent = s.category;
+    document.getElementById("urlTitle").textContent = s.title;
+    document.getElementById("urlDisplay").textContent = s.url;
+    document.getElementById("helperTipText").textContent = s.helperTip;
 
-loadURL();
-
-/* ANSWER LOGIC */
-function answer(choice) {
-  const s = scenarios[index];
-  const correct = (choice === s.correct);
-
-  if (correct) score++;
-
-  showFeedback(correct, s.correct);
-}
-
-/* FEEDBACK MODAL */
-function showFeedback(correct, correctAnswer) {
-  const modal = `
-    <div class="modal-bg">
-      <div class="modal">
-        <h2>${correct ? "Correct!" : "Incorrect"}</h2>
-        <p>The correct answer was: <strong>${correctAnswer.toUpperCase()}</strong></p>
-        <button class="modal-btn" onclick="nextURL()">Next</button>
-      </div>
-    </div>
-  `;
-  document.getElementById("modalContainer").innerHTML = modal;
-}
-
-/* HINT */
-function showHint() {
-  const s = scenarios[index];
-  const modal = `
-    <div class="modal-bg">
-      <div class="modal">
-        <h2>Hint</h2>
-        <p>${s.hint}</p>
-        <button class="modal-btn" onclick="closeModal()">Close</button>
-      </div>
-    </div>
-  `;
-  document.getElementById("modalContainer").innerHTML = modal;
-}
-
-function closeModal() {
-  document.getElementById("modalContainer").innerHTML = "";
-}
-
-/* NEXT URL */
-function nextURL() {
-  document.getElementById("modalContainer").innerHTML = "";
-  index++;
-
-  if (index >= scenarios.length) {
-    endSimulation();
-    return;
+    startTime = Date.now();
   }
 
-  loadURL();
-}
+  window.submitDecision = function(choice) {
+    const s = scenarios[currentIndex];
+    const correct = (choice === s.correct);
+    const responseTime = Date.now() - startTime;
 
-/* SAVE RESULT TO LOCALSTORAGE */
-function saveResult(score, total) {
-  const key = "phishguard_elderly_data";
+    if (correct) sessionScore++;
+    if (s.trigger) triggerLog.push({ trigger: s.trigger, correct });
 
-  const accuracy = Math.round((score / total) * 100);
+    // Transmit telemetry to behavioral analytics engine
+    if (window.PhishGuardEngine) {
+      window.PhishGuardEngine.recordSimulation({
+        userMode: "elderly",
+        simulation: "url",
+        scenarioId: s.id,
+        trigger: s.trigger || "none",
+        correct: correct,
+        action: choice === "safe" ? "mark_safe" : "flag_malicious",
+        responseTime: responseTime,
+        confidence: 5,
+        hintUsed: false,
+        difficulty: s.difficulty,
+        phase: "standard"
+      });
+    }
 
-  const record = {
-    simulation: "url",
-    score,
-    total,
-    accuracy,
-    time: new Date().toISOString()
-  };
+    showResultModal(correct, s);
+  }
 
-  let data = JSON.parse(localStorage.getItem(key)) || [];
-  data.push(record);
-  localStorage.setItem(key, JSON.stringify(data));
-}
-
-/* END SIMULATION */
-function endSimulation() {
-  saveResult(score, scenarios.length);
-
-  const modal = `
-    <div class="modal-bg">
-      <div class="modal">
-        <h2>Simulation Complete</h2>
-        <p>Your score: ${score} / ${scenarios.length}</p>
-        <button class="modal-btn" onclick="window.location.href='training.html?mode=elderly'">Return to Command Center</button>
+  window.revealHint = function() {
+    const s = scenarios[currentIndex];
+    document.getElementById("modalContainer").innerHTML = `
+      <div class="modal-bg">
+        <div class="modal">
+          <h2 style="color: var(--amber);">Friendly Advice</h2>
+          <p>${s.hint}</p>
+          <button class="modal-btn" onclick="closeModal()">Back to Inspection</button>
+        </div>
       </div>
-    </div>
-  `;
-  document.getElementById("modalContainer").innerHTML = modal;
-}
+    `;
+  }
+
+  function showResultModal(correct, s) {
+    const isLast = currentIndex + 1 >= scenarios.length;
+    document.getElementById("modalContainer").innerHTML = `
+      <div class="modal-bg">
+        <div class="modal">
+          <h2 class="${correct ? 'success' : 'danger'}">${correct ? "✓ Spot On! Correct Decision" : "⚠️ Careful Here"}</h2>
+          <p>This URL was actually a <strong>${s.correct.toUpperCase()}</strong> link. ${correct ? "You successfully spotted the trick!" : "Clicking or interacting with this link could have compromised your device or security."}</p>
+          <button class="modal-btn" onclick="${isLast ? 'finishSimulation()' : 'nextScenario()'}">${isLast ? 'See Final Score' : 'Next URL →'}</button>
+        </div>
+      </div>
+    `;
+  }
+
+  window.closeModal = function() {
+    document.getElementById("modalContainer").innerHTML = "";
+  }
+
+  window.nextScenario = function() {
+    closeModal();
+    currentIndex++;
+    renderScenario();
+  }
+
+  window.finishSimulation = function() {
+    const accuracy = Math.round((sessionScore / scenarios.length) * 100);
+    const targetUrl = `training.html?mode=elderly&score=${sessionScore}&total=${scenarios.length}&accuracy=${accuracy}`;
+
+    document.getElementById("modalContainer").innerHTML = `
+      <div class="modal-bg">
+        <div class="modal">
+          <h2 class="success">Simulation Completed Successfully!</h2>
+          <p>You correctly evaluated <strong>${sessionScore} out of ${scenarios.length}</strong> URLs (${accuracy}% score).<br><br>All progress has been safely logged to your profile.</p>
+          <button class="modal-btn" onclick="window.location.href='${targetUrl}'">Return to Command Center</button>
+        </div>
+      </div>
+    `;
+  }
+
+  renderScenario();
+});
 </script>
 
 </body>

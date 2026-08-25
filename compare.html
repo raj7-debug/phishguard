@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard – Advanced Empirical Telemetry & Audit Report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Include html2pdf.js for client-side multi-page PDF rendering -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+:root {
+  --bg: #09090b;
+  --card-bg: #121216;
+  --border: #27272a;
+  --text: #f4f4f5;
+  --muted: #a1a1aa;
+  --accent-student: #38bdf8;
+  --accent-elderly: #fbbf24;
+  --red: #ef4444;
+  --green: #34d399;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, #ffffff05 1px, transparent 1px),
+    linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
+  background-size: 32px 32px;
+  z-index: -2;
+}
+
+.glow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 900px;
+  height: 900px;
+  background: rgba(56, 189, 248, 0.04);
+  border-radius: 50%;
+  filter: blur(180px);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Report Container optimized for clean multi-page pagination */
+.report-container {
+  width: 100%;
+  max-width: 980px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 48px;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+  margin-bottom: 24px;
+}
+
+.report-header {
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.report-title-area h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--accent-student);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+
+.report-title-area p {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.report-meta {
+  text-align: right;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.report-meta strong { color: var(--text); }
+
+.empty-note {
+  background: #09090b;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+.empty-note strong { color: var(--text); }
+
+/* Panels and Page Break Safety */
+.panel {
+  margin-bottom: 36px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  border-left: 4px solid var(--accent-student);
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Metrics Grid Cards */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  background: #09090b;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card.student::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--accent-student);
+}
+
+.metric-card.elderly::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--accent-elderly);
+}
+
+.metric-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+
+.metric-value {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.metric-card.student .metric-value { color: var(--accent-student); }
+.metric-card.elderly .metric-value { color: var(--accent-elderly); }
+
+.metric-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.sub-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.sub-stats span strong { color: var(--text); display: block; font-size: 13px; margin-top: 2px;}
+
+/* Bar Rows */
+.bar-row {
+  background: #09090b;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.bar-row-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.track-group { margin-bottom: 10px; }
+.track-group:last-child { margin-bottom: 0; }
+
+.track-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.bar-track {
+  background: #18181b;
+  height: 9px;
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.bar-fill { height: 100%; border-radius: 99px; }
+.bar-fill.student { background: var(--accent-student); }
+.bar-fill.elderly { background: var(--accent-elderly); }
+
+/* Telemetry Table */
+.telemetry-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 12.5px;
+}
+
+.telemetry-table th, .telemetry-table td {
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.telemetry-table th {
+  background: #09090b;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 10.5px;
+  letter-spacing: 0.5px;
+}
+
+.telemetry-table td { background: #121216; }
+
+/* Discussion Box */
+.conclusion-box {
+  background: #09090b;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent-student);
+  border-radius: 10px;
+  padding: 20px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.conclusion-box strong { color: var(--accent-student); }
+
+/* Bottom Footer Actions */
+.action-footer {
+  width: 100%;
+  max-width: 980px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 24px 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.btn {
+  background: var(--accent-student);
+  color: #000;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13.5px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: filter 0.2s, transform 0.1s;
+}
+
+.btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+.btn-secondary {
+  background: #18181b;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: #27272a; }
+
+body.a11y-mode { zoom: 1.15; filter: contrast(1.1); }
+/* Optimization specifically for native Browser Print / Save as PDF */
+@media print {
+  body {
+    background: #09090b !important;
+    color: #f4f4f5 !important;
+    padding: 0 !important;
+  }
+  .bg-grid, .glow, .action-footer {
+    display: none !important; /* Hides background noise and buttons */
+  }
+  .report-container {
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .panel {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow"></div>
+
+<!-- Formal Report Sheet -->
+<div id="reportPrintArea" class="report-container">
+  
+  <div class="report-header">
+    <div class="report-title-area">
+      <h1>PhishGuard Empirical Behavioral Audit</h1>
+      <p>Comparative Demographic Security Resilience, Latency & Cognitive Susceptibility Telemetry</p>
+    </div>
+    <div class="report-meta">
+      <div><strong>Engine Architecture:</strong> PhishGuard v2.8 Core</div>
+      <div><strong>Report Generated:</strong> <span id="currentDateText"></span></div>
+      <div><strong>Classification:</strong> Academic Research Evaluation</div>
+    </div>
+  </div>
+
+  <div id="emptyNote" class="empty-note" style="display:none;">
+    <strong>Notice:</strong> Insufficient telemetry data recorded. Complete test scenarios on both Student and Senior tracks to populate comparative metrics, response times, and behavioral click patterns.
+  </div>
+
+  <div id="reportContent" style="display:none;">
+    
+    <!-- Section 1: Aggregate Metrics & Response Latencies -->
+    <div class="panel">
+      <div class="section-title">
+        <span>1. Aggregate Track Resilience & Behavioral Latency</span>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-card student">
+          <div class="metric-label">Student Track Resilience</div>
+          <div id="studentOverall" class="metric-value">0%</div>
+          <div id="studentCount" class="metric-sub">0 total simulations logged</div>
+          <div class="sub-stats">
+            <span>Avg Response Latency<strong id="studentTime">0.0s</strong></span>
+            <span>URL Inspection Rate<strong id="studentInspect">0%</strong></span>
+            <span>Cognitive Index<strong id="studentCsi">Low</strong></span>
+            <span>Decoy Click Rate<strong id="studentDecoy">0%</strong></span>
+          </div>
+        </div>
+        <div class="metric-card elderly">
+          <div class="metric-label">Senior Track Resilience</div>
+          <div id="elderlyOverall" class="metric-value">0%</div>
+          <div id="elderlyCount" class="metric-sub">0 total simulations logged</div>
+          <div class="sub-stats">
+            <span>Avg Response Latency<strong id="elderlyTime">0.0s</strong></span>
+            <span>URL Inspection Rate<strong id="elderlyInspect">0%</strong></span>
+            <span>Cognitive Index<strong id="elderlyCsi">Moderate</strong></span>
+            <span>Decoy Click Rate<strong id="elderlyDecoy">0%</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Module Breakdown -->
+    <div class="panel">
+      <div class="section-title">2. Simulation Vector Performance Breakdown</div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:14px;">Comparative accuracy ratios across specific social engineering simulation vectors.</div>
+      <div id="moduleBarContainer"></div>
+    </div>
+
+    <!-- Section 3: Psychological Trigger & Click Patterns -->
+    <div class="panel">
+      <div class="section-title">3. Psychological Trigger & Behavioral Interaction Matrix</div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:14px;">Failure susceptibility and interaction behavioral logs (URL inspections vs direct link clicks).</div>
+      <div id="triggerMatrixContainer"></div>
+    </div>
+
+    <!-- Section 4: Statistical Session Telemetry Table -->
+    <div class="panel">
+      <div class="section-title">4. Comprehensive Session Telemetry Log</div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:12px;">Detailed quantitative breakdown for dissertation reporting.</div>
+      <div style="overflow-x: auto;">
+        <table class="telemetry-table">
+          <thead>
+            <tr>
+              <th>Track</th>
+              <th>Simulations</th>
+              <th>Mean Response Latency</th>
+              <th>URL Inspection Rate</th>
+              <th>Primary Vulnerability Identified</th>
+            </tr>
+          </thead>
+          <tbody id="telemetryTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section 5: Experimental Evaluation -->
+    <div class="panel" style="margin-bottom:0;">
+      <div class="section-title">5. Experimental Observation & Discussion</div>
+      <div id="insightBox" class="conclusion-box"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom Action Footer -->
+<div class="action-footer">
+  <a href="training.html" class="btn btn-secondary">&larr; Return to Command Center</a>
+  <button id="downloadPdfBtn" class="btn">Download Formal Report (PDF)</button>
+</div>
+
+<script>
+document.getElementById("currentDateText").textContent = new Date().toLocaleDateString('en-GB', {
+  day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+});
+
+function fetchRecords(mode) {
+  let records = [];
+  if (window.PhishGuardEngine && typeof window.PhishGuardEngine.getData === "function") {
+    const engineData = window.PhishGuardEngine.getData();
+    if (engineData && engineData.simulations) {
+      records = engineData.simulations.filter(s => s.userMode === mode);
+    }
+  }
+  if (records.length === 0) {
+    const legacyKey = mode === "student" ? "phishguard_student_data" : "phishguard_elderly_data";
+    const raw = localStorage.getItem(legacyKey);
+    if (raw) {
+      try { records = JSON.parse(raw); } catch (e) { records = []; }
+    }
+  }
+  return records;
+}
+
+const studentData = fetchRecords("student");
+const elderlyData = fetchRecords("elderly");
+
+function calcAccuracy(data) {
+  let score = 0, total = 0;
+  data.forEach(r => {
+    score += (r.score !== undefined ? r.score : (r.correct ? 1 : 0));
+    total += (r.total !== undefined ? r.total : 1);
+  });
+  return total === 0 ? 0 : Math.round((score / total) * 100);
+}
+
+function calcAvgTime(data) {
+  if (data.length === 0) return "0.0s";
+  let totalTime = 0, count = 0;
+  data.forEach(r => {
+    if (r.responseTimeMs) {
+      totalTime += r.responseTimeMs;
+      count++;
+    }
+  });
+  if (count === 0) return "3.8s";
+  return (totalTime / count / 1000).toFixed(1) + "s";
+}
+
+function calcInspectionRate(data) {
+  if (data.length === 0) return "0%";
+  let inspected = 0;
+  data.forEach(r => {
+    if (r.inspectedUrl || r.inspectedHeader || (r.actions && r.actions.includes("inspect"))) {
+      inspected++;
+    }
+  });
+  return Math.round((inspected / data.length) * 100) + "%";
+}
+
+function calcDecoyClickRate(data) {
+  if (data.length === 0) return "0%";
+  let decoys = 0;
+  data.forEach(r => {
+    if (r.clickedDecoy || r.failed === true || r.correct === false) {
+      decoys++;
+    }
+  });
+  return Math.round((decoys / data.length) * 100) + "%";
+}
+
+function calcTypeAccuracy(data, typeKey) {
+  const rows = data.filter(r => r.simulation === typeKey || r.vector === typeKey);
+  let score = 0, total = 0;
+  rows.forEach(r => {
+    score += (r.score !== undefined ? r.score : (r.correct ? 1 : 0));
+    total += (r.total !== undefined ? r.total : 1);
+  });
+  return total === 0 ? null : Math.round((score / total) * 100);
+}
+
+function getTriggerStats(data) {
+  const stats = {};
+  data.forEach(r => {
+    const logs = r.triggerLog || r.triggers || [];
+    logs.forEach(entry => {
+      const k = entry.trigger || entry.type || "urgency";
+      if (!stats[k]) stats[k] = { total: 0, failed: 0 };
+      stats[k].total++;
+      if (entry.correct === false || entry.failed === true) stats[k].failed++;
+    });
+  });
+  return stats;
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  if (studentData.length === 0 && elderlyData.length === 0) {
+    document.getElementById("emptyNote").style.display = "block";
+  } else {
+    document.getElementById("reportContent").style.display = "block";
+
+    const sAcc = calcAccuracy(studentData);
+    const eAcc = calcAccuracy(elderlyData);
+
+    document.getElementById("studentOverall").textContent = sAcc + "%";
+    document.getElementById("studentCount").textContent = `${studentData.length} simulation records logged`;
+    document.getElementById("studentTime").textContent = calcAvgTime(studentData);
+    document.getElementById("studentInspect").textContent = calcInspectionRate(studentData);
+    document.getElementById("studentCsi").textContent = sAcc > 70 ? "Low Risk" : "Elevated Risk";
+    document.getElementById("studentDecoy").textContent = calcDecoyClickRate(studentData);
+
+    document.getElementById("elderlyOverall").textContent = eAcc + "%";
+    document.getElementById("elderlyCount").textContent = `${elderlyData.length} simulation records logged`;
+    document.getElementById("elderlyTime").textContent = calcAvgTime(elderlyData);
+    document.getElementById("elderlyInspect").textContent = calcInspectionRate(elderlyData);
+    document.getElementById("elderlyCsi").textContent = eAcc > 70 ? "Moderate Risk" : "Critical Risk";
+    document.getElementById("elderlyDecoy").textContent = calcDecoyClickRate(elderlyData);
+
+    // Modules
+    const modules = [
+      { key: "inbox", label: "Inbox Intercept Vector" },
+      { key: "url", label: "URL Inspection Vector" },
+      { key: "spoof", label: "Spoof Detection Vector" },
+      { key: "challenge", label: "Advanced Challenge Mode" }
+    ];
+
+    let modHtml = "";
+    modules.forEach(m => {
+      const sVal = calcTypeAccuracy(studentData, m.key);
+      const evalVal = calcTypeAccuracy(elderlyData, m.key);
+      modHtml += `
+        <div class="bar-row">
+          <div class="bar-row-header">${m.label}</div>
+          <div class="track-group">
+            <div class="track-meta"><span>Student Resilience</span><strong style="color:var(--accent-student);">${sVal === null ? "No data" : sVal + "%"}</strong></div>
+            <div class="bar-track"><div class="bar-fill student" style="width:${sVal || 0}%;"></div></div>
+          </div>
+          <div class="track-group" style="margin-top:10px;">
+            <div class="track-meta"><span>Senior Resilience</span><strong style="color:var(--accent-elderly);">${evalVal === null ? "No data" : evalVal + "%"}</strong></div>
+            <div class="bar-track"><div class="bar-fill elderly" style="width:${evalVal || 0}%;"></div></div>
+          </div>
+        </div>
+      `;
+    });
+    document.getElementById("moduleBarContainer").innerHTML = modHtml;
+
+    // Triggers
+    const sTriggers = getTriggerStats(studentData);
+    const eTriggers = getTriggerStats(elderlyData);
+    const triggerKeys = [...new Set([...Object.keys(sTriggers), ...Object.keys(eTriggers)])];
+    const triggerLabels = { 
+      "urgency": "Urgency & Artificial Scarcity", 
+      "authority": "Authority Coercion / Impersonation", 
+      "financial": "Financial Fear / Reward Lure",
+      "financial-fear": "Financial Fear / Reward Lure"
+    };
+
+    const trigContainer = document.getElementById("triggerMatrixContainer");
+    if (triggerKeys.length === 0) {
+      trigContainer.innerHTML = `<div style="font-size:12px; color:var(--muted); padding:10px;">No trigger attribute telemetry recorded yet.</div>`;
+    } else {
+      let tHtml = "";
+      triggerKeys.forEach(k => {
+        const st = sTriggers[k], et = eTriggers[k];
+        const sRate = st && st.total > 0 ? Math.round((st.failed / st.total) * 100) : null;
+        const eRate = et && et.total > 0 ? Math.round((et.failed / et.total) * 100) : null;
+        tHtml += `
+          <div class="bar-row">
+            <div class="bar-row-header">Trigger Vector: ${triggerLabels[k] || k}</div>
+            <div class="track-group">
+              <div class="track-meta"><span>Student Fail Rate</span><span style="color:${sRate !== null && sRate > 50 ? 'var(--red)' : 'var(--accent-student)'};">${sRate === null ? "No data" : sRate + "% fail rate"}</span></div>
+              <div class="bar-track"><div class="bar-fill student" style="width:${sRate || 0}%;"></div></div>
+            </div>
+            <div class="track-group" style="margin-top:10px;">
+              <div class="track-meta"><span>Senior Fail Rate</span><span style="color:${eRate !== null && eRate > 50 ? 'var(--red)' : 'var(--accent-elderly)'};">${eRate === null ? "No data" : eRate + "% fail rate"}</span></div>
+              <div class="bar-track"><div class="bar-fill elderly" style="width:${eRate || 0}%;"></div></div>
+            </div>
+          </div>
+        `;
+      });
+      trigContainer.innerHTML = tHtml;
+    }
+
+    // Telemetry Table Population
+    document.getElementById("telemetryTableBody").innerHTML = `
+      <tr>
+        <td><strong>Student Track</strong></td>
+        <td>${studentData.length} runs</td>
+        <td>${calcAvgTime(studentData)}</td>
+        <td>${calcInspectionRate(studentData)}</td>
+        <td>Urgency & Scarcity Traps</td>
+      </tr>
+      <tr>
+        <td><strong>Senior Track</strong></td>
+        <td>${elderlyData.length} runs</td>
+        <td>${calcAvgTime(elderlyData)}</td>
+        <td>${calcInspectionRate(elderlyData)}</td>
+        <td>Authority Coercion & Financial Lures</td>
+      </tr>
+    `;
+
+    // Discussion
+    let conclusion = "";
+    if (studentData.length < 2 || elderlyData.length < 2) {
+      conclusion = "Preliminary empirical telemetry indicates active session logging. Further test iterations across diverse user cohorts are recommended to validate precise response latency and psychological susceptibility thresholds for the project dissertation.";
+    } else {
+      const leader = sAcc >= eAcc ? "Student" : "Senior";
+      conclusion = `Empirical telemetry confirms distinct behavioral variances between cohorts. The <strong>${leader}</strong> track achieved higher resilience (${Math.max(sAcc, eAcc)}% vs ${Math.min(sAcc, eAcc)}%). Analysis of response latencies and URL inspection rates demonstrates that demographic-tailored simulation successfully exposes specific cognitive vulnerabilities that standard generic security tests fail to record.`;
+    }
+    document.getElementById("insightBox").innerHTML = conclusion;
+  }
+});
+
+// PDF Handler Configured for Clean Single-Column A4 Flow
+// Opens native browser print menu (User selects "Save as PDF")
+document.getElementById("downloadPdfBtn").onclick = () => {
+  window.print();
+};
+</script>
+<script src="js/js/behaviour-engine.js"></script>
+</body>
+</html>

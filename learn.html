@@ -6,13 +6,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+:root {
+  --bg-dark: #0f0f0f;
+  --sidebar-bg: rgba(9, 13, 23, 0.95);
+  --card-bg: #141414;
+  --card-hover: #1a1a1a;
+  --border-line: #222222;
+  --cyan: #36e0d0;
+  --blue-accent: #00aaff;
+  --purple-accent: #9933ff;
+  --pink-accent: #ff3366;
+  --green-accent: #55d98b;
+  --text-main: #f4f7fb;
+  --text-muted: #9aa8bd;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
+  background: var(--bg-dark);
+  color: var(--text-main);
   display: flex;
   overflow-x: hidden;
+  height: 100vh;
 }
 
 /* Background grid */
@@ -40,54 +56,124 @@ body {
   z-index: -1;
 }
 
-/* SIDEBAR */
 .sidebar {
   width: 240px;
-  background: #111;
-  border-right: 2px solid #222;
-  padding: 30px 20px;
   height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid #26334a;
+  backdrop-filter: blur(10px);
   box-sizing: border-box;
-  flex-shrink: 0;
 }
 
-.sidebar-logo {
+.sidebar-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding-left: 8px;
 }
 
-.sidebar-logo svg {
-  width: 40px;
-  height: 40px;
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: rgba(54, 224, 208, 0.1);
+  border: 1px solid rgba(54, 224, 208, 0.4);
+  border-radius: 8px;
+  color: var(--cyan);
+  box-shadow: 0 0 15px rgba(54, 224, 208, 0.15);
 }
 
-.sidebar-title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #00aaff;
+.brand-text {
+  color: var(--cyan);
+  letter-spacing: 1.2px;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
 }
 
 .sidebar-item {
-  font-size: 18px;
-  padding: 10px 0;
-  color: #cccccc;
-  cursor: pointer;
-  transition: 0.3s;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 8px;
   text-decoration: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .sidebar-item svg {
-  width: 18px;
-  height: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
-.sidebar-item:hover, .sidebar-item.active {
-  color: #00aaff;
+.sidebar-item:hover {
+  color: var(--text-main);
+  background: rgba(86, 183, 255, 0.08);
+}
+
+.sidebar-item:hover svg {
+  opacity: 1;
+}
+
+.sidebar-item.active {
+  color: var(--cyan);
+  background: rgba(54, 224, 208, 0.1);
+  border: 1px solid rgba(54, 224, 208, 0.25);
+  font-weight: 600;
+}
+
+.sidebar-item.active svg {
+  opacity: 1;
+  color: var(--cyan);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #26334a;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.telemetry-label {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-main);
+  font-size: 12px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--green-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(85, 217, 139, 0.6);
 }
 
 /* MAIN CONTENT */
@@ -101,25 +187,76 @@ body {
 
 .header-title {
   font-size: 38px;
-  color: #00aaff;
+  color: var(--blue-accent);
   margin-bottom: 15px;
+  font-weight: 800;
 }
 
 .header-subtitle {
   color: #cccccc;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.5;
   max-width: 800px;
-  margin-bottom: 35px;
+  margin-bottom: 30px;
+}
+
+/* CONTROLS BAR (Search & Filters) */
+.controls-bar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-input {
+  background: var(--card-bg);
+  border: 1px solid var(--border-line);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  width: 280px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--blue-accent);
+  box-shadow: 0 0 10px rgba(0, 170, 255, 0.2);
+}
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-chip {
+  background: var(--card-bg);
+  border: 1px solid var(--border-line);
+  color: var(--text-muted);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.filter-chip:hover, .filter-chip.active {
+  background: rgba(0, 170, 255, 0.15);
+  border-color: var(--blue-accent);
+  color: white;
 }
 
 /* SECTION HEADINGS */
 .section-heading {
-  font-size: 26px;
+  font-size: 24px;
   color: #ffffff;
   margin: 40px 0 20px 0;
-  border-left: 4px solid #00aaff;
+  border-left: 4px solid var(--blue-accent);
   padding-left: 12px;
+  font-weight: 700;
 }
 
 /* CARDS GRID */
@@ -131,28 +268,49 @@ body {
 }
 
 .learn-card {
-  background: #141414;
-  border: 2px solid #222;
+  background: var(--card-bg);
+  border: 2px solid var(--border-line);
   border-radius: 12px;
   padding: 25px;
   transition: 0.25s;
+  position: relative;
 }
 
 .learn-card:hover {
-  border-color: #00aaff;
-  background: #1a1a1a;
+  border-color: var(--blue-accent);
+  background: var(--card-hover);
+  transform: translateY(-2px);
 }
 
-.card-title {
-  font-size: 22px;
-  font-weight: bold;
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 12px;
 }
 
-.card-title.urgency { color: #ff3366; }
-.card-title.authority { color: #00aaff; }
-.card-title.fear { color: #ff3366; }
-.card-title.familiarity { color: #9933ff; }
+.card-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.card-title.urgency { color: var(--pink-accent); }
+.card-title.authority { color: var(--blue-accent); }
+.card-title.fear { color: var(--pink-accent); }
+.card-title.familiarity { color: var(--purple-accent); }
+
+.bookmark-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.bookmark-btn:hover, .bookmark-btn.saved {
+  color: #ffaa00;
+}
 
 .card-desc {
   color: #cccccc;
@@ -179,7 +337,7 @@ body {
 
 .vector-content {
   font-family: monospace;
-  font-size: 14px;
+  font-size: 13px;
   color: #00ffcc;
 }
 
@@ -192,8 +350,8 @@ body {
 }
 
 .article-card {
-  background: #141414;
-  border: 2px solid #222;
+  background: var(--card-bg);
+  border: 2px solid var(--border-line);
   border-radius: 12px;
   padding: 25px;
   transition: 0.25s;
@@ -203,8 +361,8 @@ body {
 }
 
 .article-card:hover {
-  border-color: #00aaff;
-  background: #1a1a1a;
+  border-color: var(--blue-accent);
+  background: var(--card-hover);
 }
 
 .article-header {
@@ -215,7 +373,7 @@ body {
 
 .article-tag {
   background: rgba(0, 170, 255, 0.15);
-  color: #00aaff;
+  color: var(--blue-accent);
   font-size: 11px;
   font-weight: bold;
   padding: 4px 10px;
@@ -230,7 +388,7 @@ body {
 }
 
 .article-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
   color: #fff;
 }
@@ -257,60 +415,111 @@ body {
 
 .article-read-time {
   font-size: 12px;
-  color: #00aaff;
+  color: var(--blue-accent);
+}
+
+/* ACCESSIBILITY MODE */
+body.a11y-mode {
+  zoom: 1.2;
+  filter: contrast(1.08);
+}
+
+@media(max-width: 900px) {
+  .learn-grid { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 20px; }
 }
 </style>
 </head>
 
 <body>
+<script>
+(function() {
+  try {
+    if (localStorage.getItem("phishguard_a11y_mode") === "true") {
+      document.body.classList.add("a11y-mode");
+    }
+  } catch (e) {}
+})();
+</script>
 
 <div class="bg-grid"></div>
 <div class="glow"></div>
 
 <!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sidebar-logo">
-    <svg viewBox="0 0 24 24" fill="#00aaff"><circle cx="12" cy="12" r="10"/></svg>
-    <div class="sidebar-title">PHISHGUARD</div>
+<aside class="sidebar" aria-label="Primary navigation">
+  <div class="sidebar-brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/></svg>
+    </div>
+    <span class="brand-text">PHISHGUARD</span>
   </div>
 
-  <a href="training.html" class="sidebar-item" id="nav-training">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
-    Training
-  </a>
+  <nav class="sidebar-nav">
+    <a href="training.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Training
+    </a>
 
-  <a href="dashboard.html" class="sidebar-item" id="nav-dashboard">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><rect x="4" y="4" width="16" height="16"/></svg>
-    Dashboard
-  </a>
+    <a href="dashboard.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
 
-  <a href="leaderboard.html" class="sidebar-item" id="nav-leaderboard">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2l9 21H3z"/></svg>
-    Leaderboard
-  </a>
+    <a href="leaderboard.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H2v12h4zM14 3h-4v18h4zM22 13h-4v8h4z"/></svg>
+      Leaderboard
+    </a>
 
-  <a href="learn.html" class="sidebar-item active" id="nav-learn">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M4 4h16v16H4z"/></svg>
-    Learn
-  </a>
+    <a href="learn.html" class="sidebar-item active">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0-5H20"/></svg>
+      Learn
+    </a>
 
-  <a href="report.html" class="sidebar-item" id="nav-report">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><circle cx="12" cy="12" r="10"/></svg>
-    Report
-  </a>
+    <a href="report.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Report
+    </a>
 
-  <a href="settings.html" class="sidebar-item" id="nav-settings">
-    <svg viewBox="0 0 24 24" fill="#cccccc"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
-    Settings
-  </a>
-</div>
+    <a href="compare.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Compare
+    </a>
+
+    <a href="settings.html" class="sidebar-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <span class="telemetry-label">System Telemetry</span>
+    <div class="status-indicator">
+      <div class="status-dot"></div> 
+      <span>Online</span>
+    </div>
+  </div>
+</aside>
 
 <!-- MAIN CONTENT -->
 <div class="main">
   <div class="header-title" id="learnHeaderTitle">Threat Intelligence</div>
   <div class="header-subtitle" id="learnHeaderSub">Loading intelligence briefing...</div>
 
+  <!-- CONTROLS & SEARCH -->
+  <div class="controls-bar">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search threat vectors or articles...">
+    <div class="filter-chips">
+      <button class="filter-chip active" data-filter="all">All Vectors</button>
+      <button class="filter-chip" data-filter="urgency">Urgency</button>
+      <button class="filter-chip" data-filter="authority">Authority</button>
+      <button class="filter-chip" data-filter="fear">Fear</button>
+      <button class="filter-chip" data-filter="familiarity">Familiarity</button>
+    </div>
+  </div>
+
   <!-- VECTORS GRID -->
+  <div class="section-heading">Core Behavioral Vectors</div>
   <div class="learn-grid" id="learnGridContainer">
     <!-- Dynamic Content injected via script -->
   </div>
@@ -331,28 +540,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const subEl = document.getElementById("learnHeaderSub");
   const gridEl = document.getElementById("learnGridContainer");
   const articlesEl = document.getElementById("articlesContainer");
+  const searchInput = document.getElementById("searchInput");
 
   // STUDENT VECTORS
   const studentContent = [
     {
+      id: "s1",
+      category: "urgency",
       title: "Academic Urgency",
       class: "urgency",
       desc: "Attackers exploit deadlines, exam stress, and library restrictions. They engineer panic by threatening immediate account lockout or course deregistration.",
       vector: "'Action Required: Unpaid library fine or your portal access will be revoked in 24 hours.'"
     },
     {
+      id: "s2",
+      category: "authority",
       title: "Administrative Authority",
       class: "authority",
       desc: "Impersonating university departments, IT help desks, or faculty deans. Students are conditioned to comply immediately with administrative directives.",
       vector: "'IT Services: Mandatory security patching required. Verify credentials now.'"
     },
     {
+      id: "s3",
+      category: "fear",
       title: "Financial Aid Fear",
       class: "fear",
       desc: "Leveraging high anxiety around tuition fees, housing deposits, or scholarship grants to bypass rational caution through engineered crisis.",
       vector: "'Your student loan disbursement has failed. Confirm bank details immediately to avoid cancellation.'"
     },
     {
+      id: "s4",
+      category: "familiarity",
       title: "Campus Portal Spoofing",
       class: "familiarity",
       desc: "Replicating exact layouts of learning management systems (like Blackboard or university portals) using typosquatted domains to harvest passwords.",
@@ -383,24 +601,32 @@ document.addEventListener("DOMContentLoaded", () => {
   // ELDERLY VECTORS
   const elderlyContent = [
     {
+      id: "e1",
+      category: "urgency",
       title: "Pension & Benefit Urgency",
       class: "urgency",
       desc: "Scammers create artificial deadlines regarding state pensions, council tax brackets, or heating allowances to force rushed decision-making.",
       vector: "'Final Notice: Claim your government cost-of-living rebate before midnight today.'"
     },
     {
+      id: "e2",
+      category: "authority",
       title: "Government Authority",
       class: "authority",
       desc: "Impersonating trusted national entities like health services, tax authorities, or postal services to invoke instant trust and compliance.",
       vector: "'Legal Notice: A warrant has been issued for unpaid national insurance contributions.'"
     },
     {
+      id: "e3",
+      category: "fear",
       title: "Retirement Security Fear",
       class: "fear",
       desc: "Preying on anxieties surrounding lifetime savings security, frozen retirement accounts, or fabricated medical emergencies involving relatives.",
       vector: "'Urgent: Suspicious foreign login detected on your primary savings account. Secure funds now.'"
     },
     {
+      id: "e4",
+      category: "familiarity",
       title: "Trusted Brand Mimicry",
       class: "familiarity",
       desc: "Duplicating everyday service touchpoints—such as utility providers, local health clinics, or parcel delivery texts—to exploit ingrained habits.",
@@ -440,20 +666,57 @@ document.addEventListener("DOMContentLoaded", () => {
       : "Scammers heavily target older adults using pension alerts, fake healthcare notifications, and financial impersonation. Study these common deception tactics and real-world briefings.";
   }
 
-  if (gridEl) {
-    gridEl.innerHTML = activeContent.map(card => `
-      <div class="learn-card">
-        <div class="card-title ${card.class}">${card.title}</div>
-        <div class="card-desc">${card.desc}</div>
-        <div class="vector-box">
-          <div class="vector-label">Typical Attack Vector:</div>
-          <div class="vector-content">${card.vector}</div>
+  let savedBookmarks = JSON.parse(localStorage.getItem("phishguard_bookmarks")) || [];
+
+  function renderVectors(filter = "all", searchQuery = "") {
+    let filtered = activeContent.filter(card => {
+      let matchesFilter = (filter === "all" || card.category === filter);
+      let matchesSearch = card.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          card.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          card.vector.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesFilter && matchesSearch;
+    });
+
+    if (filtered.length === 0) {
+      gridEl.innerHTML = `<div style="grid-column: span 2; color: var(--text-muted); text-align: center; padding: 30px;">No threat vectors matched your search criteria.</div>`;
+      return;
+    }
+
+    gridEl.innerHTML = filtered.map(card => {
+      let isSaved = savedBookmarks.includes(card.id);
+      return `
+        <div class="learn-card">
+          <div class="card-header-row">
+            <div class="card-title ${card.class}">${card.title}</div>
+            <button class="bookmark-btn ${isSaved ? 'saved' : ''}" data-id="${card.id}" title="Bookmark this vector">
+              ${isSaved ? '★' : '☆'}
+            </button>
+          </div>
+          <div class="card-desc">${card.desc}</div>
+          <div class="vector-box">
+            <div class="vector-label">Typical Attack Vector:</div>
+            <div class="vector-content">${card.vector}</div>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
+
+    // Attach bookmark listener
+    document.querySelectorAll(".bookmark-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        let id = e.target.getAttribute("data-id");
+        if (savedBookmarks.includes(id)) {
+          savedBookmarks = savedBookmarks.filter(b => b !== id);
+        } else {
+          savedBookmarks.push(id);
+        }
+        localStorage.setItem("phishguard_bookmarks", JSON.stringify(savedBookmarks));
+        renderVectors(document.querySelector(".filter-chip.active").getAttribute("data-filter"), searchInput.value);
+      });
+    });
   }
 
-  if (articlesEl) {
+  function renderArticles() {
     articlesEl.innerHTML = activeArticles.map(art => `
       <div class="article-card">
         <div class="article-header">
@@ -470,6 +733,24 @@ document.addEventListener("DOMContentLoaded", () => {
     `).join('');
   }
 
+  renderVectors("all", "");
+  renderArticles();
+
+  // Filter chips listeners
+  document.querySelectorAll(".filter-chip").forEach(chip => {
+    chip.addEventListener("click", (e) => {
+      document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+      e.target.classList.add("active");
+      renderVectors(e.target.getAttribute("data-filter"), searchInput.value);
+    });
+  });
+
+  // Search input listener
+  searchInput.addEventListener("input", (e) => {
+    let activeFilter = document.querySelector(".filter-chip.active").getAttribute("data-filter");
+    renderVectors(activeFilter, e.target.value);
+  });
+
   // Automatically preserve the audience mode parameter across all sidebar links
   document.querySelectorAll(".sidebar a").forEach(link => {
     let baseHref = link.getAttribute("href").split("?")[0];
@@ -477,6 +758,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+<script src="js/js/behaviour-engine.js"></script>
 
 </body>
 </html>

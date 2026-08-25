@@ -2,151 +2,339 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PhishGuard – Elderly Inbox Simulation</title>
+<title>PhishGuard Enterprise – Senior Protection Simulator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+:root {
+  --bg: #090e17;
+  --panel: #131b2e;
+  --panel-hover: #1b2640;
+  --line: #2e3f61;
+  --text: #f8fafc;
+  --muted: #b0c2de;
+  --cyan: #36e0d0;
+  --blue: #38bdf8;
+  --amber: #fbbf24;
+  --red: #fb7185;
+  --green: #4ade80;
+}
+
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
   overflow-x: hidden;
 }
 
-/* Background grid */
+/* Background grid & ambient glow */
 .bg-grid {
   position: fixed;
   inset: 0;
-  background-image:
-    linear-gradient(to right, #80808012 1px, transparent 1px),
-    linear-gradient(to bottom, #80808012 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: linear-gradient(to right, rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
   z-index: -2;
 }
 
-/* Glow */
 .glow {
   position: fixed;
-  top: 50%;
+  top: 10%;
   left: 50%;
   width: 800px;
-  height: 800px;
-  background: rgba(0, 150, 255, 0.1);
+  height: 400px;
+  background: rgba(56, 189, 248, 0.04);
   border-radius: 50%;
-  filter: blur(120px);
-  transform: translate(-50%, -50%);
+  filter: blur(150px);
+  transform: translateX(-50%);
   z-index: -1;
 }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 40px 20px;
-  text-align: center;
-}
-
-.title {
-  font-size: 38px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #00aaff;
-}
-
-.subtitle {
-  font-size: 18px;
-  color: #cccccc;
-  margin-bottom: 40px;
-}
-
-/* Email box */
-.email-box {
-  background: #1a1a1a;
-  border: 2px solid #333;
-  padding: 25px;
-  border-radius: 12px;
-  text-align: left;
-  margin-bottom: 30px;
-}
-
-.email-header {
-  font-size: 20px;
-  color: #00aaff;
-  margin-bottom: 10px;
-}
-
-.email-body {
-  color: #cccccc;
-  line-height: 1.5;
-}
-
-/* Buttons */
-.btn-row {
+/* Top Navigation Bar */
+.topbar {
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 25px;
-}
-
-.sim-btn {
-  background: #00aaff;
-  color: black;
-  padding: 14px 30px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.hint-btn {
-  background: #ffaa00;
-  color: black;
-  padding: 14px 30px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* Modal */
-.modal-bg {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  z-index: 10;
+  padding: 16px 24px;
+  background: rgba(13, 19, 33, 0.95);
+  border-bottom: 2px solid var(--line);
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.modal {
-  background: #1a1a1a;
-  border: 2px solid #00aaff;
-  padding: 30px;
-  width: 420px;
-  border-radius: 12px;
-  text-align: center;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--blue);
+  font-size: 16px;
 }
 
-.modal h2 {
-  color: #00aaff;
-  margin-bottom: 15px;
+.brand-mark {
+  width: 32px; height: 32px; display: grid; place-items: center;
+  border: 2px solid rgba(56, 189, 248, 0.5); border-radius: 8px;
+  background: rgba(56, 189, 248, 0.15);
+  font-size: 16px;
 }
 
-.modal p {
-  color: #cccccc;
+.session-info {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.session-info span {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* Main Workspace - Perfectly scaled grid */
+.workspace {
+  max-width: 1350px;
+  width: 95%;
+  margin: 24px auto;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media(max-width: 880px) {
+  .workspace { grid-template-columns: 1fr; }
+}
+
+/* Inbox Queue Sidebar */
+.inbox-sidebar {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.inbox-header {
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border-bottom: 2px solid var(--line);
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.15);
+}
+
+.queue-list {
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.queue-item {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.queue-item:hover {
+  background: var(--panel-hover);
+}
+
+.queue-item.active {
+  background: rgba(56, 189, 248, 0.12);
+  border-left: 6px solid var(--blue);
+}
+
+.queue-item-sender {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-item-subject {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-badge {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--amber);
+  margin-right: 6px;
+}
+.status-badge.done { background: var(--green); }
+
+/* Email Viewer Panel */
+.email-viewer {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Prevents flex items from breaking grid boundaries */
+}
+
+.email-meta-box {
+  border-bottom: 2px solid var(--line);
+  padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
-.modal-btn {
-  background: #00aaff;
-  color: black;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
+.email-subject-view {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 14px;
+  line-height: 1.3;
 }
+
+.sender-details {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px 16px;
+  font-size: 14px;
+}
+
+.sender-label { color: var(--muted); font-weight: 600; }
+.sender-value { color: var(--text); font-family: monospace; word-break: break-all; }
+
+/* Senior Safety Assistant Helper Card */
+.senior-helper-box {
+  background: rgba(56, 189, 248, 0.08);
+  border: 2px dashed rgba(56, 189, 248, 0.35);
+  padding: 16px 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.senior-helper-icon { font-size: 24px; line-height: 1; }
+.senior-helper-text h4 { margin: 0 0 4px 0; font-size: 15px; color: var(--blue); }
+.senior-helper-text p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+/* Warning Banner inside email */
+.security-banner {
+  background: rgba(251, 113, 133, 0.12);
+  border: 2px solid rgba(251, 113, 133, 0.4);
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #fca5a5;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.email-content-body {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #e2e8f0;
+  background: rgba(0,0,0,0.25);
+  padding: 24px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  flex: 1;
+  margin-bottom: 24px;
+  overflow-wrap: break-word;
+}
+
+/* Action Button Panel */
+.action-controls {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  border-top: 2px solid var(--line);
+  padding-top: 20px;
+}
+
+.btn {
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-safe { background: rgba(74, 222, 128, 0.18); color: var(--green); border: 2px solid rgba(74, 222, 128, 0.5); }
+.btn-safe:hover { background: rgba(74, 222, 128, 0.28); transform: translateY(-1px); }
+
+.btn-phish { background: rgba(251, 113, 133, 0.18); color: var(--red); border: 2px solid rgba(251, 113, 133, 0.5); }
+.btn-phish:hover { background: rgba(251, 113, 133, 0.28); transform: translateY(-1px); }
+
+.btn-hint { background: rgba(251, 191, 36, 0.18); color: var(--amber); border: 2px solid rgba(251, 191, 36, 0.5); margin-left: auto; }
+.btn-hint:hover { background: rgba(251, 191, 36, 0.28); transform: translateY(-1px); }
+
+/* Modal Overlay */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 15, 0.88);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  padding: 16px;
+}
+
+.modal {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  padding: 36px;
+  width: 100%;
+  max-width: 460px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+}
+
+.modal h2 { margin-top: 0; font-size: 22px; }
+.modal h2.success { color: var(--green); }
+.modal h2.danger { color: var(--red); }
+
+.modal p { color: var(--muted); font-size: 15px; line-height: 1.6; margin: 16px 0 26px 0; }
+
+.modal-btn {
+  background: var(--blue);
+  color: #07090f;
+  padding: 14px 32px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.modal-btn:hover { opacity: 0.9; }
 </style>
 </head>
 
@@ -155,149 +343,268 @@ body {
 <div class="bg-grid"></div>
 <div class="glow"></div>
 
-<div class="container">
-  <div class="title">Inbox Intercept – Elderly Track</div>
-  <div class="subtitle">Analyze each email and decide if it is legitimate or phishing.</div>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">🛡️</div>
+    <span>SENIOR SAFEGUARD MAILBOX</span>
+  </div>
+  <div class="session-info">Mode: <span>Senior Protection Track</span> | Letter <span id="caseCounter">1 / 5</span></div>
+</header>
 
-  <div id="emailBox" class="email-box">
-    <div id="emailHeader" class="email-header"></div>
-    <div id="emailBody" class="email-body"></div>
+<main class="workspace">
+  <!-- Inbox Queue -->
+  <div class="inbox-sidebar">
+    <div class="inbox-header">
+      <span>Your Letters & Messages</span>
+      <span id="queueProgress">5 pending</span>
+    </div>
+    <div class="queue-list" id="queueList"></div>
   </div>
 
-  <div class="btn-row">
-    <button class="sim-btn" onclick="answer('safe')">Safe</button>
-    <button class="sim-btn" onclick="answer('phishing')">Phishing</button>
-    <button class="hint-btn" onclick="showHint()">Hint</button>
+  <!-- Detailed Email Inspector -->
+  <div class="email-viewer">
+    <div class="email-meta-box">
+      <div class="email-subject-view" id="viewSubject">Loading message...</div>
+      <div class="sender-details">
+        <span class="sender-label">Received From:</span>
+        <span class="sender-value" id="viewSender">...</span>
+        <span class="sender-label">Return Address:</span>
+        <span class="sender-value" id="viewReturnPath">...</span>
+        <span class="sender-label">Security Check:</span>
+        <span class="sender-value" style="color: var(--amber);" id="viewAuth">Verifying...</span>
+      </div>
+    </div>
+
+    <!-- Senior Safety Assistant Helper Card -->
+    <div class="senior-helper-box">
+      <div class="senior-helper-icon">💡</div>
+      <div class="senior-helper-text">
+        <h4>Senior Safety Assistant Tip</h4>
+        <p id="helperTipText">Take your time reading this message. Look closely at who sent it before clicking any buttons or links.</p>
+      </div>
+    </div>
+
+    <div class="security-banner" id="securityBanner" style="display: none;">
+      ⚠️ <span id="bannerText">Warning: This sender address looks suspicious or unfamiliar.</span>
+    </div>
+
+    <div class="email-content-body" id="viewBody">
+      Please select a message from your list on the left to read it.
+    </div>
+
+    <div class="action-controls" id="actionControls">
+      <button class="btn btn-safe" onclick="submitDecision('safe')">✓ Looks Safe</button>
+      <button class="btn btn-phish" onclick="submitDecision('phishing')">🚨 Flag as Scam</button>
+      <button class="btn btn-hint" onclick="revealHint()">❓ Need Advice?</button>
+    </div>
   </div>
-</div>
+</main>
 
 <div id="modalContainer"></div>
 
+<script src="js/behaviour-engine.js"></script>
 <script>
-/* ELDERLY EMAIL SCENARIOS */
-const scenarios = [
-  {
-    header: "Bank Security Alert",
-    body: "We detected unusual activity on your account. Please verify your identity immediately.",
-    correct: "phishing",
-    hint: "Banks never ask for verification through email links."
-  },
-  {
-    header: "NHS Appointment Confirmation",
-    body: "Your NHS appointment has been successfully scheduled for next week.",
-    correct: "safe",
-    hint: "NHS confirmations come from official nhs.uk domains."
-  },
-  {
-    header: "Pension Benefit Update",
-    body: "Your pension benefits have been updated. Click the link to review your new payment details.",
-    correct: "phishing",
-    hint: "Pension services never send external links for payment updates."
-  }
-];
+document.addEventListener("DOMContentLoaded", () => {
+  const scenarios = [
+    {
+      id: "elderly-pension-audit",
+      subject: "Urgent: State Pension Annual Audit & Verification Required",
+      sender: "Department for Work and Pensions <noreply@gov.uk-pension-portal.co.uk>",
+      returnPath: "bounce@gov.uk-pension-portal.co.uk",
+      authStatus: "SPF Check: FAILED · Digital Signature: Missing",
+      body: "Dear Citizen,<br><br>Our records indicate a discrepancy in your upcoming financial quarter disbursement. Your pension payments are temporarily suspended until you re-authenticate your banking credentials via our secure portal.<br><br>Click here to verify: <span style='color: var(--blue); text-decoration: underline;'>https://gov.uk/pension-secure-verify</span><br><br>Failure to comply within 24 hours will result in automatic benefit forfeiture.",
+      correct: "phishing",
+      trigger: "authority",
+      difficulty: 1,
+      helperTip: "Government offices like the DWP will never threaten to cut off your pension or demand passwords through an email link.",
+      hint: "Look at the web address carefully: 'gov.uk-pension-portal.co.uk' is a fake web address created by scammers, not the real government website."
+    },
+    {
+      id: "elderly-nhs-appointment",
+      subject: "Your scheduled consultation at Southmead Hospital Clinic",
+      sender: "NHS Automated Booking System <no-reply@appointments.nhs.uk>",
+      returnPath: "mailer@mail.nhs.uk",
+      authStatus: "SPF Check: PASSED · Official NHS Domain Verified",
+      body: "Hello,<br><br>This is an automated confirmation reminder for your upcoming outpatient appointment with Dr. Henderson on Thursday at 10:30 AM.<br><br>No action or online payment is required. If you need to reschedule, please call your local GP surgery directly using the telephone number printed on your medical card.",
+      correct: "safe",
+      trigger: "authority",
+      difficulty: 1,
+      helperTip: "This message does not ask for money or passwords, and directs you to use the phone number on your medical card.",
+      hint: "Notice the clean 'nhs.uk' ending in the sender address and that there are no buttons or links demanding immediate action."
+    },
+    {
+      id: "elderly-bank-fraud",
+      subject: "Security Alert: Unauthorized Wire Transfer Attempt Blocked",
+      sender: "Barclays Fraud Security Desk <fraud-alert@barclays-securesystem.com>",
+      returnPath: "alert@barclays-securesystem.com",
+      authStatus: "SPF Check: FAILED · Invalid Security Signature",
+      body: "We intercepted a £1,450 wire transfer originating from Manchester to an unverified recipient account.<br><br>If you did not authorize this transaction, immediately secure your funds by calling our emergency fraud helpline at <strong>0800 555 0199</strong> or verify your PIN online immediately.",
+      correct: "phishing",
+      trigger: "financial",
+      difficulty: 1,
+      helperTip: "Scammers often try to scare you with large fake money transfers to panic you into calling or clicking quickly.",
+      hint: "Real bank alerts come from official domains, and you should always check the back of your debit card for genuine customer service numbers."
+    },
+    {
+      id: "elderly-parcel-delivery",
+      subject: "Royal Mail: Action Required for Your Held Delivery Package",
+      sender: "Royal Mail Parcel Support <customer-service@royalmail-redelivery-update.info>",
+      returnPath: "bounce@royalmail-redelivery-update.info",
+      authStatus: "SPF Check: FAILED · Untrusted External Domain",
+      body: "Hello,<br><br>We attempted to deliver your parcel today, but a customs/shipping fee of £2.99 remains unpaid. Your package is currently being held at our local sorting depot.<br><br>To arrange redelivery, please update your postage fee here: <span style='color: var(--blue); text-decoration: underline;'>https://royalmail.redelivery-fee-pay.com</span>",
+      correct: "phishing",
+      trigger: "urgency",
+      difficulty: 1,
+      helperTip: "Delivery companies like Royal Mail will never ask you to click a strange web link to pay pocket change for a held parcel.",
+      hint: "Check the sender address ending in '.info'. Real Royal Mail notifications always come from official 'royalmail.com' domains."
+    },
+    {
+      id: "elderly-utility-bill",
+      subject: "Your Monthly Energy Statement & Direct Debit Confirmation",
+      sender: "British Gas Billing Department <no-reply@britishgas.co.uk>",
+      returnPath: "mailer@britishgas.co.uk",
+      authStatus: "SPF Check: PASSED · Verified Organization Domain",
+      body: "Dear Customer,<br><br>Your monthly energy statement for August is now ready to view in your secure online account. Your regular direct debit payment of £84.20 is scheduled to process safely on or around September 1st.<br><br>No action is needed on your part. You can view your breakdown anytime by logging into your account directly through your standard browser bookmark.",
+      correct: "safe",
+      trigger: "authority",
+      difficulty: 1,
+      helperTip: "This is a routine confirmation statement with no threats, no panic, and no links asking you to enter personal details.",
+      hint: "Notice the trusted 'britishgas.co.uk' address and how it reminds you to use your own browser bookmark instead of clicking random links."
+    }
+  ];
 
-let index = 0;
-let score = 0;
+  let currentIndex = 0;
+  let sessionScore = 0;
+  let startTime = Date.now();
 
-/* LOAD EMAIL */
-function loadEmail() {
-  const s = scenarios[index];
-  document.getElementById("emailHeader").textContent = s.header;
-  document.getElementById("emailBody").textContent = s.body;
-}
-
-loadEmail();
-
-/* ANSWER LOGIC */
-function answer(choice) {
-  const s = scenarios[index];
-  const correct = (choice === s.correct);
-
-  if (correct) score++;
-
-  showFeedback(correct, s.correct);
-}
-
-/* FEEDBACK MODAL */
-function showFeedback(correct, correctAnswer) {
-  const modal = `
-    <div class="modal-bg">
-      <div class="modal">
-        <h2>${correct ? "Correct!" : "Incorrect"}</h2>
-        <p>The correct answer was: <strong>${correctAnswer.toUpperCase()}</strong></p>
-        <button class="modal-btn" onclick="nextEmail()">Next</button>
+  function renderQueue() {
+    const list = document.getElementById("queueList");
+    list.innerHTML = scenarios.map((s, idx) => `
+      <div class="queue-item ${idx === currentIndex ? 'active' : ''}" onclick="selectScenario(${idx})">
+        <div class="queue-item-sender"><span class="status-badge ${idx < currentIndex ? 'done' : ''}"></span> ${s.sender.split('<')[0].trim()}</div>
+        <div class="queue-item-subject">${s.subject}</div>
       </div>
-    </div>
-  `;
-  document.getElementById("modalContainer").innerHTML = modal;
-}
-
-/* HINT */
-function showHint() {
-  const s = scenarios[index];
-  const modal = `
-    <div class="modal-bg">
-      <div class="modal">
-        <h2>Hint</h2>
-        <p>${s.hint}</p>
-        <button class="modal-btn" onclick="closeModal()">Close</button>
-      </div>
-    </div>
-  `;
-  document.getElementById("modalContainer").innerHTML = modal;
-}
-
-function closeModal() {
-  document.getElementById("modalContainer").innerHTML = "";
-}
-
-/* NEXT EMAIL */
-function nextEmail() {
-  document.getElementById("modalContainer").innerHTML = "";
-  index++;
-
-  if (index >= scenarios.length) {
-    endSimulation();
-    return;
+    `).join("");
+    document.getElementById("caseCounter").textContent = `${currentIndex + 1} / ${scenarios.length}`;
+    document.getElementById("queueProgress").textContent = `${scenarios.length - currentIndex} remaining`;
   }
 
-  loadEmail();
-}
+  window.selectScenario = function(index) {
+    currentIndex = index;
+    startTime = Date.now();
+    renderCurrentScenario();
+    renderQueue();
+  }
 
-/* SAVE RESULT TO LOCALSTORAGE */
-function saveResult(score, total) {
-  const key = "phishguard_elderly_data";
+  function renderCurrentScenario() {
+    const s = scenarios[currentIndex];
+    document.getElementById("viewSubject").textContent = s.subject;
+    document.getElementById("viewSender").textContent = s.sender;
+    document.getElementById("viewReturnPath").textContent = s.returnPath;
+    document.getElementById("viewAuth").textContent = s.authStatus;
+    document.getElementById("viewBody").innerHTML = s.body;
+    document.getElementById("helperTipText").textContent = s.helperTip;
 
-  const accuracy = Math.round((score / total) * 100);
+    const banner = document.getElementById("securityBanner");
+    if (s.correct === "phishing") {
+      banner.style.display = "flex";
+      banner.style.background = "rgba(251, 113, 133, 0.12)";
+      banner.style.borderColor = "rgba(251, 113, 133, 0.4)";
+      banner.style.color = "#fca5a5";
+      document.getElementById("bannerText").innerHTML = "<strong>Caution:</strong> Security checks failed. This message shows warning signs of a digital scam.";
+    } else {
+      banner.style.display = "flex";
+      banner.style.background = "rgba(74, 222, 128, 0.12)";
+      banner.style.borderColor = "rgba(74, 222, 128, 0.4)";
+      banner.style.color = "var(--green)";
+      document.getElementById("bannerText").innerHTML = "<strong>Verified Safe:</strong> This message comes from a confirmed, genuine official source.";
+    }
+  }
 
-  const record = {
-    simulation: "inbox",
-    score,
-    total,
-    accuracy,
-    time: new Date().toISOString()
-  };
+  window.submitDecision = function(choice) {
+    const s = scenarios[currentIndex];
+    const correct = choice === s.correct;
+    const responseTime = Date.now() - startTime;
 
-  let data = JSON.parse(localStorage.getItem(key)) || [];
-  data.push(record);
-  localStorage.setItem(key, JSON.stringify(data));
-}
+    if (correct) sessionScore++;
 
-/* END SIMULATION */
-function endSimulation() {
-  saveResult(score, scenarios.length);
+    // Dynamically record telemetry into central engine for transfer to dashboard/training page
+    if (window.PhishGuardEngine) {
+      window.PhishGuardEngine.recordSimulation({
+        userMode: "elderly",
+        simulation: "inbox",
+        scenarioId: s.id,
+        trigger: s.trigger,
+        correct: correct,
+        action: choice === "safe" ? "mark_safe" : "report_phish",
+        responseTime: responseTime,
+        confidence: 5,
+        hintUsed: false,
+        difficulty: s.difficulty,
+        phase: "standard"
+      });
+    }
 
-  const modal = `
-    <div class="modal-bg">
-      <div class="modal">
-        <h2>Simulation Complete</h2>
-        <p>Your score: ${score} / ${scenarios.length}</p>
-        <button class="modal-btn" onclick="window.location.href='training.html?mode=elderly'">Return to Command Center</button>
+    showResultModal(correct, s);
+  }
+
+  window.revealHint = function() {
+    const s = scenarios[currentIndex];
+    document.getElementById("modalContainer").innerHTML = `
+      <div class="modal-bg">
+        <div class="modal">
+          <h2 style="color: var(--amber);">Friendly Advice</h2>
+          <p>${s.hint}</p>
+          <button class="modal-btn" onclick="closeModal()">Back to Message</button>
+        </div>
       </div>
-    </div>
-  `;
-  document.getElementById("modalContainer").innerHTML = modal;
-}
+    `;
+  }
+
+  function showResultModal(correct, s) {
+    const isLast = currentIndex + 1 >= scenarios.length;
+    document.getElementById("modalContainer").innerHTML = `
+      <div class="modal-bg">
+        <div class="modal">
+          <h2 class="${correct ? 'success' : 'danger'}">${correct ? "✓ Well Done! Correct Choice" : "⚠️ Careful Here"}</h2>
+          <p>This message was actually a <strong>${s.correct.toUpperCase()}</strong> message. ${correct ? "You successfully spotted the safe/unsafe indicators!" : "Falling for this could have risked your personal information or security."}</p>
+          <button class="modal-btn" onclick="${isLast ? 'finishSimulation()' : 'advanceQueue()'}">${isLast ? 'See Final Score' : 'Next Message →'}</button>
+        </div>
+      </div>
+    `;
+  }
+
+  window.closeModal = function() {
+    document.getElementById("modalContainer").innerHTML = "";
+  }
+
+  window.advanceQueue = function() {
+    closeModal();
+    currentIndex++;
+    startTime = Date.now();
+    renderCurrentScenario();
+    renderQueue();
+  }
+
+  window.finishSimulation = function() {
+    const accuracy = Math.round((sessionScore / scenarios.length) * 100);
+    // Dynamically append score parameters so training.html receives data directly
+    const targetUrl = `training.html?mode=elderly&score=${sessionScore}&total=${scenarios.length}&accuracy=${accuracy}`;
+    
+    document.getElementById("modalContainer").innerHTML = `
+      <div class="modal-bg">
+        <div class="modal">
+          <h2 class="success">Practice Completed Successfully!</h2>
+          <p>You correctly evaluated <strong>${sessionScore} out of ${scenarios.length}</strong> messages (${accuracy}% score).<br><br>All results have been logged to your safety profile.</p>
+          <button class="modal-btn" onclick="window.location.href='${targetUrl}'">Return to Safety Dashboard</button>
+        </div>
+      </div>
+    `;
+  }
+
+  renderQueue();
+  renderCurrentScenario();
+});
 </script>
 
 </body>
