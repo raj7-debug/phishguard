@@ -51,6 +51,15 @@ class BehaviourEngine {
     }
 
     /**
+     * Clears all recorded telemetry and resets storage to a fresh initial state.
+     * Called by analytics.html's "reset data" control.
+     */
+    clearData() {
+        localStorage.removeItem(this.storageKey);
+        this.initStorage();
+    }
+
+    /**
      * Record a new simulation attempt with enterprise micro-behavioral parameters
      */
     recordSimulation(simulationRecord) {
